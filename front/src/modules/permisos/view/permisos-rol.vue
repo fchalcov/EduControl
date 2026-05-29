@@ -378,13 +378,11 @@ const checkParent = (menu: any) => {
     }
 };
 
-// API Calls
 const rs_list = async () => {
     try {
         const response = await list_rol();
         roles.value = response.data;
     } catch (error) {
-        console.error("Error al cargar roles:", error);
         sweetalert2.fire("Error", "No se pudieron cargar los roles", "error");
     }
 };

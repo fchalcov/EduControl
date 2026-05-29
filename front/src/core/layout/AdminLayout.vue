@@ -71,17 +71,18 @@
       <main class="p-4 md:p-6 bg-gray-100 min-h-[calc(100vh-4rem)] flex flex-col">
         <div class="flex-1 flex flex-col bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div class="flex-1 overflow-auto p-4 md:p-6">
-            <router-view :key="$route.fullPath" />
+            <div class="flex-1 overflow-auto p-4 md:p-6">
+              <router-view />
+            </div>
           </div>
         </div>
       </main>
     </div>
   </div>
 </template>
-
 <script setup>
 import Sidebar from "../../modules/sidebar/view/sidebar.vue";
-import { ref, computed, onMounted, onUnmounted, watch } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 
 const router = useRouter();

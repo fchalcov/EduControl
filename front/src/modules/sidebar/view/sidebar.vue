@@ -18,11 +18,15 @@
   >
     <!-- Menú -->
     <nav class="mt-4 px-2">
-      <div v-for="item in menuItems" :key="item.ruta">
+      <div v-for="item in menuItems" :key="item.id">
 
         <!-- ITEM -->
         <div
-          @click="item.children && item.children.length ? toggleMenu(item.ruta) : navigate(item.ruta)"
+          @click="
+            item.children && item.children.length
+              ? toggleMenu(item.id)
+              : navigate(item.ruta)
+          "
           :class="[
             'flex items-center px-3 py-3 mb-1 rounded-lg cursor-pointer transition-all',
             isActive(item.ruta)
@@ -45,7 +49,7 @@
             v-if="item.children && item.children.length && !isCollapsed"
             :class="[
               'w-4 h-4 transition-transform',
-              openMenus[item.ruta] ? 'rotate-90' : '',
+              openMenus[item.id] ? 'rotate-90' : '',
             ]"
             fill="none"
             stroke="currentColor"
@@ -58,12 +62,12 @@
 
         <!-- SUBMENU -->
         <div
-          v-if="item.children && openMenus[item.ruta] && !isCollapsed"
+          v-if="item.children && openMenus[item.id] && !isCollapsed"
           class="ml-6"
         >
           <div
             v-for="child in item.children"
-            :key="child.ruta"
+            :key="child.id"
             @click="navigate(child.ruta)"
             :class="[
               'flex items-center px-3 py-2 mb-1 rounded-lg cursor-pointer text-xs transition-all',
@@ -119,7 +123,7 @@
 import * as Icons from "@heroicons/vue/24/outline";
 import { ref, onMounted, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { list_menu } from "../api/sidebar.ts";
+import { useMenuStore } from "../../../store/menu.ts"; // 👈 STORE
 
 /* PROPS */
 defineProps({
@@ -135,60 +139,64 @@ defineEmits(["closeMobile", "toggleSidebar"]);
 const router = useRouter();
 const route = useRoute();
 
+/* STORE 👇 */
+const { menuItems, loadMenu } = useMenuStore();
+
 /* STATE */
-const menuItems = ref([]);
 const openMenus = ref({});
 
-/* NAVIGATION */
+/* 🔧 NORMALIZAR RUTA */
+const normalizePath = (path) => {
+  if (!path) return null;
+  return path.startsWith("/") ? path : "/" + path;
+};
+
+/* 🚀 NAVIGATE */
 const navigate = (path) => {
-  if (!path.startsWith("/")) path = "/" + path;
-  router.push(path);
+  const finalPath = normalizePath(path);
+  if (!finalPath) return;
+  router.push(finalPath);
 };
 
-/* ACTIVE */
+/* 🎯 ACTIVE */
 const isActive = (path) => {
-  if (!path) return false;
-  return route.path.startsWith("/" + path);
+  const finalPath = normalizePath(path);
+  if (!finalPath) return false;
+  return route.path.startsWith(finalPath);
 };
 
-/* TOGGLE */
-const toggleMenu = (path) => {
-  openMenus.value[path] = !openMenus.value[path];
+/* 🔽 TOGGLE */
+const toggleMenu = (id) => {
+  openMenus.value[id] = !openMenus.value[id];
 };
 
-/* OPEN ACTIVE */
+/* 📂 ABRIR MENÚ ACTIVO */
 const openActiveMenu = () => {
   const currentPath = route.path;
 
   menuItems.value.forEach((item) => {
-    if (item.children) {
+    if (item.children && item.children.length) {
       const found = item.children.find((child) =>
-        currentPath.startsWith("/" + child.ruta)
+        currentPath.startsWith(normalizePath(child.ruta))
       );
 
-      if (found) openMenus.value[item.ruta] = true;
+      if (found) {
+        openMenus.value[item.id] = true;
+      }
     }
   });
 };
 
-/* LOAD MENU */
-const loadMenu = async () => {
-  try {
-    const res = await list_menu();
-    menuItems.value = res.data;
-    openActiveMenu();
-  } catch (error) {
-    console.error("Error cargando menú", error);
-  }
-};
-
-/* WATCH ROUTE */
-watch(route, () => {
+/* 👀 WATCH ROUTE */
+watch(() => route.path, () => {
   openActiveMenu();
 });
 
-/* INIT */
-onMounted(() => {
-  loadMenu();
+/* 🚀 INIT */
+onMounted(async () => {
+  console.log("Sidebar montado");
+
+  await loadMenu();
+  openActiveMenu();
 });
 </script>

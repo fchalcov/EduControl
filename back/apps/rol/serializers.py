@@ -4,7 +4,7 @@ from apps.menu.models import Menu
 
 
 # 🔹 SERIALIZER SIMPLE (ROL)
-class RolSerializer(serializers.ModelSerializer):
+class RolListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rol
         fields = '__all__'
@@ -18,8 +18,8 @@ class RolSaveSerializer(serializers.Serializer):
     rol_activo = serializers.BooleanField()
 
 
-# 🔹 SERIALIZER PARA MENÚ CON PERMISOS (CHECKED)
-class MenuRolSerializer(serializers.ModelSerializer):
+# 🔹 SERIALIZER PARA MENÚ
+class MenuRolListSerializer(serializers.ModelSerializer):
 
     titulo = serializers.CharField(source='menu_titulo')
     ruta = serializers.CharField(source='menu_ruta')

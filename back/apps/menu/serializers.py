@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import Menu
 
-class MenuSerializer(serializers.ModelSerializer):
+class MenuListSerializer(serializers.ModelSerializer):
 
     titulo = serializers.CharField(source='menu_titulo')
     ruta = serializers.CharField(source='menu_ruta')
@@ -27,8 +27,6 @@ class MenuSerializer(serializers.ModelSerializer):
 
     def get_children(self, obj):
         children = getattr(obj, 'children_list', [])
-
-        # 👉 IMPORTANTE: solo serializamos sin children
         return [
             {
                 "id": c.id,
@@ -41,3 +39,12 @@ class MenuSerializer(serializers.ModelSerializer):
             }
             for c in children
         ]
+    
+class MenuSaveSerializer(serializers.Serializer):
+    id = serializers.IntegerField(required=False)
+    menu_titulo = serializers.CharField(required=True, allow_blank=False)
+    menu_ruta = serializers.CharField(required=False, allow_null=True, allow_blank=True)
+    menu_icono = serializers.CharField(required=False, allow_null=True, default='ListBulletIcon')
+    menu_orden = serializers.IntegerField(required=False, default=0, allow_null=True, min_value=0)
+    menu_activo = serializers.BooleanField()
+    menu_padre_id = serializers.IntegerField(required=False, allow_null=True, default=None)

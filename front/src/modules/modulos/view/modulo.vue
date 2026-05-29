@@ -29,7 +29,7 @@
                         <div class="flex-1 relative">
                             <component :is="Icons.MagnifyingGlassIcon"
                                 class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                            <input type="text" v-model="searchTerm" placeholder="Buscar módulo por nombre o ruta..."
+                            <input type="text" v-model="searchTerm" placeholder="Buscar módulo por nombre..."
                                 class="w-full pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
                         </div>
                         <div class="flex gap-2">
@@ -82,9 +82,9 @@
                                 <!-- Módulo padre -->
                                 <tr class="hover:bg-gray-50 transition-colors">
                                     <td class="px-4 md:px-6 py-4 whitespace-nowrap">
-                                        <button v-if="module.children?.length" @click="toggleExpand(module)"
+                                        <button v-if="module.children?.length" @click="toggleExpand(module.id)"
                                             class="text-gray-400 hover:text-gray-600 transition-transform"
-                                            :class="{ 'rotate-90': module.expanded }">
+                                            :class="{ 'rotate-90': expandedState[module.id] }">
                                             <component :is="Icons.ChevronRightIcon" class="w-4 h-4" />
                                         </button>
                                         <div v-else class="w-4"></div>
@@ -134,18 +134,21 @@
                                 </tr>
 
                                 <!-- Submódulos -->
-                                <tr v-for="child in (module.expanded ? module.children : [])" :key="child.id"
+                                <tr v-for="child in (expandedState[module.id] ? module.children : [])" :key="child.id"
                                     class="hover:bg-gray-50 transition-colors bg-gray-50/30">
                                     <td class="px-4 md:px-6 py-4 whitespace-nowrap">
                                         <div class="w-4"></div>
                                     </td>
                                     <td class="px-4 md:px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center gap-2 md:gap-3 pl-6 relative">
-                                            <div class="absolute left-0 top-1/2 w-4 h-px bg-gray-300"></div>
-                                            <component :is="Icons.DocumentTextIcon" class="w-4 h-4 text-gray-400" />
-                                            <span class="text-sm text-gray-700">
-                                                {{ child.titulo }}
-                                            </span>
+                                            <!-- <div class="absolute left-0 top-1/2 w-4 h-px bg-gray-300"></div> -->
+                                            <div class="flex items-center gap-2 md:gap-3">
+                                                <component :is="getIconComponent(child.icono)"
+                                                    class="w-5 h-5 text-gray-400" />
+                                                <span class="text-sm font-medium text-gray-900">
+                                                    {{ child.titulo }}
+                                                </span>
+                                            </div>
                                         </div>
                                     </td>
                                     <td class="px-4 md:px-6 py-4">
@@ -199,7 +202,7 @@
             </div>
         </div>
 
-        <!-- Modal mejorado -->
+        <!-- Modal -->
         <div v-if="showModal" class="fixed inset-0 z-50 overflow-y-auto">
             <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" @click="btnCerrarModal"></div>
 
@@ -262,7 +265,7 @@
                                         </label>
                                         <input v-model.number="selectedModule.orden" type="number"
                                             class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                            placeholder="0" />
+                                            placeholder="0" min="0"/>
                                     </div>
                                 </div>
 
@@ -313,7 +316,8 @@
                                             <component :is="getIconComponent(selectedModule?.icono)" class="w-5 h-5" />
                                         </div>
                                         <div>
-                                            <p class="text-sm font-medium text-gray-900">{{ selectedModule?.titulo }}</p>
+                                            <p class="text-sm font-medium text-gray-900">{{ selectedModule?.titulo }}
+                                            </p>
                                             <p class="text-xs text-gray-500 font-mono">{{ selectedModule?.ruta }}</p>
                                         </div>
                                         <span class="ml-auto text-xs text-gray-400">Orden: {{ selectedModule?.orden || 0
@@ -374,8 +378,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import * as Icons from "@heroicons/vue/24/outline";
+import { list_menu, save_menu } from "../api/modulo";
+import sweetalert2 from "sweetalert2";
+
 
 // Interfaces
 interface Module {
@@ -386,9 +393,11 @@ interface Module {
     orden: number;
     activo: boolean;
     padre_id: number | null;
-    expanded?: boolean;
     children?: Module[];
 }
+
+// Datos de ejemplo
+const modulesData = ref<Module[]>([]);
 
 const iconOptions = Object.keys(Icons).map(name => ({
     name,
@@ -396,10 +405,18 @@ const iconOptions = Object.keys(Icons).map(name => ({
     label: name.replace('Icon', '') // opcional: limpiar nombre
 }));
 
-
 const getIconComponent = (iconName: string) => {
     return Icons[iconName as keyof typeof Icons] || Icons.FolderIcon;
 };
+
+const rs_list = async () => {
+    try {
+        const response = await list_menu();
+        modulesData.value = response.data;
+    } catch (error) {
+        sweetalert2.fire("Error", "No se pudieron cargar los roles", "error");
+    }
+}
 
 // Tabs
 const tabs = [
@@ -408,110 +425,44 @@ const tabs = [
 ];
 const activeTab = ref("basic");
 
-// Datos de ejemplo
-const modulesData = ref<Module[]>([
-    { id: 1, titulo: "Dashboard", ruta: "/dashboard", icono: "HomeIcon", orden: 1, activo: true, padre_id: null, expanded: true },
-    { id: 2, titulo: "Usuarios", ruta: "/usuarios", icono: "UsersIcon", orden: 2, activo: true, padre_id: null, expanded: true },
-    { id: 3, titulo: "Lista Usuarios", ruta: "/usuarios/list", icono: "ListBulletIcon", orden: 1, activo: true, padre_id: 2 },
-    { id: 4, titulo: "Crear Usuario", ruta: "/usuarios/create", icono: "PlusIcon", orden: 2, activo: true, padre_id: 2 },
-    { id: 5, titulo: "Cursos", ruta: "/cursos", icono: "BookOpenIcon", orden: 3, activo: true, padre_id: null, expanded: false },
-    { id: 6, titulo: "Configuración", ruta: "/configuracion", icono: "CogIcon", orden: 4, activo: true, padre_id: null, expanded: false },
-    { id: 7, titulo: "Módulo Inactivo", ruta: "/inactivo", icono: "FolderIcon", orden: 5, activo: false, padre_id: null, expanded: false },
-]);
-
 const showModal = ref(false);
 const selectedModule = ref<any>(null);
 const searchTerm = ref("");
 const expandedState = ref<Record<number, boolean>>({});
 
-const initExpandedState = (modules: Module[]) => {
-    modules.forEach(module => {
-        expandedState.value[module.id] = module.expanded ?? false;
-        if (module.children) initExpandedState(module.children);
-    });
+const toggleExpand = (id: number) => {
+    expandedState.value[id] = !expandedState.value[id];
 };
 
-const buildTree = (modules: Module[]): Module[] => {
-    const map = new Map<number, Module>();
-    const roots: Module[] = [];
-
-    modules.forEach(module => {
-        map.set(module.id, {
-            ...module,
-            children: [],
-            expanded: expandedState.value[module.id] ?? module.expanded ?? false
-        });
-    });
-
-    modules.forEach(module => {
-        const node = map.get(module.id);
-        if (module.padre_id && map.has(module.padre_id)) {
-            const parent = map.get(module.padre_id);
-            if (parent && node) {
-                if (!parent.children) parent.children = [];
-                parent.children.push(node);
-            }
-        } else if (node) {
-            roots.push(node);
-        }
-    });
-
-    const sortByOrder = (items: Module[]) => {
-        items.sort((a, b) => (a.orden || 0) - (b.orden || 0));
-        items.forEach(item => {
-            if (item.children?.length) sortByOrder(item.children);
-        });
-    };
-    sortByOrder(roots);
-    return roots;
-};
-
-const treeModules = computed(() => buildTree(modulesData.value));
-
-const toggleExpand = (module: Module) => {
-    expandedState.value[module.id] = !expandedState.value[module.id];
-    module.expanded = expandedState.value[module.id];
-};
-
-const filteredModules = computed(() => {
-    if (!searchTerm.value) return treeModules.value;
+const filteredModules = computed((): Module[] => {
+    if (!searchTerm.value) return modulesData.value;
     const term = searchTerm.value.toLowerCase();
-    const filterModules = (modules: Module[]): Module[] => {
-        const result: Module[] = [];
-        for (const module of modules) {
-            const matches = module.titulo.toLowerCase().includes(term) || (module.ruta && module.ruta.toLowerCase().includes(term));
-            const filteredChildren = module.children ? filterModules(module.children) : [];
-            if (matches || filteredChildren.length > 0) {
-                result.push({ ...module, children: filteredChildren, expanded: true });
-            }
+    const filtered: Module[] = [];
+    for (const module of modulesData.value) {
+        const matchInParent = module.titulo.toLowerCase().includes(term);
+        const matchingChildren = module.children?.filter(child =>
+            child.titulo.toLowerCase().includes(term)
+        ) || [];
+        if (matchInParent || matchingChildren.length > 0) {
+            filtered.push({
+                ...module,
+                children: matchingChildren
+            });
         }
-        return result;
-    };
-    return filterModules(treeModules.value);
+    }
+    return filtered;
 });
 
 const parentModules = computed(() => modulesData.value.filter(m => !m.padre_id));
 
 const expandAll = () => {
-    const expandRecursive = (modules: Module[]) => {
-        modules.forEach(module => {
-            expandedState.value[module.id] = true;
-            module.expanded = true;
-            if (module.children?.length) expandRecursive(module.children);
-        });
-    };
-    expandRecursive(treeModules.value);
+    modulesData.value.forEach(m => {
+        expandedState.value[m.id] = true;
+    });
 };
 
 const collapseAll = () => {
-    const collapseRecursive = (modules: Module[]) => {
-        modules.forEach(module => {
-            expandedState.value[module.id] = false;
-            module.expanded = false;
-            if (module.children?.length) collapseRecursive(module.children);
-        });
-    };
-    collapseRecursive(treeModules.value);
+    expandedState.value = {};
 };
 
 const openModal = (module: Module | null) => {
@@ -521,7 +472,7 @@ const openModal = (module: Module | null) => {
         selectedModule.value = {
             titulo: "",
             ruta: null,
-            icono: "FolderIcon",
+            icono: "ListBulletIcon",
             orden: 0,
             activo: true,
             padre_id: null,
@@ -531,14 +482,37 @@ const openModal = (module: Module | null) => {
     showModal.value = true;
 };
 
+const iconSearch = ref("");
+
+const filteredIcons = computed(() => {
+    if (!iconSearch.value) return iconOptions;
+    return iconOptions.filter(icon =>
+        icon.name.toLowerCase().includes(iconSearch.value.toLowerCase())
+    );
+});
+
 const confirmDelete = (module: Module) => {
-    if (confirm(`¿Eliminar el módulo "${module.titulo}"?`)) {
-        const index = modulesData.value.findIndex(m => m.id === module.id);
-        if (index !== -1) {
-            modulesData.value.splice(index, 1);
-        }
-        delete expandedState.value[module.id];
-    }
+    sweetalert2
+        .fire({
+            title: "¿Estás seguro?",
+            text: `¿Deseas eliminar el módulo "${module.titulo}"? Esta acción no se puede deshacer.`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Sí, eliminar",
+            cancelButtonText: "Cancelar",
+        })
+        .then((result) => {
+            if (result.isConfirmed) {
+                // Aquí iría la lógica para eliminar el rol
+                sweetalert2.fire(
+                    "Eliminado",
+                    `El módulo "${module.titulo}" ha sido eliminado.`,
+                    "success",
+                );
+            }
+        });
 };
 
 const btnCerrarModal = () => {
@@ -546,38 +520,37 @@ const btnCerrarModal = () => {
     selectedModule.value = null;
 };
 
-const btnConfirmar = () => {
+const btnConfirmar = async () => {
+
     if (!selectedModule.value.titulo?.trim()) {
-        alert("El título del módulo es obligatorio");
+        sweetalert2.fire("Error", "El nombre del módulo es obligatorio", "error");
         return;
     }
 
-    if (selectedModule.value.id) {
-        const index = modulesData.value.findIndex(m => m.id === selectedModule.value.id);
-        if (index !== -1) {
-            modulesData.value[index] = { ...selectedModule.value };
-        }
-    } else {
-        const newId = Math.max(...modulesData.value.map(m => m.id), 0) + 1;
-        modulesData.value.push({
-            ...selectedModule.value,
-            id: newId,
-        });
-        expandedState.value[newId] = false;
+    const data = {
+        id: selectedModule.value.id,
+        menu_titulo: selectedModule.value.titulo,
+        menu_ruta: selectedModule.value.ruta,
+        menu_icono: selectedModule.value.icono,
+        menu_orden: selectedModule.value.orden || 0,
+        menu_activo: selectedModule.value.activo,
+        menu_padre_id: selectedModule.value.padre_id,
+    };
+    console.log("Datos a guardar:", data);
+    try{
+        await save_menu(data);
+        await rs_list();
+        btnCerrarModal();
+        sweetalert2.fire("Éxito", "Módulo guardado correctamente", "success");
+    }catch(error){
+        console.log("Error al guardar el módulo:", error);
+        sweetalert2.fire("Error", "No se pudo guardar el módulo", "error");
     }
-
     btnCerrarModal();
 };
 
-const iconSearch = ref("");
-
-const filteredIcons = computed(() => {
-    if (!iconSearch.value) return iconOptions;
-
-    return iconOptions.filter(icon =>
-        icon.name.toLowerCase().includes(iconSearch.value.toLowerCase())
-    );
+onMounted(() => {
+    rs_list();
 });
 
-initExpandedState(modulesData.value);
 </script>

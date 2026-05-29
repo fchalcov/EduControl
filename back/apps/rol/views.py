@@ -6,19 +6,19 @@ from django.db.models import Prefetch
 
 from apps.rol.models import Rol, RolMenu
 from apps.menu.models import Menu
-from apps.rol.serializers import RolSerializer, RolSaveSerializer, MenuRolSerializer
+from apps.rol.serializers import RolListSerializer, RolSaveSerializer, MenuRolListSerializer
 
 
-# 🔹 LISTAR ROLES
+# LISTAR ROLES
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def list_rol(request):
     roles = Rol.objects.order_by('id')
-    serializer = RolSerializer(roles, many=True)
+    serializer = RolListSerializer(roles, many=True)
     return Response(serializer.data)
 
 
-# 🔹 CREAR / ACTUALIZAR ROL
+# CREAR / ACTUALIZAR ROL
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def save_rol(request):
@@ -39,36 +39,37 @@ def save_rol(request):
 
             rol_id = validated_data.get('id')
 
-            # 🔹 CREAR o ACTUALIZAR
             if rol_id:
+                # ACTUALIZAR
                 rol = Rol.objects.get(id=rol_id)
                 rol.rol_nombre = validated_data.get('rol_nombre')
                 rol.rol_descripcion = validated_data.get('rol_descripcion')
                 rol.rol_activo = validated_data.get('rol_activo')
                 rol.save()
             else:
+                # CREAR
                 rol = Rol.objects.create(**validated_data)
 
-            # 🔹 MENUS ACTUALES
+            # MENUS ACTUALES
             current_menus = set(
                 RolMenu.objects.filter(rol=rol)
                 .values_list('menu_id', flat=True)
             )
 
-            # 🔹 MENUS NUEVOS
+            # MENUS NUEVOS
             new_menus = set(menus)
 
-            # 🔹 DIFERENCIAS
+            # DIFERENCIAS
             to_add = new_menus - current_menus
             to_remove = current_menus - new_menus
 
-            # 🔹 INSERTAR NUEVOS
+            # INSERTAR NUEVOS
             RolMenu.objects.bulk_create([
                 RolMenu(rol=rol, menu_id=menu_id)
                 for menu_id in to_add
             ])
 
-            # 🔹 ELIMINAR LOS QUE YA NO ESTÁN
+            # ELIMINAR LOS QUE YA NO ESTÁN
             RolMenu.objects.filter(
                 rol=rol,
                 menu_id__in=to_remove
@@ -85,19 +86,16 @@ def save_rol(request):
     except Exception as e:
         return Response({"error": str(e)}, status=400)
 
-
-# 🔹 LISTAR MENÚ POR ROL (CON CHECKED)
+# LISTAR MENÚ POR ROL (CON CHECKED)
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def list_rol_x_menu(request, rol_id):
 
-    # 🔹 MENÚS ASIGNADOS AL ROL
     role_menu_ids = set(
         RolMenu.objects.filter(rol_id=rol_id)
         .values_list('menu_id', flat=True)
     )
 
-    # 🔹 MENÚ PRINCIPAL + HIJOS
     menus = Menu.objects.filter(
         menu_padre__isnull=True,
         menu_activo=True
@@ -109,7 +107,7 @@ def list_rol_x_menu(request, rol_id):
         )
     ).order_by('menu_orden')
 
-    serializer = MenuRolSerializer(
+    serializer = MenuRolListSerializer(
         menus,
         many=True,
         context={'role_menu_ids': role_menu_ids}
