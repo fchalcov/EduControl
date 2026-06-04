@@ -84,10 +84,10 @@
                                     Cantidad
                                 </th>
                                 <th class="px-4 md:px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Costo
+                                    P.Compra
                                 </th>
                                 <th class="px-4 md:px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Precio Unitario
+                                    P.Venta
                                 </th>
                                 <th class="px-4 md:px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     Código de Barra
@@ -259,7 +259,7 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">
-                                            Costo del Producto <span class="text-red-500">*</span>
+                                            Precio Compra <span class="text-red-500">*</span>
                                         </label>
                                         <div class="relative">
                                             <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">S/</span>
@@ -271,7 +271,7 @@
 
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">
-                                            Precio Unitario <span class="text-red-500">*</span>
+                                            Precio Venta <span class="text-red-500">*</span>
                                         </label>
                                         <div class="relative">
                                             <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">S/</span>

@@ -245,7 +245,7 @@
                 <span class="text-slate-700 font-medium">S/ {{ formatNumberDisplay(subtotal) }}</span>
               </div>
               <div class="flex justify-between text-sm">
-                <span class="text-slate-500">IGV (18%)</span>
+                <span class="text-slate-500">IGV (0%)</span>
                 <span class="text-slate-700 font-medium">S/ {{ formatNumberDisplay(igvTotal) }}</span>
               </div>
               <div class="flex justify-between pt-2 border-t border-slate-200">
@@ -256,17 +256,17 @@
             
             <button 
               @click="processSale"
-              :disabled="cart.length === 0"
+              :disabled="cart.length === 0 || procesandoVenta"
               class="w-full py-2 bg-slate-800 text-white text-sm font-semibold rounded-lg hover:bg-slate-700 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {{ cart.length === 0 ? 'Carrito vacío' : 'Procesar venta' }}
+              {{ procesandoVenta ? 'Procesando...' : (cart.length === 0 ? 'Carrito vacío' : 'Procesar venta') }}
             </button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Modal de Pago Profesional -->
+    <!-- Modal de Pago -->
     <div v-if="showPaymentModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div class="flex justify-between items-center p-6 border-b sticky top-0 bg-white rounded-t-2xl">
@@ -289,7 +289,7 @@
             </div>
             <div class="flex justify-between items-center">
               <div>
-                <span class="text-slate-600 text-sm font-medium">Saldo pendiente</span>
+                <span class="text-slate-600 text-sm font-medium">Pago pendiente</span>
                 <div class="text-3xl font-bold mt-1" :class="remainingBalance > 0 ? 'text-amber-600' : 'text-emerald-600'">
                   S/ {{ formatNumberDisplay(remainingBalance) }}
                 </div>
@@ -313,16 +313,16 @@
                 <div class="flex items-center gap-3">
                   <div :class="[
                     'w-8 h-8 rounded-full flex items-center justify-center',
-                    payment.method === 'yape' ? 'bg-blue-100' : 'bg-green-100'
+                    payment.method === 'yape' ? 'bg-purple-100' : 'bg-green-100'
                   ]">
-                    <span class="text-sm font-bold" :class="payment.method === 'yape' ? 'text-blue-600' : 'text-green-600'">
+                    <span class="text-sm font-bold" :class="payment.method === 'yape' ? 'text-purple-600' : 'text-green-600'">
                       {{ payment.method === 'yape' ? 'Y' : 'S/' }}
                     </span>
                   </div>
                   <div>
                     <span :class="[
                       'text-sm font-medium',
-                      payment.method === 'yape' ? 'text-blue-700' : 'text-green-700'
+                      payment.method === 'yape' ? 'text-purple-700' : 'text-green-700'
                     ]">
                       {{ payment.method === 'yape' ? 'Yape' : 'Efectivo' }}
                     </span>
@@ -395,7 +395,7 @@
               <button 
                 @click="addPaymentYape"
                 :disabled="!yapeAmount || yapeAmount <= 0 || yapeAmount > remainingBalance"
-                class="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-semibold shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                class="w-full py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-xl hover:from-purple-700 hover:to-purple-800 transition-all font-semibold shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span class="flex items-center justify-center gap-2">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -483,10 +483,10 @@
           </button>
           <button 
             @click="finalizeSale"
-            :disabled="remainingBalance > 0"
+            :disabled="remainingBalance > 0 || procesandoVenta"
             class="px-6 py-2.5 text-sm font-semibold text-white bg-slate-800 hover:bg-slate-700 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
           >
-            Finalizar compra
+            {{ procesandoVenta ? 'Registrando...' : 'Finalizar compra' }}
           </button>
         </div>
       </div>
@@ -496,6 +496,7 @@
 
 <script>
 import { list_producto } from '../../productos/api/producto.ts';
+import { create_venta } from '../api/venta';
 import Quagga from '@ericblade/quagga2';
 
 export default {
@@ -520,9 +521,10 @@ export default {
       cashAmountText: '',
       yapeAmount: null,
       yapeAmountText: '',
+      procesandoVenta: false,
       paymentMethods: [
-        { value: 'efectivo', label: 'Efectivo', color: 'bg-gradient-to-r from-green-600 to-green-700', icon: '💵' },
-        { value: 'yape', label: 'Yape', color: 'bg-gradient-to-r from-blue-600 to-blue-700', icon: '📱' },
+        { value: 'efectivo', label: 'Efectivo', color: 'bg-gradient-to-r from-green-600 to-green-700', icon: '💰' },
+        { value: 'yape', label: 'Yape', color: 'bg-gradient-to-r from-purple-600 to-purple-700', icon: '📱' },
       ],
       maxYapeAmount: 500
     };
@@ -535,18 +537,20 @@ export default {
     subtotal() {
       return this.cart.reduce((sum, item) => sum + (parseFloat(item.precio_unitario) * item.quantity), 0);
     },
+
+    //editar igv 
     igvTotal() {
-      return this.subtotal * 0.18;
+      return this.subtotal * 0.00;
     },
     total() {
-      return this.subtotal * 1.18;
+      return this.subtotal * 1.00;
     },
+
     totalPaid() {
       return this.payments.reduce((sum, p) => sum + p.amount, 0);
     },
     remainingBalance() {
       const balance = this.total - this.totalPaid;
-      // Redondear a 2 decimales para evitar valores como 0.0000000001
       const rounded = balance < 0 ? 0 : Math.round(balance * 100) / 100;
       return rounded;
     },
@@ -565,6 +569,19 @@ export default {
       return this.payments
         .filter(p => p.method === 'efectivo' && p.changeAmount)
         .reduce((sum, p) => sum + p.changeAmount, 0);
+    },
+    idUsuarioVenta() {
+      try {
+        const auth = localStorage.getItem("auth");
+        if (auth) {
+          const data = JSON.parse(auth);
+          return data.user?.id || 1;
+        }
+        return 1;
+      } catch (error) {
+        console.error("Error leyendo usuario:", error);
+        return 1;
+      }
     }
   },
   mounted() {
@@ -943,55 +960,68 @@ export default {
       this.setYapeAmount(null);
     },
     
-    finalizeSale() {
+    async finalizeSale() {
       if (this.remainingBalance > 0) {
         this.showToast(`Falta saldo por pagar: S/ ${this.formatNumberDisplay(this.remainingBalance)}`, 'error');
         return;
       }
       
-      const totalEfectivoRecibido = this.payments
-        .filter(p => p.method === 'efectivo')
-        .reduce((sum, p) => sum + (p.received || p.amount), 0);
-      const totalEfectivoPagado = this.payments
-        .filter(p => p.method === 'efectivo')
-        .reduce((sum, p) => sum + p.amount, 0);
-      const totalYape = this.payments
-        .filter(p => p.method === 'yape')
-        .reduce((sum, p) => sum + p.amount, 0);
-      const vueltoTotal = this.payments
-        .filter(p => p.method === 'efectivo')
-        .reduce((sum, p) => sum + (p.changeAmount || 0), 0);
-      
-      console.log('Venta finalizada:', {
-        fecha: new Date().toISOString(),
-        items: this.cart.map(item => ({
-          id: item.id,
-          nombre: item.nombre_producto,
-          cantidad: item.quantity,
-          precio_unitario: item.precio_unitario,
-          subtotal: item.precio_unitario * item.quantity
-        })),
-        subtotal: this.subtotal,
-        igv: this.igvTotal,
-        total: this.total,
-        pagos: this.payments,
-        total_efectivo_recibido: totalEfectivoRecibido,
-        total_efectivo_pagado: totalEfectivoPagado,
-        total_yape: totalYape,
-        vuelto_total: vueltoTotal
-      });
-      
-      let message = `✅ Venta completada\nTotal: S/ ${this.formatNumberDisplay(this.total)}\n`;
-      if (totalYape > 0) message += `Yape: S/ ${this.formatNumberDisplay(totalYape)}\n`;
-      if (totalEfectivoPagado > 0) message += `Efectivo: S/ ${this.formatNumberDisplay(totalEfectivoPagado)}`;
-      if (vueltoTotal > 0) {
-        message += `\nVuelto total: S/ ${this.formatNumberDisplay(vueltoTotal)}`;
+      if (this.procesandoVenta) {
+        return;
       }
       
-      this.showToast(message, 'success');
+      this.procesandoVenta = true;
       
-      this.cart = [];
-      this.closePaymentModal();
+      try {
+        const detalles = this.cart.map(item => ({
+          descripcion_producto: item.nombre_producto,
+          codigo_barra: item.codigo_barra || '',
+          cantidad_venta: item.quantity,
+          precio_venta: parseFloat(item.precio_unitario),
+          sub_total_venta: parseFloat((item.precio_unitario * item.quantity).toFixed(2))
+        }));
+        
+        const pagos = this.payments.map(payment => {
+          const pago = {
+            forma_pago: payment.method === 'efectivo' ? 1 : 2,
+            monto_pagar: payment.amount,
+          };
+          
+          if (payment.method === 'efectivo') {
+            pago.efectivo_recibido = payment.received || payment.amount;
+            pago.efectivo_vuelto = payment.changeAmount || 0;
+          }
+          
+          return pago;
+        });
+        
+        const response = await create_venta({
+          id_usuario_venta: this.idUsuarioVenta,
+          detalles: detalles,
+          pagos: pagos
+        });
+        
+        if (response.data.success) {
+          const message = `✅ ¡Venta completada!\n\nCorrelativo: ${response.data.correlativo}\nTotal: S/ ${this.formatNumberDisplay(this.total)}\n\nGracias por su compra`;
+          this.showToast(message, 'success');
+          alert(message);
+          
+          this.cart = [];
+          this.closePaymentModal();
+        } else {
+          this.showToast('Error al registrar la venta', 'error');
+        }
+        
+      } catch (error) {
+        console.error('Error al registrar venta:', error);
+        let errorMsg = 'Error al registrar la venta';
+        if (error.response?.data) {
+          errorMsg = JSON.stringify(error.response.data);
+        }
+        this.showToast(errorMsg, 'error');
+      } finally {
+        this.procesandoVenta = false;
+      }
     },
     
     showToast(message, type = 'success') {

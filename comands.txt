@@ -23,6 +23,7 @@ python manage.py startapp notas apps/notas
 python manage.py startapp horarios apps/horarios
 python manage.py startapp menu apps/menu
 
+python manage.py startapp venta apps/venta
 ---------------------------------PROYECTO FRANCIS--------------------------
 mkdir apps\categoria
 python manage.py startapp categoria apps/categoria

@@ -25,7 +25,7 @@ INSTALLED_APPS = [
     'apps.categoria',
     'apps.producto',
     'apps.imagen_producto',
-
+    'apps.venta',
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
