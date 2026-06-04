@@ -23,6 +23,12 @@ python manage.py startapp notas apps/notas
 python manage.py startapp horarios apps/horarios
 python manage.py startapp menu apps/menu
 
+---------------------------------PROYECTO FRANCIS--------------------------
+mkdir apps\categoria
+python manage.py startapp categoria apps/categoria
+
+
+
 
 django-admin startapp EduControl
 django-admin starproject config .

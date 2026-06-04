@@ -19,8 +19,16 @@
             </div>
         </div>
 
+        <!-- Loading State -->
+        <div v-if="loading" class="flex-1 flex items-center justify-center py-12">
+            <div class="text-center">
+                <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <p class="mt-2 text-gray-500">Cargando roles...</p>
+            </div>
+        </div>
+
         <!-- Tabla -->
-        <div class="flex-1 px-4 md:px-6 py-4 md:py-6">
+        <div v-else class="flex-1 px-4 md:px-6 py-4 md:py-6">
             <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="min-w-[700px] w-full">
@@ -81,6 +89,11 @@
                                     </div>
                                 </td>
                             </tr>
+                            <tr v-if="roles && roles.length === 0">
+                                <td colspan="4" class="px-6 py-12 text-center text-gray-500">
+                                    No se encontraron roles
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -109,7 +122,7 @@
                             </p>
                         </div>
                         <button @click="btnCerrarModal"
-                            class="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-lg hover:bg-gray-100">
+                            class="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-lg hover:bg-gray-100 text-2xl">
                             ×
                         </button>
                     </div>
@@ -143,6 +156,7 @@
                                         <input v-model="selectedRole.rol_nombre" type="text"
                                             class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                                             placeholder="Ej: Administrador" />
+                                        <p v-if="errors.rol_nombre" class="text-xs text-red-500 mt-1">{{ errors.rol_nombre }}</p>
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -211,8 +225,8 @@
                                                 <input 
                                                     type="checkbox" 
                                                     :checked="menu.checked"
-                                                    :indeterminate="menu.indeterminate"
-                                                    @change="toggleChildren(menu , $event)"
+                                                    :indeterminate.prop="menu.indeterminate"
+                                                    @change="toggleChildren(menu, $event)"
                                                     class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500" 
                                                 />
                                                 <span class="text-sm font-medium text-gray-800">
@@ -222,31 +236,29 @@
                                         </div>
 
                                         <!-- Submenús -->
-                                        <transition name="fade">
-                                            <div v-if="menu.children?.length && menu.expanded"
-                                                class="pl-9 sm:pl-11 pr-3 sm:pr-4 pb-2 relative">
-                                                <!-- Línea vertical guía -->
-                                                <div class="absolute left-5 top-0 w-px h-[65px] bg-gray-300"></div>
+                                        <div v-if="menu.children?.length && menu.expanded"
+                                            class="pl-9 sm:pl-11 pr-3 sm:pr-4 pb-2 relative">
+                                            <!-- Línea vertical guía -->
+                                            <div class="absolute left-5 top-0 w-px h-[65px] bg-gray-300"></div>
 
-                                                <div v-for="child in menu.children" :key="child.id"
-                                                    class="relative flex items-center gap-3 py-1.5">
-                                                    <!-- Línea horizontal de conexión -->
-                                                    <div class="absolute left-1 top-1/2 w-4 h-px bg-gray-300"></div>
+                                            <div v-for="child in menu.children" :key="child.id"
+                                                class="relative flex items-center gap-3 py-1.5">
+                                                <!-- Línea horizontal de conexión -->
+                                                <div class="absolute left-1 top-1/2 w-4 h-px bg-gray-300"></div>
 
-                                                    <label class="flex items-center gap-3 cursor-pointer pl-6">
-                                                        <input 
-                                                            type="checkbox" 
-                                                            v-model="child.checked"
-                                                            @change="checkParent(menu)"
-                                                            class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500" 
-                                                        />
-                                                        <span class="text-sm text-gray-600">
-                                                            {{ child.titulo }}
-                                                        </span>
-                                                    </label>
-                                                </div>
+                                                <label class="flex items-center gap-3 cursor-pointer pl-6">
+                                                    <input 
+                                                        type="checkbox" 
+                                                        v-model="child.checked"
+                                                        @change="checkParent(menu)"
+                                                        class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500" 
+                                                    />
+                                                    <span class="text-sm text-gray-600">
+                                                        {{ child.titulo }}
+                                                    </span>
+                                                </label>
                                             </div>
-                                        </transition>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -261,9 +273,45 @@
                             Cancelar
                         </button>
                         <button @click="btnConfirmar"
-                            class="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
-                            {{ selectedRole?.id ? "Actualizar" : "Crear" }}
+                            :disabled="guardando"
+                            class="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                            {{ guardando ? 'Guardando...' : (selectedRole?.id ? "Actualizar" : "Crear") }}
                         </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de confirmación de eliminación -->
+        <div v-if="showDeleteModal" class="fixed inset-0 z-50 overflow-y-auto">
+            <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" @click="showDeleteModal = false"></div>
+            <div class="flex min-h-full items-center justify-center p-4">
+                <div class="relative bg-white w-full max-w-md rounded-xl shadow-2xl">
+                    <div class="p-6">
+                        <div class="flex items-center justify-center mb-4">
+                            <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                                <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <h3 class="text-lg font-semibold text-center text-gray-800 mb-2">
+                            Confirmar eliminación
+                        </h3>
+                        <p class="text-sm text-gray-600 text-center mb-6">
+                            ¿Estás seguro de que deseas eliminar el rol "{{ roleAEliminar?.rol_nombre }}"?<br>
+                            Esta acción no se puede deshacer.
+                        </p>
+                        <div class="flex gap-3">
+                            <button @click="showDeleteModal = false"
+                                class="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                                Cancelar
+                            </button>
+                            <button @click="eliminarRol"
+                                class="flex-1 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700">
+                                Eliminar
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -271,213 +319,250 @@
     </div>
 </template>
 
-<script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { list_rol, list_rol_x_menu, save_rol } from "../api/permisos-rol.ts";
+<script>
+import { 
+    list_rol, 
+    list_rol_x_menu, 
+    save_rol
+    // delete_rol
+} from "../api/permisos-rol.ts";
 import sweetalert2 from "sweetalert2";
 import * as Icons from "@heroicons/vue/24/outline";
 
-// Estado
-const roles = ref<any[]>([]);
-const showModal = ref(false);
-const selectedRole = ref<any>(null);
-const menus = ref<any[]>([]);
-const activeTab = ref("basic");
-const searchTerm = ref("");
+export default {
+    name: "GestionRoles",
+    data() {
+        return {
+            Icons,
+            roles: [],
+            selectedRole: {
+                rol_nombre: "",
+                rol_descripcion: "",
+                rol_activo: true,
+            },
+            menus: [],
+            showModal: false,
+            showDeleteModal: false,
+            roleAEliminar: null,
+            activeTab: "basic",
+            searchTerm: "",
+            errors: {},
+            loading: false,
+            guardando: false,
+            tabs: [
+                { key: "basic", label: "Información básica" },
+                { key: "permissions", label: "Permisos y accesos" },
+            ],
+        };
+    },
+    mounted() {
+        this.cargarRoles();
+    },
+    methods: {
+        async cargarRoles() {
+            this.loading = true;
+            try {
+                const response = await list_rol();
+                this.roles = response.data || [];
+            } catch (error) {
+                console.error("Error cargando roles:", error);
+                sweetalert2.fire("Error", "No se pudieron cargar los roles", "error");
+            } finally {
+                this.loading = false;
+            }
+        },
 
-// Tabs
-const tabs = [
-    { key: "basic", label: "Información básica" },
-    { key: "permissions", label: "Permisos y accesos" },
-];
-
-const getSelectedMenus = () => {
-    const selected: number[] = [];
-    
-    menus.value.forEach((menu: any) => {
-        if (menu.checked || menu.indeterminate) {
-            selected.push(menu.id);
-        }
-        if (menu.children) {
-            menu.children.forEach((c: any) => {
-                if (c.checked) {
-                    selected.push(c.id);
+        getSelectedMenus() {
+            const selected = [];
+            
+            this.menus.forEach((menu) => {
+                if (menu.checked || menu.indeterminate) {
+                    selected.push(menu.id);
+                }
+                if (menu.children) {
+                    menu.children.forEach((c) => {
+                        if (c.checked) {
+                            selected.push(c.id);
+                        }
+                    });
                 }
             });
-        }
-    });
-    return selected;
-};
+            return selected;
+        },
 
-// Expandir/colapsar todo
-const expandAll = () => {
-    menus.value.forEach((menu) => {
-        if (menu.children?.length) menu.expanded = true;
-    });
-};
+        expandAll() {
+            this.menus.forEach((menu) => {
+                if (menu.children?.length) menu.expanded = true;
+            });
+        },
 
-const collapseAll = () => {
-    menus.value.forEach((menu) => {
-        menu.expanded = false;
-    });
-};
+        collapseAll() {
+            this.menus.forEach((menu) => {
+                menu.expanded = false;
+            });
+        },
 
-// Seleccionar/limpiar todo
-const selectAll = () => {
-    menus.value.forEach((menu) => {
-        menu.checked = true;
-        menu.indeterminate = false;
-        if (menu.children) {
-            menu.children.forEach((c: any) => (c.checked = true));
-        }
-    });
-};
+        selectAll() {
+            this.menus.forEach((menu) => {
+                menu.checked = true;
+                menu.indeterminate = false;
+                if (menu.children) {
+                    menu.children.forEach((c) => (c.checked = true));
+                }
+            });
+        },
 
-const clearAll = () => {
-    menus.value.forEach((menu) => {
-        menu.checked = false;
-        menu.indeterminate = false;
-        if (menu.children) {
-            menu.children.forEach((c: any) => (c.checked = false));
-        }
-    });
-};
+        clearAll() {
+            this.menus.forEach((menu) => {
+                menu.checked = false;
+                menu.indeterminate = false;
+                if (menu.children) {
+                    menu.children.forEach((c) => (c.checked = false));
+                }
+            });
+        },
 
-// Toggle expandir menú
-const toggleExpand = (menu: any) => {
-    menu.expanded = !menu.expanded;
-};
+        toggleExpand(menu) {
+            menu.expanded = !menu.expanded;
+        },
 
-// Toggle hijos cuando se selecciona padre
-const toggleChildren = (menu: any, event: any) => {
-    if (menu.children) {
-        const nuevoEstado = event.target.checked;  // Obtener el nuevo estado
-        menu.children.forEach((c: any) => {
-            c.checked = nuevoEstado;  // Usar el nuevo estado
-        });
-        menu.indeterminate = false;
-        menu.checked = nuevoEstado;  // Asegurar que el padre tiene el estado correcto
-    }
-};
-// Verificar padre cuando se selecciona hijo
-const checkParent = (menu: any) => {
-    if (!menu.children) return;
-    
-    const allChecked = menu.children.every((c: any) => c.checked);
-    const someChecked = menu.children.some((c: any) => c.checked);
-    
-    if (allChecked) {
-        menu.checked = true;
-        menu.indeterminate = false;
-    } else if (someChecked) {
-        menu.checked = false;
-        menu.indeterminate = true;
-    } else {
-        menu.checked = false;
-        menu.indeterminate = false;
-    }
-};
-
-const rs_list = async () => {
-    try {
-        const response = await list_rol();
-        roles.value = response.data;
-    } catch (error) {
-        sweetalert2.fire("Error", "No se pudieron cargar los roles", "error");
-    }
-};
-
-const openModal = async (role: any) => {
-    selectedRole.value = role
-        ? { ...role }
-        : {
-            rol_nombre: "",
-            rol_descripcion: "",
-            rol_activo: true,
-        };
-    showModal.value = true;
-    activeTab.value = "basic";
-    searchTerm.value = "";
-
-    try {
-        const response = await list_rol_x_menu(role?.id || 0);
-        menus.value = response.data.map((m: any) => ({
-            ...m,
-            expanded: false,
-            indeterminate: false,
-            checked: m.checked || false,
-            children: m.children?.map((c: any) => ({
-                ...c,
-                checked: c.checked || false,
-            })),
-        }));
-        
-        // Después de cargar los menús, verificar el estado de cada padre
-        menus.value.forEach((menu: any) => {
-            if (menu.children && menu.children.length > 0) {
-                checkParent(menu);
+        toggleChildren(menu, event) {
+            if (menu.children) {
+                const nuevoEstado = event.target.checked;
+                menu.children.forEach((c) => {
+                    c.checked = nuevoEstado;
+                });
+                menu.indeterminate = false;
+                menu.checked = nuevoEstado;
             }
-        });
-    } catch (error) {
-        console.error("Error al cargar menús:", error);
-        sweetalert2.fire("Error", "No se pudieron cargar los permisos", "error");
-    }
-};
+        },
 
-const confirmDelete = (role: any) => {
-    sweetalert2
-        .fire({
-            title: "¿Estás seguro?",
-            text: `¿Deseas eliminar el rol "${role.rol_nombre}"? Esta acción no se puede deshacer.`,
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-            confirmButtonText: "Sí, eliminar",
-            cancelButtonText: "Cancelar",
-        })
-        .then((result) => {
-            if (result.isConfirmed) {
-                // Aquí iría la lógica para eliminar el rol
-                sweetalert2.fire(
-                    "Eliminado",
-                    `El rol "${role.rol_nombre}" ha sido eliminado.`,
-                    "success",
-                );
+        checkParent(menu) {
+            if (!menu.children) return;
+            
+            const allChecked = menu.children.every((c) => c.checked);
+            const someChecked = menu.children.some((c) => c.checked);
+            
+            if (allChecked) {
+                menu.checked = true;
+                menu.indeterminate = false;
+            } else if (someChecked) {
+                menu.checked = false;
+                menu.indeterminate = true;
+            } else {
+                menu.checked = false;
+                menu.indeterminate = false;
             }
-        });
+        },
+
+        async openModal(role) {
+            if (role) {
+                this.guardando = true;
+                this.selectedRole = { ...role };
+            } else {
+                this.selectedRole = {
+                    rol_nombre: "",
+                    rol_descripcion: "",
+                    rol_activo: true,
+                };
+            }
+            
+            this.showModal = true;
+            this.activeTab = "basic";
+            this.searchTerm = "";
+            this.errors = {};
+
+            try {
+                const response = await list_rol_x_menu(role?.id || 0);
+                this.menus = response.data.map((m) => ({
+                    ...m,
+                    expanded: false,
+                    indeterminate: false,
+                    checked: m.checked || false,
+                    children: m.children?.map((c) => ({
+                        ...c,
+                        checked: c.checked || false,
+                    })),
+                }));
+                
+                this.menus.forEach((menu) => {
+                    if (menu.children && menu.children.length > 0) {
+                        this.checkParent(menu);
+                    }
+                });
+            } catch (error) {
+                console.error("Error al cargar menús:", error);
+                sweetalert2.fire("Error", "No se pudieron cargar los permisos", "error");
+            } finally {
+                this.guardando = false;
+            }
+        },
+
+        btnCerrarModal() {
+            this.showModal = false;
+            this.selectedRole = {
+                rol_nombre: "",
+                rol_descripcion: "",
+                rol_activo: true,
+            };
+            this.menus = [];
+            this.errors = {};
+        },
+
+        validarFormulario() {
+            this.errors = {};
+
+            if (!this.selectedRole.rol_nombre || this.selectedRole.rol_nombre.trim() === "") {
+                this.errors.rol_nombre = "El nombre del rol es requerido";
+            }
+
+            return Object.keys(this.errors).length === 0;
+        },
+
+        async btnConfirmar() {
+            if (!this.validarFormulario()) {
+                return;
+            }
+
+            this.guardando = true;
+            const data = {
+                rol: this.selectedRole,
+                menus: this.getSelectedMenus(),
+            };
+
+            try {
+                await save_rol(data);
+                await this.cargarRoles();
+                this.btnCerrarModal();
+                sweetalert2.fire("Éxito", "Rol guardado correctamente", "success");
+            } catch (error) {
+                console.error("Error al guardar rol:", error);
+                sweetalert2.fire("Error", "No se pudo guardar el rol", "error");
+            } finally {
+                this.guardando = false;
+            }
+        },
+
+        confirmDelete(role) {
+            this.roleAEliminar = role;
+            this.showDeleteModal = true;
+        },
+
+        async eliminarRol() {
+            if (this.roleAEliminar) {
+                try {
+                    // await delete_rol(this.roleAEliminar.id);
+                    // sweetalert2.fire("Éxito", "Rol eliminado correctamente", "success");
+                    await this.cargarRoles();
+                } catch (error) {
+                    console.error("Error eliminando rol:", error);
+                    sweetalert2.fire("Error", "No se pudo eliminar el rol", "error");
+                } finally {
+                    this.showDeleteModal = false;
+                    this.roleAEliminar = null;
+                }
+            }
+        },
+    },
 };
-
-const btnCerrarModal = () => {
-    showModal.value = false;
-    selectedRole.value = null;
-    menus.value = [];
-    searchTerm.value = "";
-};
-
-const btnConfirmar = async () => {
-    if (!selectedRole.value.rol_nombre?.trim()) {
-        sweetalert2.fire("Error", "El nombre del rol es obligatorio", "error");
-        return;
-    }
-
-    const data = {
-        rol: selectedRole.value,
-        menus: getSelectedMenus(),
-    };
-
-    try {
-        await save_rol(data);
-        await rs_list();
-        btnCerrarModal();
-        sweetalert2.fire("Éxito", "Rol guardado correctamente", "success");
-    } catch (error) {
-        console.error("Error al guardar rol:", error);
-        sweetalert2.fire("Error", "No se pudo guardar el rol", "error");
-    }
-};
-
-onMounted(() => {
-    rs_list();
-});
 </script>

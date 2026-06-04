@@ -14,34 +14,40 @@
 
                 <button @click="openModal(null)"
                     class="w-full md:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg shadow-sm transition-all duration-200">
-                    <component :is="Icons.PlusIcon" class="w-4 h-4" />
-                    Nuevo Módulo
+                    + Nuevo Módulo
                 </button>
             </div>
         </div>
 
+        <!-- Loading State -->
+        <div v-if="loading" class="flex-1 flex items-center justify-center py-12">
+            <div class="text-center">
+                <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <p class="mt-2 text-gray-500">Cargando módulos...</p>
+            </div>
+        </div>
+
         <!-- Tabla de Módulos -->
-        <div class="flex-1 px-4 md:px-6 py-4 md:py-6 overflow-hidden">
+        <div v-else class="flex-1 px-4 md:px-6 py-4 md:py-6 overflow-hidden">
             <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden h-full flex flex-col">
                 <!-- Barra de búsqueda y filtros -->
                 <div class="p-4 border-b border-gray-200 bg-gray-50 flex-shrink-0">
                     <div class="flex flex-col sm:flex-row gap-3">
                         <div class="flex-1 relative">
-                            <component :is="Icons.MagnifyingGlassIcon"
-                                class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                            <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
                             <input type="text" v-model="searchTerm" placeholder="Buscar módulo por nombre..."
                                 class="w-full pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
                         </div>
                         <div class="flex gap-2">
                             <button @click="expandAll"
                                 class="inline-flex items-center gap-1 px-3 py-2 text-sm text-gray-600 hover:text-blue-600 border border-gray-300 rounded-lg hover:bg-white transition-colors">
-                                <component :is="Icons.ChevronDoubleDownIcon" class="w-4 h-4" />
-                                Expandir todo
+                                ▼ Expandir todo
                             </button>
                             <button @click="collapseAll"
                                 class="inline-flex items-center gap-1 px-3 py-2 text-sm text-gray-600 hover:text-blue-600 border border-gray-300 rounded-lg hover:bg-white transition-colors">
-                                <component :is="Icons.ChevronDoubleUpIcon" class="w-4 h-4" />
-                                Colapsar todo
+                                ▲ Colapsar todo
                             </button>
                         </div>
                     </div>
@@ -141,7 +147,6 @@
                                     </td>
                                     <td class="px-4 md:px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center gap-2 md:gap-3 pl-6 relative">
-                                            <!-- <div class="absolute left-0 top-1/2 w-4 h-px bg-gray-300"></div> -->
                                             <div class="flex items-center gap-2 md:gap-3">
                                                 <component :is="getIconComponent(child.icono)"
                                                     class="w-5 h-5 text-gray-400" />
@@ -190,8 +195,9 @@
                             <!-- Mensaje sin resultados -->
                             <tr v-if="filteredModules.length === 0">
                                 <td colspan="6" class="px-4 md:px-6 py-12 text-center">
-                                    <component :is="Icons.FolderOpenIcon"
-                                        class="w-12 h-12 mx-auto text-gray-300 mb-4" />
+                                    <svg class="w-12 h-12 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                                    </svg>
                                     <p class="text-gray-500">No se encontraron módulos</p>
                                     <p class="text-sm text-gray-400 mt-1">Prueba con otros términos de búsqueda</p>
                                 </td>
@@ -224,7 +230,7 @@
                             </p>
                         </div>
                         <button @click="btnCerrarModal"
-                            class="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-lg hover:bg-gray-100">
+                            class="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-lg hover:bg-gray-100 text-2xl">
                             ×
                         </button>
                     </div>
@@ -258,6 +264,7 @@
                                         <input v-model="selectedModule.titulo" type="text"
                                             class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                                             placeholder="Ej: Usuarios, Cursos, Configuración" />
+                                        <p v-if="errors.titulo" class="text-xs text-red-500 mt-1">{{ errors.titulo }}</p>
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -266,6 +273,7 @@
                                         <input v-model.number="selectedModule.orden" type="number"
                                             class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                             placeholder="0" min="0"/>
+                                        <p v-if="errors.orden" class="text-xs text-red-500 mt-1">{{ errors.orden }}</p>
                                     </div>
                                 </div>
 
@@ -308,20 +316,17 @@
 
                                 <!-- Vista previa -->
                                 <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                                    <p class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Vista
-                                        previa</p>
+                                    <p class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Vista previa</p>
                                     <div class="flex items-center gap-3">
                                         <div
                                             class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white shadow-sm">
                                             <component :is="getIconComponent(selectedModule?.icono)" class="w-5 h-5" />
                                         </div>
                                         <div>
-                                            <p class="text-sm font-medium text-gray-900">{{ selectedModule?.titulo }}
-                                            </p>
-                                            <p class="text-xs text-gray-500 font-mono">{{ selectedModule?.ruta }}</p>
+                                            <p class="text-sm font-medium text-gray-900">{{ selectedModule?.titulo }}</p>
+                                            <p class="text-xs text-gray-500 font-mono">{{ selectedModule?.ruta || 'Sin ruta' }}</p>
                                         </div>
-                                        <span class="ml-auto text-xs text-gray-400">Orden: {{ selectedModule?.orden || 0
-                                        }}</span>
+                                        <span class="ml-auto text-xs text-gray-400">Orden: {{ selectedModule?.orden || 0 }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -329,8 +334,7 @@
                             <!-- Tab: Icono -->
                             <div v-show="activeTab === 'icon'" class="space-y-5 max-w-2xl">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Seleccionar
-                                        Icono</label>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Seleccionar Icono</label>
                                     <input v-model="iconSearch" placeholder="Buscar icono..."
                                         class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
                                 </div>
@@ -349,8 +353,7 @@
                                 </div>
                                 <div v-if="selectedModule.icono"
                                     class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border">
-                                    <component :is="getIconComponent(selectedModule.icono)"
-                                        class="w-6 h-6 text-blue-600" />
+                                    <component :is="getIconComponent(selectedModule.icono)" class="w-6 h-6 text-blue-600" />
                                     <span class="text-sm text-gray-700">
                                         {{ selectedModule.icono }}
                                     </span>
@@ -367,9 +370,45 @@
                             Cancelar
                         </button>
                         <button @click="btnConfirmar"
-                            class="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
-                            {{ selectedModule?.id ? "Actualizar" : "Crear" }}
+                            :disabled="guardando"
+                            class="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                            {{ guardando ? 'Guardando...' : (selectedModule?.id ? "Actualizar" : "Crear") }}
                         </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de confirmación de eliminación -->
+        <div v-if="showDeleteModal" class="fixed inset-0 z-50 overflow-y-auto">
+            <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" @click="showDeleteModal = false"></div>
+            <div class="flex min-h-full items-center justify-center p-4">
+                <div class="relative bg-white w-full max-w-md rounded-xl shadow-2xl">
+                    <div class="p-6">
+                        <div class="flex items-center justify-center mb-4">
+                            <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                                <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <h3 class="text-lg font-semibold text-center text-gray-800 mb-2">
+                            Confirmar eliminación
+                        </h3>
+                        <p class="text-sm text-gray-600 text-center mb-6">
+                            ¿Estás seguro de que deseas eliminar el módulo "{{ moduleAEliminar?.titulo }}"?<br>
+                            Esta acción no se puede deshacer.
+                        </p>
+                        <div class="flex gap-3">
+                            <button @click="showDeleteModal = false"
+                                class="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                                Cancelar
+                            </button>
+                            <button @click="eliminarModulo"
+                                class="flex-1 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700">
+                                Eliminar
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -377,180 +416,215 @@
     </div>
 </template>
 
-<script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
-import * as Icons from "@heroicons/vue/24/outline";
+<script>
 import { list_menu, save_menu } from "../api/modulo";
 import sweetalert2 from "sweetalert2";
+import * as Icons from "@heroicons/vue/24/outline";
 
-
-// Interfaces
-interface Module {
-    id: number;
-    titulo: string;
-    ruta: string | null;
-    icono: string;
-    orden: number;
-    activo: boolean;
-    padre_id: number | null;
-    children?: Module[];
-}
-
-// Datos de ejemplo
-const modulesData = ref<Module[]>([]);
-
-const iconOptions = Object.keys(Icons).map(name => ({
-    name,
-    component: Icons[name as keyof typeof Icons],
-    label: name.replace('Icon', '') // opcional: limpiar nombre
-}));
-
-const getIconComponent = (iconName: string) => {
-    return Icons[iconName as keyof typeof Icons] || Icons.FolderIcon;
-};
-
-const rs_list = async () => {
-    try {
-        const response = await list_menu();
-        modulesData.value = response.data;
-    } catch (error) {
-        sweetalert2.fire("Error", "No se pudieron cargar los roles", "error");
-    }
-}
-
-// Tabs
-const tabs = [
-    { key: "basic", label: "Datos básicos" },
-    { key: "icon", label: "Icono" },
-];
-const activeTab = ref("basic");
-
-const showModal = ref(false);
-const selectedModule = ref<any>(null);
-const searchTerm = ref("");
-const expandedState = ref<Record<number, boolean>>({});
-
-const toggleExpand = (id: number) => {
-    expandedState.value[id] = !expandedState.value[id];
-};
-
-const filteredModules = computed((): Module[] => {
-    if (!searchTerm.value) return modulesData.value;
-    const term = searchTerm.value.toLowerCase();
-    const filtered: Module[] = [];
-    for (const module of modulesData.value) {
-        const matchInParent = module.titulo.toLowerCase().includes(term);
-        const matchingChildren = module.children?.filter(child =>
-            child.titulo.toLowerCase().includes(term)
-        ) || [];
-        if (matchInParent || matchingChildren.length > 0) {
-            filtered.push({
-                ...module,
-                children: matchingChildren
-            });
-        }
-    }
-    return filtered;
-});
-
-const parentModules = computed(() => modulesData.value.filter(m => !m.padre_id));
-
-const expandAll = () => {
-    modulesData.value.forEach(m => {
-        expandedState.value[m.id] = true;
-    });
-};
-
-const collapseAll = () => {
-    expandedState.value = {};
-};
-
-const openModal = (module: Module | null) => {
-    if (module) {
-        selectedModule.value = { ...module };
-    } else {
-        selectedModule.value = {
-            titulo: "",
-            ruta: null,
-            icono: "ListBulletIcon",
-            orden: 0,
-            activo: true,
-            padre_id: null,
+export default {
+    name: "GestionModulos",
+    data() {
+        return {
+            Icons,
+            modulesData: [],
+            showModal: false,
+            showDeleteModal: false,
+            selectedModule: {
+                titulo: "",
+                ruta: null,
+                icono: "ListBulletIcon",
+                orden: 0,
+                activo: true,
+                padre_id: null,
+            },
+            moduleAEliminar: null,
+            searchTerm: "",
+            expandedState: {},
+            activeTab: "basic",
+            iconSearch: "",
+            errors: {},
+            loading: false,
+            guardando: false,
+            tabs: [
+                { key: "basic", label: "Datos básicos" },
+                { key: "icon", label: "Icono" },
+            ],
+            iconOptions: [],
         };
-    }
-    activeTab.value = "basic";
-    showModal.value = true;
-};
-
-const iconSearch = ref("");
-
-const filteredIcons = computed(() => {
-    if (!iconSearch.value) return iconOptions;
-    return iconOptions.filter(icon =>
-        icon.name.toLowerCase().includes(iconSearch.value.toLowerCase())
-    );
-});
-
-const confirmDelete = (module: Module) => {
-    sweetalert2
-        .fire({
-            title: "¿Estás seguro?",
-            text: `¿Deseas eliminar el módulo "${module.titulo}"? Esta acción no se puede deshacer.`,
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-            confirmButtonText: "Sí, eliminar",
-            cancelButtonText: "Cancelar",
-        })
-        .then((result) => {
-            if (result.isConfirmed) {
-                // Aquí iría la lógica para eliminar el rol
-                sweetalert2.fire(
-                    "Eliminado",
-                    `El módulo "${module.titulo}" ha sido eliminado.`,
-                    "success",
-                );
+    },
+    computed: {
+        filteredModules() {
+            if (!this.searchTerm) return this.modulesData;
+            const term = this.searchTerm.toLowerCase();
+            const filtered = [];
+            for (const module of this.modulesData) {
+                const matchInParent = module.titulo.toLowerCase().includes(term);
+                const matchingChildren = module.children?.filter(child =>
+                    child.titulo.toLowerCase().includes(term)
+                ) || [];
+                if (matchInParent || matchingChildren.length > 0) {
+                    filtered.push({
+                        ...module,
+                        children: matchingChildren
+                    });
+                }
             }
-        });
+            return filtered;
+        },
+        parentModules() {
+            return this.modulesData.filter(m => !m.padre_id);
+        },
+        filteredIcons() {
+            if (!this.iconSearch) return this.iconOptions;
+            return this.iconOptions.filter(icon =>
+                icon.name.toLowerCase().includes(this.iconSearch.toLowerCase())
+            );
+        }
+    },
+    mounted() {
+        this.cargarModulos();
+        this.cargarIconos();
+    },
+    methods: {
+        async cargarModulos() {
+            this.loading = true;
+            try {
+                const response = await list_menu();
+                this.modulesData = response.data || [];
+            } catch (error) {
+                console.error("Error cargando módulos:", error);
+                sweetalert2.fire("Error", "No se pudieron cargar los módulos", "error");
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        cargarIconos() {
+            this.iconOptions = Object.keys(Icons).map(name => ({
+                name,
+                component: Icons[name],
+                label: name.replace('Icon', '')
+            }));
+        },
+
+        getIconComponent(iconName) {
+            return Icons[iconName] || Icons.FolderIcon;
+        },
+
+        toggleExpand(id) {
+            this.expandedState = {
+                ...this.expandedState,
+                [id]: !this.expandedState[id]
+            };
+        },
+
+        expandAll() {
+            const newState = {};
+            this.modulesData.forEach(m => {
+                newState[m.id] = true;
+            });
+            this.expandedState = newState;
+        },
+
+        collapseAll() {
+            this.expandedState = {};
+        },
+
+        async openModal(module) {
+            if (module) {
+                this.selectedModule = { ...module };
+            } else {
+                this.selectedModule = {
+                    titulo: "",
+                    ruta: null,
+                    icono: "ListBulletIcon",
+                    orden: 0,
+                    activo: true,
+                    padre_id: null,
+                };
+            }
+            this.activeTab = "basic";
+            this.iconSearch = "";
+            this.errors = {};
+            this.showModal = true;
+        },
+
+        btnCerrarModal() {
+            this.showModal = false;
+            this.selectedModule = {
+                titulo: "",
+                ruta: null,
+                icono: "ListBulletIcon",
+                orden: 0,
+                activo: true,
+                padre_id: null,
+            };
+            this.errors = {};
+        },
+
+        validarFormulario() {
+            this.errors = {};
+
+            if (!this.selectedModule.titulo || this.selectedModule.titulo.trim() === "") {
+                this.errors.titulo = "El título del módulo es requerido";
+            }
+
+            if (this.selectedModule.orden < 0) {
+                this.errors.orden = "El orden no puede ser negativo";
+            }
+
+            return Object.keys(this.errors).length === 0;
+        },
+
+        async btnConfirmar() {
+            if (!this.validarFormulario()) {
+                return;
+            }
+
+            this.guardando = true;
+            const data = {
+                id: this.selectedModule.id,
+                menu_titulo: this.selectedModule.titulo,
+                menu_ruta: this.selectedModule.ruta,
+                menu_icono: this.selectedModule.icono,
+                menu_orden: this.selectedModule.orden || 0,
+                menu_activo: this.selectedModule.activo,
+                menu_padre_id: this.selectedModule.padre_id,
+            };
+
+            try {
+                await save_menu(data);
+                await this.cargarModulos();
+                this.btnCerrarModal();
+                sweetalert2.fire("Éxito", "Módulo guardado correctamente", "success");
+            } catch (error) {
+                console.error("Error al guardar módulo:", error);
+                sweetalert2.fire("Error", "No se pudo guardar el módulo", "error");
+            } finally {
+                this.guardando = false;
+            }
+        },
+
+        confirmDelete(module) {
+            this.moduleAEliminar = module;
+            this.showDeleteModal = true;
+        },
+
+        async eliminarModulo() {
+            if (this.moduleAEliminar) {
+                try {
+                    // await delete_menu(this.moduleAEliminar.id);
+                    sweetalert2.fire("Éxito", "Módulo eliminado correctamente", "success");
+                    await this.cargarModulos();
+                } catch (error) {
+                    console.error("Error eliminando módulo:", error);
+                    sweetalert2.fire("Error", "No se pudo eliminar el módulo", "error");
+                } finally {
+                    this.showDeleteModal = false;
+                    this.moduleAEliminar = null;
+                }
+            }
+        },
+    },
 };
-
-const btnCerrarModal = () => {
-    showModal.value = false;
-    selectedModule.value = null;
-};
-
-const btnConfirmar = async () => {
-
-    if (!selectedModule.value.titulo?.trim()) {
-        sweetalert2.fire("Error", "El nombre del módulo es obligatorio", "error");
-        return;
-    }
-
-    const data = {
-        id: selectedModule.value.id,
-        menu_titulo: selectedModule.value.titulo,
-        menu_ruta: selectedModule.value.ruta,
-        menu_icono: selectedModule.value.icono,
-        menu_orden: selectedModule.value.orden || 0,
-        menu_activo: selectedModule.value.activo,
-        menu_padre_id: selectedModule.value.padre_id,
-    };
-    console.log("Datos a guardar:", data);
-    try{
-        await save_menu(data);
-        await rs_list();
-        btnCerrarModal();
-        sweetalert2.fire("Éxito", "Módulo guardado correctamente", "success");
-    }catch(error){
-        console.log("Error al guardar el módulo:", error);
-        sweetalert2.fire("Error", "No se pudo guardar el módulo", "error");
-    }
-    btnCerrarModal();
-};
-
-onMounted(() => {
-    rs_list();
-});
-
 </script>

@@ -23,5 +23,6 @@ urlpatterns = [
     path('user/', include('apps.usuario.urls')),
     path('menu/', include('apps.menu.urls')),
     path('rol/', include('apps.rol.urls')),
+    path('producto/', include('apps.producto.urls')),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

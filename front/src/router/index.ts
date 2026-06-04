@@ -30,6 +30,16 @@ const routes = [
         name: "Módulos del sistema",
         component: () => import("../modules/modulos/view/modulo.vue"),
       },
+      {
+        path: "productos",
+        name: "Productos",
+        component: () => import("../modules/productos/view/producto.vue"),
+      },
+      {
+        path: "venta",
+        name: "Venta",
+        component: () => import("../modules/venta/view/venta.vue"),
+      },
     ],
   },
 

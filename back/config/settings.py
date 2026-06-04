@@ -17,16 +17,14 @@ ALLOWED_HOSTS = ['127.0.0.1','localhost','192.168.18.13']
 # Application definition
 
 INSTALLED_APPS = [
-    'apps.alumno',
-    'apps.profesor',
-    'apps.curso',
-    'apps.matricula',
-    'apps.asistencia',
-    'apps.nota',
-    'apps.horario',
     'apps.usuario',
     'apps.menu',
     'apps.rol',
+
+
+    'apps.categoria',
+    'apps.producto',
+    'apps.imagen_producto',
 
     'rest_framework',
     'rest_framework_simplejwt',

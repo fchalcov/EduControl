@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ericblade/quagga2": "^1.12.1",
     "@heroicons/vue": "^2.2.0",
     "axios": "^1.14.0",
     "lucide-vue-next": "^1.0.0",
