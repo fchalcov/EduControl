@@ -40,6 +40,11 @@ const routes = [
         name: "Venta",
         component: () => import("../modules/venta/view/venta.vue"),
       },
+      {
+        path: "historial_venta",
+        name: "Historial de Ventas",
+        component: () => import("../modules/historial_venta/view/historial_venta.vue"),
+      },
     ],
   },
 

@@ -141,7 +141,7 @@
                       <p class="text-xs text-slate-500 mt-1">Stock: {{ product.cantidad_producto }}</p>
                     </div>
                     <div class="text-right flex flex-col items-end gap-1">
-                      <p class="text-sm font-bold text-slate-900">S/ {{ formatNumberDisplay(product.precio_unitario) }}</p>
+                      <p class="text-sm font-bold text-slate-900">{{ formatCurrency(product.precio_unitario) }}</p>
                       <span 
                         :class="[
                           'text-xs px-2 py-0.5 rounded-full font-medium',
@@ -223,8 +223,8 @@
                   <button @click="updateQuantity(index, 1)" class="w-7 h-7 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 text-sm font-medium">+</button>
                 </div>
                 <div class="text-right">
-                  <p class="text-sm font-bold text-slate-900">S/ {{ formatNumberDisplay(item.precio_unitario * item.quantity) }}</p>
-                  <p class="text-xs text-slate-400">P.U: S/ {{ formatNumberExact(item.precio_unitario) }}</p>
+                  <p class="text-sm font-bold text-slate-900">{{ formatCurrency(item.precio_unitario * item.quantity) }}</p>
+                  <p class="text-xs text-slate-400">P.U: {{ formatNumberExact(item.precio_unitario) }}</p>
                 </div>
               </div>
             </div>
@@ -242,15 +242,15 @@
             <div class="space-y-1.5">
               <div class="flex justify-between text-sm">
                 <span class="text-slate-500">Subtotal</span>
-                <span class="text-slate-700 font-medium">S/ {{ formatNumberDisplay(subtotal) }}</span>
+                <span class="text-slate-700 font-medium">{{ formatCurrency(subtotal) }}</span>
               </div>
               <div class="flex justify-between text-sm">
                 <span class="text-slate-500">IGV (0%)</span>
-                <span class="text-slate-700 font-medium">S/ {{ formatNumberDisplay(igvTotal) }}</span>
+                <span class="text-slate-700 font-medium">{{ formatCurrency(igvTotal) }}</span>
               </div>
               <div class="flex justify-between pt-2 border-t border-slate-200">
                 <span class="text-base font-bold text-slate-900">Total</span>
-                <span class="text-base font-bold text-slate-900">S/ {{ formatNumberDisplay(total) }}</span>
+                <span class="text-base font-bold text-slate-900">{{ formatCurrency(total) }}</span>
               </div>
             </div>
             
@@ -285,18 +285,18 @@
           <div class="bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl p-5 mb-6">
             <div class="flex justify-between items-center mb-3 pb-3 border-b border-slate-200">
               <span class="text-slate-600 text-sm font-medium">Total de la compra</span>
-              <span class="text-2xl font-bold text-slate-900">S/ {{ formatNumberDisplay(total) }}</span>
+              <span class="text-2xl font-bold text-slate-900">{{ formatCurrency(total) }}</span>
             </div>
             <div class="flex justify-between items-center">
               <div>
                 <span class="text-slate-600 text-sm font-medium">Pago pendiente</span>
                 <div class="text-3xl font-bold mt-1" :class="remainingBalance > 0 ? 'text-amber-600' : 'text-emerald-600'">
-                  S/ {{ formatNumberDisplay(remainingBalance) }}
+                  {{ formatCurrency(remainingBalance) }}
                 </div>
               </div>
               <div class="text-right">
                 <span class="text-slate-500 text-xs">Pagado</span>
-                <div class="text-lg font-semibold text-slate-700">S/ {{ formatNumberDisplay(totalPaid) }}</div>
+                <div class="text-lg font-semibold text-slate-700">{{ formatCurrency(totalPaid) }}</div>
               </div>
             </div>
           </div>
@@ -313,28 +313,28 @@
                 <div class="flex items-center gap-3">
                   <div :class="[
                     'w-8 h-8 rounded-full flex items-center justify-center',
-                    payment.method === 'yape' ? 'bg-purple-100' : 'bg-green-100'
+                    payment.method === PAYMENT_CODES.YAPE ? 'bg-purple-100' : 'bg-green-100'
                   ]">
-                    <span class="text-sm font-bold" :class="payment.method === 'yape' ? 'text-purple-600' : 'text-green-600'">
-                      {{ payment.method === 'yape' ? 'Y' : 'S/' }}
+                    <span class="text-sm font-bold" :class="payment.method === PAYMENT_CODES.YAPE ? 'text-purple-600' : 'text-green-600'">
+                      {{ payment.method === PAYMENT_CODES.YAPE ? 'Y' : 'S/' }}
                     </span>
                   </div>
                   <div>
                     <span :class="[
                       'text-sm font-medium',
-                      payment.method === 'yape' ? 'text-purple-700' : 'text-green-700'
+                      payment.method === PAYMENT_CODES.YAPE ? 'text-purple-700' : 'text-green-700'
                     ]">
-                      {{ payment.method === 'yape' ? 'Yape' : 'Efectivo' }}
+                      {{ getPaymentLabel(payment.method) }}
                     </span>
                     <p class="text-xs text-slate-400">
                       {{ payment.date || new Date().toLocaleTimeString() }}
                     </p>
                   </div>
-                  <span class="font-bold text-slate-800 ml-2">S/ {{ formatNumberDisplay(payment.amount) }}</span>
+                  <span class="font-bold text-slate-800 ml-2">{{ formatCurrency(payment.amount) }}</span>
                 </div>
                 <div class="flex items-center gap-2">
-                  <span v-if="payment.method === 'efectivo' && payment.changeAmount > 0" class="text-xs text-emerald-600 font-medium">
-                    Vuelto: S/ {{ formatNumberDisplay(payment.changeAmount) }}
+                  <span v-if="payment.method === PAYMENT_CODES.CASH && payment.changeAmount > 0" class="text-xs text-emerald-600 font-medium">
+                    Vuelto: {{ formatCurrency(payment.changeAmount) }}
                   </span>
                   <button @click="removePayment(idx)" class="text-slate-400 hover:text-red-500 transition-colors p-1">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -374,9 +374,9 @@
             </div>
 
             <!-- Formulario Yape -->
-            <div v-if="selectedPaymentMethod === 'yape'" class="text-center">
+            <div v-if="selectedPaymentMethod === PAYMENT_CODES.YAPE" class="text-center">
               <div class="mb-4">
-                <label class="block text-sm font-medium text-slate-700 mb-2 text-left">Monto a pagar con Yape (S/)</label>
+                <label class="block text-sm font-medium text-slate-700 mb-2 text-left">Monto a pagar con {{ getPaymentLabel(PAYMENT_CODES.YAPE) }} (S/)</label>
                 <div class="relative">
                   <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 font-medium">S/</span>
                   <input 
@@ -389,7 +389,7 @@
                   >
                 </div>
                 <div class="flex gap-2 mt-2">
-                  <button @click="setYapeAmount(remainingBalance)" class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-lg hover:bg-blue-200 transition">Pagar todo</button>
+                  <button @click="setYapeAmount(remainingBalance)" class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-lg hover:bg-blue-200 transition">{{ QUICK_BUTTON_LABELS.PAY_ALL }}</button>
                 </div>
               </div>
               <button 
@@ -401,15 +401,15 @@
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                   </svg>
-                  Pagar S/ {{ formatNumberDisplay(yapeAmount || 0) }} con Yape
+                  Pagar {{ formatCurrency(yapeAmount || 0) }} con {{ getPaymentLabel(PAYMENT_CODES.YAPE) }}
                 </span>
               </button>
             </div>
 
             <!-- Formulario Efectivo -->
-            <div v-if="selectedPaymentMethod === 'efectivo'" class="space-y-4">
+            <div v-if="selectedPaymentMethod === PAYMENT_CODES.CASH" class="space-y-4">
               <div>
-                <label class="block text-sm font-medium text-slate-700 mb-2">Monto recibido en efectivo (S/)</label>
+                <label class="block text-sm font-medium text-slate-700 mb-2">{{ getPaymentLabel(PAYMENT_CODES.CASH) }} - Monto recibido (S/)</label>
                 <div class="relative">
                   <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 font-medium">S/</span>
                   <input 
@@ -421,12 +421,21 @@
                     placeholder="0.00"
                   >
                 </div>
-                <div class="flex gap-2 mt-2">
-                  <button @click="setCashAmount(remainingBalance)" class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-lg hover:bg-green-200 transition">Pagar todo</button>
-                  <button @click="setCashAmount(Math.min(10, remainingBalance))" class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-lg hover:bg-green-200 transition">S/ 10</button>
-                  <button @click="setCashAmount(Math.min(20, remainingBalance))" class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-lg hover:bg-green-200 transition">S/ 20</button>
-                  <button @click="setCashAmount(Math.min(50, remainingBalance))" class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-lg hover:bg-green-200 transition">S/ 50</button>
-                  <button @click="setCashAmount(Math.min(100, remainingBalance))" class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-lg hover:bg-green-200 transition">S/ 100</button>
+                <div class="flex gap-2 mt-2 flex-wrap">
+                  <button 
+                    @click="setCashAmount(remainingBalance)" 
+                    class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-lg hover:bg-green-200 transition"
+                  >
+                    {{ QUICK_BUTTON_LABELS.PAY_ALL }}
+                  </button>
+                  <button 
+                    v-for="amount in QUICK_CASH_AMOUNTS" 
+                    :key="amount"
+                    @click="setCashAmount(Math.min(amount, remainingBalance))" 
+                    class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-lg hover:bg-green-200 transition"
+                  >
+                    {{ QUICK_BUTTON_LABELS.QUICK_AMOUNT(amount) }}
+                  </button>
                 </div>
               </div>
               
@@ -437,12 +446,12 @@
                       {{ isCashPaymentComplete ? 'Vuelto del cliente' : 'Monto a pagar' }}
                     </p>
                     <p class="text-2xl font-bold mt-1" :class="isCashPaymentComplete ? 'text-emerald-600' : 'text-amber-600'">
-                      S/ {{ formatNumberDisplay(calculateCashDifference) }}
+                      {{ formatCurrency(calculateCashDifference) }}
                     </p>
                   </div>
                   <div class="text-right">
-                    <p class="text-xs text-slate-500">Recibido: S/ {{ formatNumberDisplay(cashAmount || 0) }}</p>
-                    <p class="text-xs text-slate-500">Saldo: S/ {{ formatNumberDisplay(remainingBalance) }}</p>
+                    <p class="text-xs text-slate-500">Recibido: {{ formatCurrency(cashAmount || 0) }}</p>
+                    <p class="text-xs text-slate-500">Saldo: {{ formatCurrency(remainingBalance) }}</p>
                   </div>
                 </div>
               </div>
@@ -456,7 +465,7 @@
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                   </svg>
-                  {{ cashAmount >= remainingBalance ? 'Registrar pago y calcular vuelto' : 'Registrar pago parcial de S/ ' + formatNumberDisplay(cashAmount || 0) }}
+                  {{ cashAmount >= remainingBalance ? 'Registrar pago y calcular vuelto' : 'Registrar pago parcial de ' + formatCurrency(cashAmount || 0) }}
                 </span>
               </button>
             </div>
@@ -467,9 +476,9 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
             <p class="text-emerald-800 font-semibold text-lg">¡Pago completado!</p>
-            <p class="text-sm text-emerald-600 mt-1">Total pagado: S/ {{ formatNumberDisplay(totalPaid) }}</p>
+            <p class="text-sm text-emerald-600 mt-1">Total pagado: {{ formatCurrency(totalPaid) }}</p>
             <p v-if="totalVuelto > 0" class="text-sm text-emerald-600 font-medium mt-2">
-              Vuelto total: S/ {{ formatNumberDisplay(totalVuelto) }}
+              Vuelto total: {{ formatCurrency(totalVuelto) }}
             </p>
           </div>
         </div>
@@ -498,11 +507,53 @@
 import { list_producto } from '../../productos/api/producto.ts';
 import { create_venta } from '../api/venta';
 import Quagga from '@ericblade/quagga2';
+import {
+  PAYMENT_CODES,
+  QUICK_CASH_AMOUNTS,
+  QUICK_BUTTON_LABELS,
+  MAX_YAPE_AMOUNT,
+  formatCurrency,
+  formatNumberDisplay,
+  formatNumberExact,
+  roundToTwoDecimals,
+  sanitizeCurrencyInput,
+  parseCurrencyInput,
+  calculateTotals,
+  updatePaymentCalculations,
+  calculateCashDifference,
+  isCashPaymentComplete,
+  createYapePayment,
+  createEfectivoPayment,
+  showToast,
+  showErrorAlert,
+  showSaleCompletedAlert,
+  showPaymentCompletedAlert,
+  showProductInactiveAlert,
+  showInsufficientStockAlert,
+  showNoStockAlert,
+  showEmptyCartAlert,
+  showInvalidAmountAlert,
+  showIncompletePaymentAlert,
+  showSaleErrorAlert,
+  validateYapePayment,
+  validateEfectivoPayment,
+  getPaymentMethods,
+  getPaymentLabel,
+  getCurrentDateFormatted,
+  playBeep
+} from '../utils/utils.ts';
 
 export default {
   name: "POSVentas",
   data() {
     return {
+      // Constantes expuestas al template
+      PAYMENT_CODES,
+      QUICK_CASH_AMOUNTS,
+      QUICK_BUTTON_LABELS,
+      MAX_YAPE_AMOUNT,
+      
+      // Estado
       productos: [],
       cart: [],
       searchTerm: "",
@@ -513,62 +564,52 @@ export default {
       scanTimeout: null,
       scannerViewport: null,
       pagination: null,
-      currentParams: {},
       showPaymentModal: false,
-      selectedPaymentMethod: 'yape',
+      selectedPaymentMethod: PAYMENT_CODES.YAPE,
       payments: [],
       cashAmount: null,
       cashAmountText: '',
       yapeAmount: null,
       yapeAmountText: '',
       procesandoVenta: false,
-      paymentMethods: [
-        { value: 'efectivo', label: 'Efectivo', color: 'bg-gradient-to-r from-green-600 to-green-700', icon: '💰' },
-        { value: 'yape', label: 'Yape', color: 'bg-gradient-to-r from-purple-600 to-purple-700', icon: '📱' },
-      ],
-      maxYapeAmount: 500
+      paymentMethods: getPaymentMethods(),
+      totals: {
+        subtotal: 0,
+        igvTotal: 0,
+        total: 0,
+        totalPaid: 0,
+        remainingBalance: 0,
+        totalVuelto: 0
+      }
     };
   },
   computed: {
     currentDate() {
-      const date = new Date();
-      return date.toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' });
+      return getCurrentDateFormatted();
     },
     subtotal() {
-      return this.cart.reduce((sum, item) => sum + (parseFloat(item.precio_unitario) * item.quantity), 0);
+      return this.totals.subtotal;
     },
-
-    //editar igv 
     igvTotal() {
-      return this.subtotal * 0.00;
+      return this.totals.igvTotal;
     },
     total() {
-      return this.subtotal * 1.00;
+      return this.totals.total;
     },
-
     totalPaid() {
-      return this.payments.reduce((sum, p) => sum + p.amount, 0);
+      return this.totals.totalPaid;
     },
     remainingBalance() {
-      const balance = this.total - this.totalPaid;
-      const rounded = balance < 0 ? 0 : Math.round(balance * 100) / 100;
-      return rounded;
+      return this.totals.remainingBalance;
     },
     calculateCashDifference() {
-      const received = this.cashAmount || 0;
-      if (received >= this.remainingBalance) {
-        return Math.round((received - this.remainingBalance) * 100) / 100;
-      }
-      return Math.round((this.remainingBalance - received) * 100) / 100;
+      return calculateCashDifference(this.cashAmount, this.remainingBalance);
     },
     isCashPaymentComplete() {
-      const received = this.cashAmount || 0;
-      return received >= this.remainingBalance;
+      return isCashPaymentComplete(this.cashAmount, this.remainingBalance);
     },
     totalVuelto() {
-      return this.payments
-        .filter(p => p.method === 'efectivo' && p.changeAmount)
-        .reduce((sum, p) => sum + p.changeAmount, 0);
+      return this.totals.totalVuelto;
     },
     idUsuarioVenta() {
       try {
@@ -584,8 +625,23 @@ export default {
       }
     }
   },
+  watch: {
+    cart: {
+      deep: true,
+      handler() {
+        this.updateTotals();
+      }
+    },
+    payments: {
+      deep: true,
+      handler() {
+        this.updateTotals();
+      }
+    }
+  },
   mounted() {
     this.cargarProductos();
+    this.updateTotals();
   },
   beforeDestroy() {
     if (this.isScanning) {
@@ -593,65 +649,32 @@ export default {
     }
   },
   methods: {
-    formatNumberDisplay(value) {
-      if (!value && value !== 0) return "0.00";
-      return new Intl.NumberFormat('es-PE', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }).format(parseFloat(value));
-    },
+    formatCurrency,
+    formatNumberDisplay,
+    formatNumberExact,
+    getPaymentLabel,
     
-    formatNumberExact(value) {
-      if (!value && value !== 0) return "0";
-      const num = parseFloat(value);
-      return num.toString();
-    },
-    
-    roundToTwoDecimals(value) {
-      if (value === null || value === undefined || isNaN(value)) return null;
-      return Math.round(value * 100) / 100;
+    updateTotals() {
+      const baseTotals = calculateTotals(this.cart);
+      this.totals = updatePaymentCalculations(baseTotals, this.payments);
     },
     
     updateYapeAmount(event) {
-      let value = event.target.value;
-      value = value.replace(/[^\d.-]/g, '');
-      const parts = value.split('.');
-      if (parts.length > 2) {
-        value = parts[0] + '.' + parts.slice(1).join('');
-      }
-      this.yapeAmountText = value;
-      
-      const numValue = parseFloat(value);
-      if (!isNaN(numValue)) {
-        this.yapeAmount = numValue;
-      } else if (value === '' || value === '-') {
-        this.yapeAmount = null;
-      } else {
-        this.yapeAmount = null;
-      }
+      const value = event.target.value;
+      const sanitized = sanitizeCurrencyInput(value);
+      this.yapeAmountText = sanitized;
+      this.yapeAmount = parseCurrencyInput(sanitized);
     },
     
     updateCashAmount(event) {
-      let value = event.target.value;
-      value = value.replace(/[^\d.-]/g, '');
-      const parts = value.split('.');
-      if (parts.length > 2) {
-        value = parts[0] + '.' + parts.slice(1).join('');
-      }
-      this.cashAmountText = value;
-      
-      const numValue = parseFloat(value);
-      if (!isNaN(numValue)) {
-        this.cashAmount = numValue;
-      } else if (value === '' || value === '-') {
-        this.cashAmount = null;
-      } else {
-        this.cashAmount = null;
-      }
+      const value = event.target.value;
+      const sanitized = sanitizeCurrencyInput(value);
+      this.cashAmountText = sanitized;
+      this.cashAmount = parseCurrencyInput(sanitized);
     },
     
     setCashAmount(amount) {
-      const roundedAmount = this.roundToTwoDecimals(amount);
+      const roundedAmount = roundToTwoDecimals(amount);
       this.cashAmount = roundedAmount;
       this.cashAmountText = roundedAmount !== null && !isNaN(roundedAmount) 
         ? roundedAmount.toString() 
@@ -659,7 +682,7 @@ export default {
     },
     
     setYapeAmount(amount) {
-      const roundedAmount = this.roundToTwoDecimals(amount);
+      const roundedAmount = roundToTwoDecimals(amount);
       this.yapeAmount = roundedAmount;
       this.yapeAmountText = roundedAmount !== null && !isNaN(roundedAmount) 
         ? roundedAmount.toString() 
@@ -703,7 +726,7 @@ export default {
         }
       } catch (error) {
         console.error("Error cargando productos:", error);
-        this.showToast('Error al cargar productos', 'error');
+        showErrorAlert('Error al cargar productos', 'Error de carga');
         this.productos = [];
       } finally {
         this.loading = false;
@@ -733,6 +756,7 @@ export default {
         }
       } catch (error) {
         console.error("Error cambiando página:", error);
+        showErrorAlert('Error al cambiar de página', 'Error');
       } finally {
         this.loading = false;
       }
@@ -762,7 +786,7 @@ export default {
       }
 
       if (!this.scannerViewport) {
-        this.showToast('Error al iniciar el escáner', 'error');
+        showErrorAlert('Error al iniciar el escáner', 'Error');
         this.isScanning = false;
         return;
       }
@@ -785,7 +809,7 @@ export default {
         Quagga.onDetected(this.onDetected);
       } catch (err) {
         console.error('Error al iniciar escáner:', err);
-        this.showToast('No se pudo acceder a la cámara', 'error');
+        showErrorAlert('No se pudo acceder a la cámara', 'Error de cámara');
         this.isScanning = false;
       }
     },
@@ -795,8 +819,8 @@ export default {
       const code = result.codeResult.code;
       this.searchTerm = code;
       this.handleSearch();
-      this.showToast(`🔍 Buscando producto con código: ${code}`, 'success');
-      this.playBeep();
+      showToast(`🔍 Buscando producto con código: ${code}`, 'info');
+      playBeep();
       this.scanTimeout = setTimeout(() => { this.scanTimeout = null; }, 1000);
     },
     
@@ -823,7 +847,7 @@ export default {
     
     addToCart(product) {
       if (product.estado === false || product.estado === 'false') {
-        this.showToast(`❌ Producto ${product.nombre_producto} está inactivo`, 'error');
+        showProductInactiveAlert(product.nombre_producto);
         return;
       }
       
@@ -832,13 +856,13 @@ export default {
         if (existing.quantity < product.cantidad_producto) {
           existing.quantity++;
         } else {
-          this.showToast(`Stock insuficiente de ${product.nombre_producto}`, 'error');
+          showInsufficientStockAlert(product.nombre_producto, product.cantidad_producto);
         }
       } else {
         if (product.cantidad_producto > 0) {
           this.cart.push({ ...product, quantity: 1 });
         } else {
-          this.showToast(`Producto ${product.nombre_producto} sin stock`, 'error');
+          showNoStockAlert(product.nombre_producto);
         }
       }
     },
@@ -851,7 +875,7 @@ export default {
       } else if (newQty <= item.cantidad_producto) {
         item.quantity = newQty;
       } else {
-        this.showToast(`Stock máximo disponible: ${item.cantidad_producto}`, 'error');
+        showInsufficientStockAlert(item.nombre_producto, item.cantidad_producto);
       }
     },
     
@@ -859,93 +883,53 @@ export default {
       this.cart.splice(index, 1);
     },
     
-    processSale() {
+    async processSale() {
       if (this.cart.length === 0) {
-        this.showToast('El carrito está vacío', 'error');
+        showEmptyCartAlert();
         return;
       }
       this.showPaymentModal = true;
       this.payments = [];
       this.setCashAmount(null);
       this.setYapeAmount(null);
-      this.selectedPaymentMethod = 'yape';
+      this.selectedPaymentMethod = PAYMENT_CODES.YAPE;
     },
     
     addPaymentYape() {
       let amount = this.yapeAmount;
-      if (!amount || amount <= 0) {
-        this.showToast('Ingrese un monto válido', 'error');
+      
+      const validation = validateYapePayment(amount, this.remainingBalance, this.maxYapeAmount);
+      if (!validation.valid) {
+        showErrorAlert(validation.errorMessage || 'Monto inválido', 'Monto inválido');
         return;
       }
       
-      amount = this.roundToTwoDecimals(amount);
-      const currentRemaining = this.remainingBalance;
-      
-      if (amount > currentRemaining) {
-        this.showToast(`El monto no puede exceder el saldo pendiente (S/ ${this.formatNumberDisplay(currentRemaining)})`, 'error');
-        return;
-      }
-      
-      if (amount > this.maxYapeAmount) {
-        this.showToast(`Yape tiene un límite de S/ ${this.formatNumberDisplay(this.maxYapeAmount)} por transacción`, 'error');
-        return;
-      }
-      
-      this.payments.push({ 
-        method: 'yape', 
-        amount: amount, 
-        changeAmount: 0,
-        date: new Date().toLocaleTimeString()
-      });
-      
-      this.showToast(`✓ Pago de S/ ${this.formatNumberDisplay(amount)} con Yape agregado`, 'success');
+      amount = roundToTwoDecimals(amount) || 0;
+      const payment = createYapePayment(amount);
+      this.payments.push(payment);
       this.setYapeAmount(null);
       
       if (this.remainingBalance <= 0) {
-        this.showToast('🎉 ¡Pago completado! Puedes finalizar la compra', 'success');
+        showPaymentCompletedAlert(this.totalPaid, this.totalVuelto);
       }
     },
     
     addPaymentEfectivo() {
       let amount = this.cashAmount;
-      if (!amount || amount <= 0) {
-        this.showToast('Ingrese un monto válido', 'error');
+      
+      const validation = validateEfectivoPayment(amount);
+      if (!validation.valid) {
+        showInvalidAmountAlert();
         return;
       }
       
-      amount = this.roundToTwoDecimals(amount);
-      const currentRemaining = this.remainingBalance;
-      let changeAmount = 0;
-      let paymentAmount = amount;
-      
-      if (amount >= currentRemaining) {
-        paymentAmount = currentRemaining;
-        changeAmount = this.roundToTwoDecimals(amount - currentRemaining);
-      } else {
-        paymentAmount = amount;
-        changeAmount = 0;
-      }
-      
-      paymentAmount = this.roundToTwoDecimals(paymentAmount);
-      
-      this.payments.push({ 
-        method: 'efectivo', 
-        amount: paymentAmount, 
-        changeAmount: changeAmount,
-        received: amount,
-        date: new Date().toLocaleTimeString()
-      });
-      
-      const changeText = changeAmount > 0 ? ` Vuelto: S/ ${this.formatNumberDisplay(changeAmount)}` : '';
-      const partialText = paymentAmount < currentRemaining && changeAmount === 0 
-        ? ` (Pago parcial, faltan S/ ${this.formatNumberDisplay(currentRemaining - paymentAmount)})` 
-        : '';
-      
-      this.showToast(`✓ Pago de S/ ${this.formatNumberDisplay(paymentAmount)} en efectivo recibido${changeText}${partialText}`, 'success');
+      amount = roundToTwoDecimals(amount) || 0;
+      const payment = createEfectivoPayment(amount, this.remainingBalance);
+      this.payments.push(payment);
       this.setCashAmount(null);
       
       if (this.remainingBalance <= 0) {
-        this.showToast('🎉 ¡Pago completado! Puedes finalizar la compra', 'success');
+        showPaymentCompletedAlert(this.totalPaid, this.totalVuelto);
       }
     },
     
@@ -962,7 +946,7 @@ export default {
     
     async finalizeSale() {
       if (this.remainingBalance > 0) {
-        this.showToast(`Falta saldo por pagar: S/ ${this.formatNumberDisplay(this.remainingBalance)}`, 'error');
+        showIncompletePaymentAlert(this.remainingBalance);
         return;
       }
       
@@ -983,11 +967,11 @@ export default {
         
         const pagos = this.payments.map(payment => {
           const pago = {
-            forma_pago: payment.method === 'efectivo' ? 1 : 2,
+            forma_pago: payment.method,
             monto_pagar: payment.amount,
           };
           
-          if (payment.method === 'efectivo') {
+          if (payment.method === PAYMENT_CODES.CASH) {
             pago.efectivo_recibido = payment.received || payment.amount;
             pago.efectivo_vuelto = payment.changeAmount || 0;
           }
@@ -1002,14 +986,11 @@ export default {
         });
         
         if (response.data.success) {
-          const message = `✅ ¡Venta completada!\n\nCorrelativo: ${response.data.correlativo}\nTotal: S/ ${this.formatNumberDisplay(this.total)}\n\nGracias por su compra`;
-          this.showToast(message, 'success');
-          alert(message);
-          
+          await showSaleCompletedAlert(response.data.correlativo, this.total);
           this.cart = [];
           this.closePaymentModal();
         } else {
-          this.showToast('Error al registrar la venta', 'error');
+          showSaleErrorAlert('Error al registrar la venta');
         }
         
       } catch (error) {
@@ -1018,60 +999,11 @@ export default {
         if (error.response?.data) {
           errorMsg = JSON.stringify(error.response.data);
         }
-        this.showToast(errorMsg, 'error');
+        showSaleErrorAlert(errorMsg);
       } finally {
         this.procesandoVenta = false;
       }
-    },
-    
-    showToast(message, type = 'success') {
-      const toast = document.createElement('div');
-      toast.className = `fixed bottom-4 right-4 px-4 py-3 rounded-lg shadow-lg text-sm z-50 animate-slide-up ${
-        type === 'success' ? 'bg-slate-800 text-white' : 'bg-red-500 text-white'
-      }`;
-      toast.textContent = message;
-      document.body.appendChild(toast);
-      setTimeout(() => {
-        toast.style.opacity = '0';
-        setTimeout(() => toast.remove(), 300);
-      }, 3000);
-    },
-    
-    playBeep() {
-      try {
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        oscillator.frequency.value = 880;
-        gainNode.gain.value = 0.1;
-        oscillator.start();
-        gainNode.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 0.2);
-        oscillator.stop(audioContext.currentTime + 0.2);
-      } catch (err) {}
     }
   }
 };
 </script>
-
-<style scoped>
-.overflow-y-auto::-webkit-scrollbar {
-  width: 5px;
-}
-.overflow-y-auto::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px;
-}
-.overflow-y-auto::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 10px;
-}
-@keyframes slideUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-.animate-slide-up {
-  animation: slideUp 0.25s ease-out;
-}
-</style>
