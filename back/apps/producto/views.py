@@ -18,6 +18,7 @@ class ProductoPagination(PageNumberPagination):
 # 1. LISTAR PRODUCTOS
 # ============================================
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def producto_list(request):
     productos = Producto.objects.all().order_by('-id')
     
@@ -48,6 +49,7 @@ def producto_list(request):
 # 2. OBTENER PRODUCTO POR ID
 # ============================================
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def producto_detail(request, pk):
     producto = get_object_or_404(Producto, pk=pk)
     serializer = ProductoSerializer(producto, context={'request': request})
@@ -116,6 +118,7 @@ def producto_update(request, pk):
 # 5. ELIMINAR PRODUCTO
 # ============================================
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def producto_delete(request, pk):
     producto = get_object_or_404(Producto, pk=pk)
     nombre_producto = producto.nombre_producto

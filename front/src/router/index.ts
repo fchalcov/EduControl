@@ -59,7 +59,7 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   const auth = JSON.parse(localStorage.getItem("auth") || "{}");
   const token = auth.token;
   const isLogin = to.path === "/login";

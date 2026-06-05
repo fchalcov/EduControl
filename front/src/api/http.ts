@@ -35,11 +35,19 @@ const processQueue = (error: any, token: string | null = null) => {
 };
 
 /* =========================
+   API BASE URL
+========================= */
+
+const API_BASE_URL = (
+  import.meta.env.VITE_API_URL || "http://127.0.0.1:8000, https://educontrol-nskr.onrender.com/"
+).replace(/\/$/, "");
+
+/* =========================
    AXIOS INSTANCE
 ========================= */
 
 const http = axios.create({
-  baseURL: "http://127.0.0.1:8000/",
+  baseURL: `${API_BASE_URL}/`,
   headers: {
     "Content-Type": "application/json",
   },
@@ -106,7 +114,7 @@ http.interceptors.response.use(
 
       try {
         const res = await axios.post(
-          "http://127.0.0.1:8000/api/token/refresh/",
+          `${API_BASE_URL}/api/token/refresh/`,
           {
             refresh: auth.refresh,
           }

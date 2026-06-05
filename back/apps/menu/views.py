@@ -14,7 +14,11 @@ def list_menu_x_usuario(request):
 
     user = request.user
 
-    usuario_rol = UsuarioRol.objects.get(usuario=user)
+    try:
+        usuario_rol = UsuarioRol.objects.get(usuario=user)
+    except UsuarioRol.DoesNotExist:
+        return Response([])
+
     rol = usuario_rol.usuario_rol
 
     role_menu_ids = RolMenu.objects.filter(
@@ -46,6 +50,7 @@ def list_menu_x_usuario(request):
     return Response(serializer.data)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def list_menu(request):
 
     menus = Menu.objects.filter(
@@ -100,6 +105,6 @@ def save_menu(request):
     except Menu.DoesNotExist:
         return Response({"error": "Menu no encontrado"}, status=404)
 
-    except Exception as e:
-        return Response({"error": str(e)}, status=400)
+    except Exception:
+        return Response({"error": "Error al guardar el menú"}, status=400)
 
