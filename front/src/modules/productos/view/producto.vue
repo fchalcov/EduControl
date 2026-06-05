@@ -78,6 +78,9 @@
                         <thead class="bg-gray-50 border-b border-gray-200">
                             <tr>
                                 <th class="px-4 md:px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Codigo Sistema
+                                </th>
+                                <th class="px-4 md:px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     Producto
                                 </th>
                                 <th class="px-4 md:px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -102,6 +105,11 @@
                         </thead>
                         <tbody class="divide-y divide-gray-100">
                             <tr v-for="producto in productos" :key="producto.id" class="hover:bg-gray-50 transition-colors">
+                                <td class="px-4 md:px-6 py-4">
+                                    <code class="text-xs bg-gray-100 px-2 py-1 rounded">
+                                        {{ producto.codigo_interno || "Sin código" }}
+                                    </code>
+                                </td>
                                 <td class="px-4 md:px-6 py-4">
                                     <div class="flex flex-col">
                                         <span class="text-sm font-medium text-gray-900">

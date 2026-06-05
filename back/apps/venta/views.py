@@ -4,6 +4,7 @@ from rest_framework import status
 from django.db import transaction
 from django.utils import timezone
 from .models import Venta, VentaPago, DetalleVenta
+from apps.producto.models import Producto
 from .serializers import VentaSerializer, VentaCreateSerializer
 from rest_framework.pagination import PageNumberPagination
 from django.db.models import Q, Sum
@@ -26,30 +27,59 @@ def crear_venta(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     data = serializer.validated_data
-    
-    # Generar correlativo automático
-    ultima_venta = Venta.objects.order_by('-id_venta').first()
-    nuevo_correlativo = f"V-{ultima_venta.id_venta + 1:06d}" if ultima_venta else "V-000001"
+
+    # ========================================
+    # VERIFICAR STOCK ANTES DE CREAR LA VENTA
+    # ========================================
+    for detalle_data in data['detalles']:
+        producto_id = detalle_data.get('producto_id')
+        if not producto_id:
+            return Response({
+                'error': 'Se requiere producto_id para cada producto'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            producto = Producto.objects.get(id=producto_id, estado=True)
+            if not producto.tiene_stock(detalle_data['cantidad_venta']):
+                return Response({
+                    'error': f'Stock insuficiente para {producto.nombre_producto}. '
+                             f'Disponible: {producto.cantidad_producto}, '
+                             f'Solicitado: {detalle_data["cantidad_venta"]}'
+                }, status=status.HTTP_400_BAD_REQUEST)
+        except Producto.DoesNotExist:
+            return Response({
+                'error': f'Producto con ID {producto_id} no encontrado'
+            }, status=status.HTTP_400_BAD_REQUEST)
     
     # Crear la venta
     venta = Venta.objects.create(
-        correlativo_venta=nuevo_correlativo,
         fecha_venta=timezone.now(),
         id_usuario_venta=data['id_usuario_venta'],
         total_venta=sum(d['sub_total_venta'] for d in data['detalles']),
         estado_venta=1
     )
     
-    # Crear detalles
+    # ========================================
+    # CREAR DETALLES Y RESTAR STOCK
+    # ========================================
     for detalle_data in data['detalles']:
+        # Crear detalle de venta
         DetalleVenta.objects.create(
             id_venta=venta.id_venta,
             descripcion_producto=detalle_data['descripcion_producto'],
             codigo_barra=detalle_data.get('codigo_barra', ''),
+            codigo_interno=detalle_data['codigo_interno'],
             cantidad_venta=detalle_data['cantidad_venta'],
             precio_venta=detalle_data['precio_venta'],
             sub_total_venta=detalle_data['sub_total_venta']
         )
+        
+        # Restar stock usando el método del modelo Producto
+        producto = Producto.objects.get(id=detalle_data['producto_id'], estado=True)
+        if not producto.restar_stock(detalle_data['cantidad_venta']):
+            return Response({
+                'error': f'Error al restar stock de {producto.nombre_producto}'
+            }, status=status.HTTP_400_BAD_REQUEST)
     
     # Crear pagos
     for pago_data in data['pagos']:
@@ -68,6 +98,7 @@ def crear_venta(request):
         'message': 'Venta registrada exitosamente'
     }, status=status.HTTP_201_CREATED)
 
+
 # ============================================
 # 1. LISTAR VENTAS
 # ============================================
@@ -75,43 +106,33 @@ def crear_venta(request):
 def venta_list(request):
     ventas = Venta.objects.all().order_by('-id_venta')
     
-    # Filtro por número de venta
     search = request.GET.get('search', '')
     if search:
         ventas = ventas.filter(correlativo_venta__icontains=search)
     
-    # Filtro por estado
     estado = request.GET.get('estado')
     if estado and estado.isdigit():
         ventas = ventas.filter(estado_venta=int(estado))
     
-    # Filtro por fecha exacta
     fecha = request.GET.get('fecha')
     if fecha:
         ventas = ventas.filter(fecha_venta__date=fecha)
     
-    # Filtro por mes
     mes = request.GET.get('mes')
     if mes:
         ventas = ventas.filter(fecha_venta__year=mes[:4], fecha_venta__month=mes[5:])
     
-    # Filtro por rango de fechas
     fecha_desde = request.GET.get('fecha_desde')
     fecha_hasta = request.GET.get('fecha_hasta')
     if fecha_desde and fecha_hasta:
         ventas = ventas.filter(fecha_venta__date__gte=fecha_desde, fecha_venta__date__lte=fecha_hasta)
     
-    # Paginación
     paginator = VentaPagination()
     paginated_ventas = paginator.paginate_queryset(ventas, request)
     
-    # Construir respuesta con datos adicionales
     result = []
     for venta in paginated_ventas:
-        # Obtener pagos de la venta
         pagos = VentaPago.objects.filter(id_venta=venta.id_venta)
-        
-        # Calcular total devuelto
         detalles = DetalleVenta.objects.filter(id_venta=venta.id_venta)
         devolucion_total_monto = detalles.aggregate(total=Sum('devolucion_monto'))['total'] or 0
         
@@ -136,6 +157,7 @@ def venta_list(request):
     
     return paginator.get_paginated_response(result)
 
+
 # ============================================
 # 2. DETALLE DE VENTA
 # ============================================
@@ -146,13 +168,8 @@ def venta_detail(request, pk):
     except Venta.DoesNotExist:
         return Response({'error': 'Venta no encontrada'}, status=404)
     
-    # Obtener pagos
     pagos = VentaPago.objects.filter(id_venta=venta.id_venta)
-    
-    # Obtener detalles de productos
     detalles = DetalleVenta.objects.filter(id_venta=venta.id_venta)
-    
-    # Calcular total devuelto
     devolucion_total_monto = detalles.aggregate(total=Sum('devolucion_monto'))['total'] or 0
     
     venta_data = {

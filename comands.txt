@@ -27,9 +27,7 @@ python manage.py startapp venta apps/venta
 ---------------------------------PROYECTO FRANCIS--------------------------
 mkdir apps\categoria
 python manage.py startapp categoria apps/categoria
-
-
-
+python manage.py startapp kardex apps/kardex
 
 django-admin startapp EduControl
 django-admin starproject config .

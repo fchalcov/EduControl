@@ -137,7 +137,7 @@
                   <div class="flex justify-between items-start">
                     <div class="flex-1">
                       <p class="text-sm font-semibold text-slate-800">{{ product.nombre_producto }}</p>
-                      <p class="text-xs text-slate-400 font-mono mt-1">{{ product.codigo_barra || 'Sin código' }}</p>
+                      <p class="text-xs text-slate-500 font-mono mt-1">Codigo barra: {{ product.codigo_barra || 'Sin código' }}</p>
                       <p class="text-xs text-slate-500 mt-1">Stock: {{ product.cantidad_producto }}</p>
                     </div>
                     <div class="text-right flex flex-col items-end gap-1">
@@ -465,7 +465,7 @@
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                   </svg>
-                  {{ cashAmount >= remainingBalance ? 'Registrar pago y calcular vuelto' : 'Registrar pago parcial de ' + formatCurrency(cashAmount || 0) }}
+                  {{ cashAmount >= remainingBalance ? 'Registrar pago' : 'Registrar pago' }}
                 </span>
               </button>
             </div>
@@ -957,14 +957,17 @@ export default {
       this.procesandoVenta = true;
       
       try {
+        
         const detalles = this.cart.map(item => ({
           descripcion_producto: item.nombre_producto,
           codigo_barra: item.codigo_barra || '',
+          codigo_interno: item.codigo_interno || '',
           cantidad_venta: item.quantity,
+          producto_id: item.id,
           precio_venta: parseFloat(item.precio_unitario),
           sub_total_venta: parseFloat((item.precio_unitario * item.quantity).toFixed(2))
         }));
-        
+
         const pagos = this.payments.map(payment => {
           const pago = {
             forma_pago: payment.method,
@@ -989,6 +992,7 @@ export default {
           await showSaleCompletedAlert(response.data.correlativo, this.total);
           this.cart = [];
           this.closePaymentModal();
+          this.cargarProductos();
         } else {
           showSaleErrorAlert('Error al registrar la venta');
         }

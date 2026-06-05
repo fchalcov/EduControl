@@ -13,6 +13,7 @@ class DetalleVentaSerializer(serializers.ModelSerializer):
             "id_venta",
             "descripcion_producto",
             "codigo_barra",
+            "codigo_interno",
             "cantidad_venta",
             "precio_venta",
             "sub_total_venta",
@@ -52,9 +53,13 @@ class VentaSerializer(serializers.ModelSerializer):
 
 
 class DetalleVentaCreateSerializer(serializers.Serializer):
+    producto_id = serializers.IntegerField(required=True)
     descripcion_producto = serializers.CharField(max_length=255)
     codigo_barra = serializers.CharField(
         max_length=100, required=False, allow_blank=True, default=""
+    )
+    codigo_interno = serializers.CharField(
+        max_length=20, required=False, allow_blank=True, default=""
     )
     cantidad_venta = serializers.DecimalField(
         max_digits=10, decimal_places=2, min_value=Decimal("0.01")

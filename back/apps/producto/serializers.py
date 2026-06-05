@@ -5,11 +5,12 @@ class ProductoSerializer(serializers.ModelSerializer):
     # Campos de solo lectura para auditoría
     fecha_creacion = serializers.DateTimeField(read_only=True)
     fecha_actualizacion = serializers.DateTimeField(read_only=True)
-    
+    codigo_interno = serializers.CharField(read_only=True)
     class Meta:
         model = Producto
         fields = [
             'id',
+            'codigo_interno',
             'nombre_producto',
             'cantidad_producto',
             'costo_producto',
@@ -21,7 +22,7 @@ class ProductoSerializer(serializers.ModelSerializer):
             'fecha_creacion',
             'fecha_actualizacion',
         ]
-        read_only_fields = ['id', 'fecha_creacion', 'usuario_creacion', 'fecha_actualizacion']
+        read_only_fields = ['id', 'codigo_interno', 'fecha_creacion', 'usuario_creacion', 'fecha_actualizacion']
     
     def validate_nombre_producto(self, value):
         """Validar que el nombre no exceda 250 caracteres"""

@@ -27,7 +27,8 @@ def producto_list(request):
     if search:
         productos = productos.filter(
             Q(nombre_producto__icontains=search) |
-            Q(codigo_barra__icontains=search)
+            Q(codigo_barra__icontains=search) | 
+            Q(codigo_interno__icontains=search)
         )
     
     # Filtro por estado

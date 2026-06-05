@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     "apps.producto",
     "apps.imagen_producto",
     "apps.venta",
+    "apps.kardex",
     "rest_framework",
     "rest_framework_simplejwt",
     "corsheaders",
