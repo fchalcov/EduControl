@@ -1,10 +1,9 @@
-from django.shortcuts import render
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from .serializers import UsuarioSerializer
 from django.contrib.auth import authenticate
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
 
@@ -19,6 +18,7 @@ def list_usuario(request):
 
 
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def login_usuario(request):
 
     username = request.data.get('username')
