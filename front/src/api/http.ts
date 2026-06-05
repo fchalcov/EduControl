@@ -38,8 +38,11 @@ const processQueue = (error: any, token: string | null = null) => {
    API BASE URL
 ========================= */
 
+// https://educontrol-nskr.onrender.com/
+// http://127.0.0.1:8000
+
 const API_BASE_URL = (
-  import.meta.env.VITE_API_URL || "http://127.0.0.1:8000, https://educontrol-nskr.onrender.com/"
+  import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"
 ).replace(/\/$/, "");
 
 /* =========================
