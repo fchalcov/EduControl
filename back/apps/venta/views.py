@@ -5,6 +5,17 @@ from django.db import transaction
 from django.utils import timezone
 from .models import Venta, VentaPago, DetalleVenta
 from .serializers import VentaSerializer, VentaCreateSerializer
+from rest_framework.pagination import PageNumberPagination
+from django.db.models import Q, Sum
+
+# ============================================
+# PAGINACIÓN PARA VENTAS
+# ============================================
+class VentaPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
 
 @api_view(['POST'])
 @transaction.atomic
@@ -56,3 +67,123 @@ def crear_venta(request):
         'correlativo': venta.correlativo_venta,
         'message': 'Venta registrada exitosamente'
     }, status=status.HTTP_201_CREATED)
+
+# ============================================
+# 1. LISTAR VENTAS
+# ============================================
+@api_view(['GET'])
+def venta_list(request):
+    ventas = Venta.objects.all().order_by('-id_venta')
+    
+    # Filtro por número de venta
+    search = request.GET.get('search', '')
+    if search:
+        ventas = ventas.filter(correlativo_venta__icontains=search)
+    
+    # Filtro por estado
+    estado = request.GET.get('estado')
+    if estado and estado.isdigit():
+        ventas = ventas.filter(estado_venta=int(estado))
+    
+    # Filtro por fecha exacta
+    fecha = request.GET.get('fecha')
+    if fecha:
+        ventas = ventas.filter(fecha_venta__date=fecha)
+    
+    # Filtro por mes
+    mes = request.GET.get('mes')
+    if mes:
+        ventas = ventas.filter(fecha_venta__year=mes[:4], fecha_venta__month=mes[5:])
+    
+    # Filtro por rango de fechas
+    fecha_desde = request.GET.get('fecha_desde')
+    fecha_hasta = request.GET.get('fecha_hasta')
+    if fecha_desde and fecha_hasta:
+        ventas = ventas.filter(fecha_venta__date__gte=fecha_desde, fecha_venta__date__lte=fecha_hasta)
+    
+    # Paginación
+    paginator = VentaPagination()
+    paginated_ventas = paginator.paginate_queryset(ventas, request)
+    
+    # Construir respuesta con datos adicionales
+    result = []
+    for venta in paginated_ventas:
+        # Obtener pagos de la venta
+        pagos = VentaPago.objects.filter(id_venta=venta.id_venta)
+        
+        # Calcular total devuelto
+        detalles = DetalleVenta.objects.filter(id_venta=venta.id_venta)
+        devolucion_total_monto = detalles.aggregate(total=Sum('devolucion_monto'))['total'] or 0
+        
+        venta_data = {
+            'id_venta': venta.id_venta,
+            'correlativo_venta': venta.correlativo_venta,
+            'fecha_venta': venta.fecha_venta,
+            'total_venta': float(venta.total_venta),
+            'estado_venta': venta.estado_venta,
+            'devolucion_total_monto': float(devolucion_total_monto),
+            'pagos': [
+                {
+                    'id_pago': p.id_pago,
+                    'forma_pago': p.forma_pago,
+                    'monto_pagar': float(p.monto_pagar),
+                    'efectivo_recibido': float(p.efectivo_recibido) if p.efectivo_recibido else None,
+                    'efectivo_vuelto': float(p.efectivo_vuelto) if p.efectivo_vuelto else None
+                } for p in pagos
+            ]
+        }
+        result.append(venta_data)
+    
+    return paginator.get_paginated_response(result)
+
+# ============================================
+# 2. DETALLE DE VENTA
+# ============================================
+@api_view(['GET'])
+def venta_detail(request, pk):
+    try:
+        venta = Venta.objects.get(pk=pk)
+    except Venta.DoesNotExist:
+        return Response({'error': 'Venta no encontrada'}, status=404)
+    
+    # Obtener pagos
+    pagos = VentaPago.objects.filter(id_venta=venta.id_venta)
+    
+    # Obtener detalles de productos
+    detalles = DetalleVenta.objects.filter(id_venta=venta.id_venta)
+    
+    # Calcular total devuelto
+    devolucion_total_monto = detalles.aggregate(total=Sum('devolucion_monto'))['total'] or 0
+    
+    venta_data = {
+        'id_venta': venta.id_venta,
+        'correlativo_venta': venta.correlativo_venta,
+        'fecha_venta': venta.fecha_venta,
+        'total_venta': float(venta.total_venta),
+        'estado_venta': venta.estado_venta,
+        'devolucion_total_monto': float(devolucion_total_monto),
+        'pagos': [
+            {
+                'id_pago': p.id_pago,
+                'forma_pago': p.forma_pago,
+                'monto_pagar': float(p.monto_pagar),
+                'efectivo_recibido': float(p.efectivo_recibido) if p.efectivo_recibido else None,
+                'efectivo_vuelto': float(p.efectivo_vuelto) if p.efectivo_vuelto else None
+            } for p in pagos
+        ],
+        'detalles': [
+            {
+                'id_detalle': d.id_detalle,
+                'descripcion_producto': d.descripcion_producto,
+                'codigo_barra': d.codigo_barra,
+                'cantidad_venta': float(d.cantidad_venta),
+                'precio_venta': float(d.precio_venta),
+                'sub_total_venta': float(d.sub_total_venta),
+                'estado_venta': d.estado_venta,
+                'devolucion_cantidad': float(d.devolucion_cantidad),
+                'devolucion_monto': float(d.devolucion_monto)
+            } for d in detalles
+        ]
+    }
+    
+    return Response(venta_data)

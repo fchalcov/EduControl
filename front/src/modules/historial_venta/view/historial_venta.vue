@@ -25,9 +25,6 @@
               <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Ventas Total</p>
               <p class="text-2xl font-bold text-gray-900 mt-2">S/ {{ formatNumber(totalVentas) }}</p>
             </div>
-            <div class="px-2 py-1 bg-green-50 rounded-full">
-              <span class="text-xs font-semibold text-green-600">+12.5%</span>
-            </div>
           </div>
         </div>
         
@@ -36,9 +33,6 @@
             <div>
               <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Devoluciones</p>
               <p class="text-2xl font-bold text-gray-900 mt-2">S/ {{ formatNumber(totalDevuelto) }}</p>
-            </div>
-            <div class="px-2 py-1 bg-red-50 rounded-full">
-              <span class="text-xs font-semibold text-red-600">-3.2%</span>
             </div>
           </div>
         </div>
@@ -54,10 +48,7 @@
           <div class="flex justify-between items-start">
             <div>
               <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Transacciones</p>
-              <p class="text-2xl font-bold text-gray-900 mt-2">{{ ventasFiltradas.length }}</p>
-            </div>
-            <div class="px-2 py-1 bg-green-50 rounded-full">
-              <span class="text-xs font-semibold text-green-600">+8</span>
+              <p class="text-2xl font-bold text-gray-900 mt-2">{{ pagination.total }}</p>
             </div>
           </div>
         </div>
@@ -142,14 +133,20 @@
         </div>
       </div>
 
+      <!-- Loading State -->
+      <div v-if="loading" class="text-center py-16">
+        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+        <p class="text-gray-500 mt-4">Cargando transacciones...</p>
+      </div>
+
       <!-- Transactions Table -->
-      <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <div v-else class="bg-white rounded-lg border border-gray-200 overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
           <span class="text-sm font-semibold text-gray-700">Registro de Transacciones</span>
-          <span class="text-xs text-gray-500">{{ ventasFiltradas.length }} resultados</span>
+          <span class="text-xs text-gray-500">{{ pagination.total }} resultados</span>
         </div>
         
-        <div class="overflow-x-auto" v-if="ventasFiltradas.length > 0">
+        <div class="overflow-x-auto" v-if="ventas.length > 0">
           <table class="w-full">
             <thead class="bg-gray-50 border-b border-gray-200">
               <tr>
@@ -164,23 +161,22 @@
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
-              <tr v-for="venta in ventasFiltradas" :key="venta.id_venta" class="hover:bg-gray-50 transition-colors">
+              <tr v-for="venta in ventas" :key="venta.id_venta" class="hover:bg-gray-50 transition-colors">
                 <td class="px-6 py-4">
-                  <div class="font-semibold text-gray-900">{{ venta.correlativo_venta }}</div>
-                  <div class="text-xs text-gray-400">#{{ venta.id_venta }}</div>
+                  <div class="text-sm font-semibold text-gray-900">{{ venta.correlativo_venta }}</div>
                 </td>
                 <td class="px-6 py-4">
                   <div class="text-sm text-gray-900">{{ formatFechaShort(venta.fecha_venta) }}</div>
                   <div class="text-xs text-gray-400">{{ formatHora(venta.fecha_venta) }}</div>
                 </td>
-                <td class="px-6 py-4 text-right font-medium text-gray-900">S/ {{ formatNumber(venta.total_venta) }}</td>
+                <td class="px-6 py-4 text-right font-bold text-sm text-gray-900">S/ {{ formatNumber(venta.total_venta) }}</td>
                 <td class="px-6 py-4 text-right">
-                  <span v-if="venta.devolucion_total_monto > 0" class="text-red-600 font-medium">
+                  <span v-if="venta.devolucion_total_monto > 0" class="text-red-600 font-bold text-sm">
                     S/ {{ formatNumber(venta.devolucion_total_monto) }}
                   </span>
-                  <span v-else class="text-gray-300">—</span>
+                  <span v-else class="font-bold text-sm text-gray-300">S/0</span>
                 </td>
-                <td class="px-6 py-4 text-right font-semibold text-gray-900">S/ {{ formatNumber(venta.total_venta - (venta.devolucion_total_monto || 0)) }}</td>
+                <td class="px-6 py-4 text-right font-bold text-sm text-gray-900">S/ {{ formatNumber(venta.total_venta - (venta.devolucion_total_monto || 0)) }}</td>
                 <td class="px-6 py-4 text-center">
                   <span :class="{
                     'bg-green-50 text-green-700': venta.estado_venta === 1,
@@ -202,16 +198,16 @@
                   </div>
                 </td>
                 <td class="px-6 py-4 text-center relative">
-                  <button @click="toggleDropdown(venta.id_venta)" class="text-gray-400 hover:text-gray-600 text-xl leading-none px-2">
+                  <button @click="toggleDropdown(venta.id_venta)" class="px-2 py-1 text-white bg-black rounded hover:text-white text-xs leading-none px-2">
                   Acciones
                   </button>
                   <div v-if="activeDropdown === venta.id_venta" class="absolute right-6 top-12 mt-1 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
                     <button @click="verDetalleCompleto(venta)" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg">
                       Ver detalle
                     </button>
-                    <button @click="abrirDevolucion(venta)" :disabled="venta.estado_venta === 3" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed rounded-b-lg">
+                    <!-- <button @click="abrirDevolucion(venta)" :disabled="venta.estado_venta === 3" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed rounded-b-lg">
                       Registrar devolución
-                    </button>
+                    </button> -->
                   </div>
                 </td>
               </tr>
@@ -222,6 +218,30 @@
         <div v-else class="text-center py-16">
           <p class="text-gray-500">No se encontraron transacciones</p>
           <p class="text-sm text-gray-400 mt-1">Modifica los filtros para ampliar la búsqueda</p>
+        </div>
+
+        <!-- Paginación -->
+        <div class="px-6 py-4 border-t border-gray-200 flex justify-between items-center">
+          <div class="text-sm text-gray-500">
+            Mostrando {{ pagination.from || 0 }} - {{ pagination.to || 0 }} de {{ pagination.total }} resultados
+          </div>
+          <div class="flex gap-2">
+            <button 
+              @click="cargarPagina(pagination.previous)" 
+              :disabled="!pagination.previous"
+              class="px-3 py-1 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+              Anterior
+            </button>
+            <span class="px-3 py-1 text-sm bg-gray-100 rounded-lg">
+              Página {{ pagination.current_page }} de {{ pagination.total_pages }}
+            </span>
+            <button 
+              @click="cargarPagina(pagination.next)" 
+              :disabled="!pagination.next"
+              class="px-3 py-1 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+              Siguiente
+            </button>
+          </div>
         </div>
       </div>
     </main>
@@ -319,7 +339,7 @@
                         <span class="text-gray-700">{{ detalle.devolucion_cantidad }} und.</span>
                         <div class="text-xs text-gray-400">S/ {{ formatNumber(detalle.devolucion_monto) }}</div>
                       </div>
-                      <span v-else class="text-gray-300">—</span>
+                      <span v-else class="font-bold text-sm text-gray-600">S/0</span>
                     </td>
                     <td class="px-3 py-3 text-right font-semibold text-gray-900">S/ {{ formatNumber(detalle.sub_total_venta - detalle.devolucion_monto) }}</td>
                   </tr>
@@ -358,9 +378,9 @@
           <button @click="cerrarModalDetalle" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
             Cerrar
           </button>
-          <button @click="abrirDevolucionDesdeDetalle" :disabled="ventaDetalle?.estado_venta === 3" class="px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">
+          <!-- <button @click="abrirDevolucionDesdeDetalle" :disabled="ventaDetalle?.estado_venta === 3" class="px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">
             {{ ventaDetalle?.estado_venta === 2 ? 'Modificar devolución' : 'Registrar devolución' }}
-          </button>
+          </button> -->
         </div>
       </div>
     </div>
@@ -540,10 +560,23 @@
 </template>
 
 <script>
+import { list_historial_ventas, get_historial_venta } from '../api/historial_venta'
+
 export default {
   name: 'SalesDashboard',
   data() {
     return {
+      loading: false,
+      ventas: [],
+      pagination: {
+        current_page: 1,
+        total_pages: 1,
+        total: 0,
+        from: 0,
+        to: 0,
+        previous: null,
+        next: null
+      },
       modalDetalleVisible: false,
       modalDevolucionVisible: false,
       ventaDetalle: null,
@@ -561,117 +594,19 @@ export default {
         fecha_desde: '',
         fecha_hasta: '',
         estado: ''
-      },
-      ventas: [
-        {
-          id_venta: 1,
-          correlativo_venta: 'VEN-2024001',
-          fecha_venta: '2024-01-15T10:30:00',
-          total_venta: 450.00,
-          estado_venta: 1,
-          devolucion_total_monto: 0,
-          devolucion_historial: [],
-          pagos: [
-            { id_pago: 1, forma_pago: 1, monto_pagar: 200.00, efectivo_recibido: 200.00, efectivo_vuelto: 0 },
-            { id_pago: 2, forma_pago: 2, monto_pagar: 250.00, efectivo_recibido: null, efectivo_vuelto: null }
-          ],
-          detalles: [
-            { id_detalle: 1, descripcion_producto: 'Laptop HP 15"', codigo_barra: '123456789', cantidad_venta: 1, precio_venta: 350.00, sub_total_venta: 350.00, estado_venta: 1, devolucion_cantidad: 0, devolucion_monto: 0, devolucion_historial: [] },
-            { id_detalle: 2, descripcion_producto: 'Mouse USB Logitech', codigo_barra: '987654321', cantidad_venta: 2, precio_venta: 50.00, sub_total_venta: 100.00, estado_venta: 1, devolucion_cantidad: 0, devolucion_monto: 0, devolucion_historial: [] }
-          ]
-        },
-        {
-          id_venta: 2,
-          correlativo_venta: 'VEN-2024002',
-          fecha_venta: '2024-01-20T14:15:00',
-          total_venta: 1250.00,
-          estado_venta: 2,
-          devolucion_total_monto: 150.00,
-          devolucion_historial: [
-            { fecha: '2024-01-22T11:30:00', monto: 150.00, descripcion: 'Devolución de 1 Funda Protectora', usuario: 'Admin' }
-          ],
-          pagos: [
-            { id_pago: 3, forma_pago: 3, monto_pagar: 1250.00, efectivo_recibido: null, efectivo_vuelto: null }
-          ],
-          detalles: [
-            { id_detalle: 3, descripcion_producto: 'Smartphone Samsung Galaxy', codigo_barra: '555555555', cantidad_venta: 1, precio_venta: 800.00, sub_total_venta: 800.00, estado_venta: 1, devolucion_cantidad: 0, devolucion_monto: 0, devolucion_historial: [] },
-            { id_detalle: 4, descripcion_producto: 'Funda Protectora', codigo_barra: '444444444', cantidad_venta: 3, precio_venta: 50.00, sub_total_venta: 150.00, estado_venta: 2, devolucion_cantidad: 1, devolucion_monto: 50.00, devolucion_historial: [{ fecha: '2024-01-22T11:30:00', monto: 50.00, usuario: 'Admin' }] }
-          ]
-        },
-        {
-          id_venta: 3,
-          correlativo_venta: 'VEN-2024003',
-          fecha_venta: '2024-02-05T09:45:00',
-          total_venta: 89.90,
-          estado_venta: 3,
-          devolucion_total_monto: 89.90,
-          devolucion_historial: [
-            { fecha: '2024-02-06T15:20:00', monto: 89.90, descripcion: 'Devolución total de la venta', usuario: 'Admin' }
-          ],
-          pagos: [
-            { id_pago: 4, forma_pago: 4, monto_pagar: 89.90, efectivo_recibido: null, efectivo_vuelto: null }
-          ],
-          detalles: [
-            { id_detalle: 5, descripcion_producto: 'Audífonos Bluetooth Sony', codigo_barra: '333333333', cantidad_venta: 1, precio_venta: 89.90, sub_total_venta: 89.90, estado_venta: 3, devolucion_cantidad: 1, devolucion_monto: 89.90, devolucion_historial: [{ fecha: '2024-02-06T15:20:00', monto: 89.90, usuario: 'Admin' }] }
-          ]
-        },
-        {
-          id_venta: 4,
-          correlativo_venta: 'VEN-2024015',
-          fecha_venta: '2024-02-10T16:20:00',
-          total_venta: 2340.00,
-          estado_venta: 1,
-          devolucion_total_monto: 0,
-          devolucion_historial: [],
-          pagos: [
-            { id_pago: 5, forma_pago: 1, monto_pagar: 1000.00, efectivo_recibido: 1000.00, efectivo_vuelto: 0 },
-            { id_pago: 6, forma_pago: 3, monto_pagar: 1340.00, efectivo_recibido: null, efectivo_vuelto: null }
-          ],
-          detalles: [
-            { id_detalle: 6, descripcion_producto: 'Monitor LG 24"', codigo_barra: '666666666', cantidad_venta: 2, precio_venta: 450.00, sub_total_venta: 900.00, estado_venta: 1, devolucion_cantidad: 0, devolucion_monto: 0, devolucion_historial: [] },
-            { id_detalle: 7, descripcion_producto: 'Teclado Mecánico', codigo_barra: '777777777', cantidad_venta: 2, precio_venta: 120.00, sub_total_venta: 240.00, estado_venta: 1, devolucion_cantidad: 0, devolucion_monto: 0, devolucion_historial: [] },
-            { id_detalle: 8, descripcion_producto: 'iPad Air', codigo_barra: '888888888', cantidad_venta: 1, precio_venta: 1200.00, sub_total_venta: 1200.00, estado_venta: 1, devolucion_cantidad: 0, devolucion_monto: 0, devolucion_historial: [] }
-          ]
-        }
-      ]
+      }
     }
   },
   computed: {
     ventasFiltradas() {
-      let filtered = [...this.ventas]
-      
-      if (this.filters.numero_venta) {
-        filtered = filtered.filter(v => 
-          v.correlativo_venta.toLowerCase().includes(this.filters.numero_venta.toLowerCase())
-        )
-      }
-      
-      if (this.filters.tipo_filtro === 'fecha' && this.filters.fecha) {
-        filtered = filtered.filter(v => v.fecha_venta.split('T')[0] === this.filters.fecha)
-      }
-      
-      if (this.filters.tipo_filtro === 'mes' && this.filters.mes) {
-        filtered = filtered.filter(v => v.fecha_venta.substring(0, 7) === this.filters.mes)
-      }
-      
-      if (this.filters.tipo_filtro === 'rango' && this.filters.fecha_desde && this.filters.fecha_hasta) {
-        filtered = filtered.filter(v => {
-          const fechaVenta = v.fecha_venta.split('T')[0]
-          return fechaVenta >= this.filters.fecha_desde && fechaVenta <= this.filters.fecha_hasta
-        })
-      }
-      
-      if (this.filters.estado) {
-        filtered = filtered.filter(v => v.estado_venta === parseInt(this.filters.estado))
-      }
-      
-      return filtered
+      // Ya no se filtra localmente, la API se encarga
+      return this.ventas
     },
     totalVentas() {
-      return this.ventasFiltradas.reduce((sum, venta) => sum + venta.total_venta, 0)
+      return this.ventas.reduce((sum, venta) => sum + venta.total_venta, 0)
     },
     totalDevuelto() {
-      return this.ventasFiltradas.reduce((sum, venta) => sum + (venta.devolucion_total_monto || 0), 0)
+      return this.ventas.reduce((sum, venta) => sum + (venta.devolucion_total_monto || 0), 0)
     },
     filtrosActivos() {
       return this.filters.numero_venta || 
@@ -707,24 +642,159 @@ export default {
       return true
     }
   },
+  mounted() {
+    this.cargarVentas()
+  },
   methods: {
+    async cargarVentas(url = null) {
+      this.loading = true
+      
+      try {
+        const params = {}
+        
+        // Mapeo de filtros según tu API
+        if (this.filters.numero_venta) params.search = this.filters.numero_venta
+        if (this.filters.estado) params.estado = this.filters.estado
+        
+        if (this.filters.tipo_filtro === 'fecha' && this.filters.fecha) {
+          params.fecha = this.filters.fecha
+        } else if (this.filters.tipo_filtro === 'mes' && this.filters.mes) {
+          params.mes = this.filters.mes
+        } else if (this.filters.tipo_filtro === 'rango' && this.filters.fecha_desde && this.filters.fecha_hasta) {
+          params.fecha_desde = this.filters.fecha_desde
+          params.fecha_hasta = this.filters.fecha_hasta
+        }
+        
+        const response = await list_historial_ventas(params)
+        
+        this.ventas = response.data.results
+        this.pagination = {
+          current_page: this.getPageNumberFromUrl(response.data.previous, response.data.next),
+          total_pages: Math.ceil(response.data.count / 10),
+          total: response.data.count,
+          from: response.data.results.length > 0 ? (this.getPageNumberFromUrl(response.data.previous, response.data.next) - 1) * 10 + 1 : 0,
+          to: Math.min(this.getPageNumberFromUrl(response.data.previous, response.data.next) * 10, response.data.count),
+          previous: response.data.previous,
+          next: response.data.next
+        }
+      } catch (error) {
+        console.error('Error al cargar ventas:', error)
+        alert('Error al cargar las ventas')
+      } finally {
+        this.loading = false
+      }
+    },
+    
+    getPageNumberFromUrl(previous, next) {
+      if (previous) {
+        const match = previous.match(/page=(\d+)/)
+        if (match) return parseInt(match[1]) + 1
+      }
+      if (next) {
+        const match = next.match(/page=(\d+)/)
+        if (match) return parseInt(match[1]) - 1
+      }
+      return 1
+    },
+    
+    cargarPagina(url) {
+      if (url) {
+        // Extraer los parámetros de la URL
+        const urlParams = new URL(url)
+        const params = new URLSearchParams(urlParams.search)
+        
+        const newParams = {}
+        for (let [key, value] of params) {
+          newParams[key] = value
+        }
+        
+        // Mantener los filtros actuales
+        if (this.filters.numero_venta) newParams.search = this.filters.numero_venta
+        if (this.filters.estado) newParams.estado = this.filters.estado
+        
+        this.cargarVentasConParams(newParams)
+      }
+    },
+    
+    async cargarVentasConParams(params) {
+      this.loading = true
+      
+      try {
+        const response = await list_historial_ventas(params)
+        
+        this.ventas = response.data.results
+        this.pagination = {
+          current_page: this.getPageNumberFromUrl(response.data.previous, response.data.next),
+          total_pages: Math.ceil(response.data.count / 10),
+          total: response.data.count,
+          from: response.data.results.length > 0 ? (this.getPageNumberFromUrl(response.data.previous, response.data.next) - 1) * 10 + 1 : 0,
+          to: Math.min(this.getPageNumberFromUrl(response.data.previous, response.data.next) * 10, response.data.count),
+          previous: response.data.previous,
+          next: response.data.next
+        }
+      } catch (error) {
+        console.error('Error al cargar ventas:', error)
+        alert('Error al cargar las ventas')
+      } finally {
+        this.loading = false
+      }
+    },
+    
+    async verDetalleCompleto(venta) {
+      this.activeDropdown = null
+      this.loading = true
+      
+      try {
+        const response = await get_historial_venta(venta.id_venta)
+        this.ventaDetalle = response.data
+        this.modalDetalleVisible = true
+      } catch (error) {
+        console.error('Error al cargar detalle:', error)
+        alert('Error al cargar el detalle de la venta')
+      } finally {
+        this.loading = false
+      }
+    },
+    
+    aplicarFiltros() {
+      this.cargarVentas()
+    },
+    
+    limpiarFiltros() {
+      this.filters = {
+        numero_venta: '',
+        tipo_filtro: 'fecha',
+        fecha: '',
+        mes: '',
+        fecha_desde: '',
+        fecha_hasta: '',
+        estado: ''
+      }
+      this.cargarVentas()
+    },
+    
     toggleDropdown(id) {
       this.activeDropdown = this.activeDropdown === id ? null : id
     },
+    
     getEstadoTexto(estado) {
       const estados = { 1: 'Pagado', 2: 'Devolución Parcial', 3: 'Devolución Total' }
       return estados[estado] || 'Desconocido'
     },
+    
     getFormaPagoTexto(forma) {
       const formas = { 1: 'Efectivo', 2: 'Yape', 3: 'Tarjeta', 4: 'Transferencia' }
       return formas[forma] || 'Otro'
     },
+    
     formatFechaShort(fecha) {
       return new Date(fecha).toLocaleDateString('es-PE', { day: '2-digit', month: '2-digit', year: 'numeric' })
     },
+    
     formatHora(fecha) {
       return new Date(fecha).toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' })
     },
+    
     formatFechaCompleta(fecha) {
       if (!fecha) return ''
       return new Date(fecha).toLocaleDateString('es-PE', {
@@ -736,70 +806,98 @@ export default {
         minute: '2-digit'
       })
     },
+    
     formatNumber(number) {
       return number?.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',') || '0.00'
     },
-    aplicarFiltros() {},
-    limpiarFiltros() {
-      this.filters = {
-        numero_venta: '',
-        tipo_filtro: 'fecha',
-        fecha: '',
-        mes: '',
-        fecha_desde: '',
-        fecha_hasta: '',
-        estado: ''
-      }
-    },
+    
     incrementarCantidad(detalleId, max) {
       const current = this.devolucionesParciales[detalleId]?.cantidad || 0
       if (current < max) {
         this.devolucionesParciales[detalleId].cantidad = current + 1
       }
     },
+    
     decrementarCantidad(detalleId) {
       const current = this.devolucionesParciales[detalleId]?.cantidad || 0
       if (current > 0) {
         this.devolucionesParciales[detalleId].cantidad = current - 1
       }
     },
-    abrirDevolucion(venta) {
+    
+    async abrirDevolucion(venta) {
       this.activeDropdown = null
-      this.ventaSeleccionada = JSON.parse(JSON.stringify(venta))
-      this.tipoDevolucion = 'parcial'
-      this.devolucionesParciales = {}
-      this.wizardStep = 1
+      this.loading = true
       
-      this.ventaSeleccionada.detalles.forEach(detalle => {
-        const cantidadDisponible = (detalle.cantidad_venta || 0) - (detalle.devolucion_cantidad || 0)
-        this.devolucionesParciales[detalle.id_detalle] = {
-          cantidad: 0,
-          max: cantidadDisponible
+      try {
+        // Cargar los detalles completos de la venta desde la API
+        const response = await get_historial_venta(venta.id_venta)
+        const ventaCompleta = response.data
+        
+        this.ventaSeleccionada = JSON.parse(JSON.stringify(ventaCompleta))
+        this.tipoDevolucion = 'parcial'
+        this.devolucionesParciales = {}
+        this.wizardStep = 1
+        
+        // Inicializar devoluciones parciales para cada detalle
+        if (this.ventaSeleccionada.detalles && this.ventaSeleccionada.detalles.length > 0) {
+          this.ventaSeleccionada.detalles.forEach(detalle => {
+            const cantidadDisponible = (detalle.cantidad_venta || 0) - (detalle.devolucion_cantidad || 0)
+            this.devolucionesParciales[detalle.id_detalle] = {
+              cantidad: 0,
+              max: cantidadDisponible
+            }
+          })
+        } else {
+          alert('Esta venta no tiene productos para devolver')
+          this.loading = false
+          return
         }
-      })
-      
-      this.modalDevolucionVisible = true
+        
+        this.modalDevolucionVisible = true
+      } catch (error) {
+        console.error('Error al cargar detalles de la venta:', error)
+        alert('Error al cargar los detalles de la venta')
+      } finally {
+        this.loading = false
+      }
     },
+    
     cerrarModal() {
       this.modalDevolucionVisible = false
       this.ventaSeleccionada = null
       this.devolucionesParciales = {}
       this.wizardStep = 1
     },
-    verDetalleCompleto(venta) {
-      this.activeDropdown = null
-      this.ventaDetalle = venta
-      this.modalDetalleVisible = true
-    },
+    
     cerrarModalDetalle() {
       this.modalDetalleVisible = false
       this.ventaDetalle = null
     },
+    
     abrirDevolucionDesdeDetalle() {
+      // ventaDetalle ya tiene los detalles porque viene de get_historial_venta
       const venta = this.ventaDetalle
       this.cerrarModalDetalle()
-      this.abrirDevolucion(venta)
+      
+      this.ventaSeleccionada = JSON.parse(JSON.stringify(venta))
+      this.tipoDevolucion = 'parcial'
+      this.devolucionesParciales = {}
+      this.wizardStep = 1
+      
+      if (this.ventaSeleccionada.detalles && this.ventaSeleccionada.detalles.length > 0) {
+        this.ventaSeleccionada.detalles.forEach(detalle => {
+          const cantidadDisponible = (detalle.cantidad_venta || 0) - (detalle.devolucion_cantidad || 0)
+          this.devolucionesParciales[detalle.id_detalle] = {
+            cantidad: 0,
+            max: cantidadDisponible
+          }
+        })
+      }
+      
+      this.modalDevolucionVisible = true
     },
+    
     siguientePaso() {
       if (this.wizardStep === 2 && this.tipoDevolucion === 'parcial' && this.totalDevolucionParcial === 0) {
         alert('Selecciona al menos un producto para devolver')
@@ -809,7 +907,11 @@ export default {
         this.wizardStep++
       }
     },
+    
     confirmarDevolucion() {
+      // Esta función ya la tienes en tu código original
+      // La mantienes igual, solo que ahora deberías persistir en API
+      // Por ahora mantiene la lógica local que ya tenías
       const ventaOriginal = this.ventas.find(v => v.id_venta === this.ventaSeleccionada.id_venta)
       const fechaActual = new Date().toISOString()
       const usuario = 'Admin'
