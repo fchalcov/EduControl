@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# exit on error
 set -o errexit
+
+export DJANGO_SETTINGS_MODULE=config.settings
 
 pip install -r requirements.txt
 
