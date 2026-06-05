@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
 from datetime import timedelta
+from urllib.parse import urlparse
 
 import dj_database_url
 from dotenv import load_dotenv
@@ -9,16 +10,59 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-dev-only-change-in-production")
+
+def _normalize_host(value: str) -> str:
+    """Convierte URLs a hostnames válidos para ALLOWED_HOSTS."""
+    value = value.strip()
+    if not value:
+        return ""
+    if "://" in value:
+        parsed = urlparse(value)
+        return (parsed.hostname or "").strip()
+    return value.rstrip("/")
+
+
+def _parse_hosts(env_value: str, defaults: list[str]) -> list[str]:
+    raw = env_value or ",".join(defaults)
+    hosts: list[str] = []
+    for item in raw.split(","):
+        host = _normalize_host(item)
+        if host and host not in hosts:
+            hosts.append(host)
+    return hosts
+
+
+def _parse_origins(env_value: str, defaults: list[str]) -> list[str]:
+    origins: list[str] = []
+    raw = env_value or ",".join(defaults)
+    for item in raw.split(","):
+        origin = item.strip().rstrip("/")
+        if not origin:
+            continue
+        if not origin.startswith(("http://", "https://")):
+            origin = f"https://{origin}"
+        if origin not in origins:
+            origins.append(origin)
+    return origins
+
+
+SECRET_KEY = os.getenv(
+    "SECRET_KEY",
+    "django-insecure-dev-only-change-in-production",
+)
 
 _default_debug = "False" if os.getenv("DATABASE_URL") else "True"
 DEBUG = os.getenv("DEBUG", _default_debug) == "True"
 
-ALLOWED_HOSTS = [
-    host.strip()
-    for host in os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
-    if host.strip()
-]
+ALLOWED_HOSTS = _parse_hosts(
+    os.getenv("ALLOWED_HOSTS", ""),
+    [
+        "127.0.0.1",
+        "localhost",
+        "192.168.18.13",
+        "educontrol-nskr.onrender.com",
+    ],
+)
 
 INSTALLED_APPS = [
     "apps.usuario",
@@ -51,7 +95,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "sabbath_backend.urls"
+ROOT_URLCONF = "config.urls"
 
 TEMPLATES = [
     {
@@ -68,7 +112,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "sabbath_backend.wsgi.application"
+WSGI_APPLICATION = "config.wsgi.application"
 
 if os.getenv("DATABASE_URL"):
     DATABASES = {
@@ -97,8 +141,8 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-LANGUAGE_CODE = "en-us"
-TIME_ZONE = "UTC"
+LANGUAGE_CODE = "es-pe"
+TIME_ZONE = "America/Lima"
 USE_I18N = True
 USE_TZ = True
 
@@ -108,19 +152,22 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-CORS_ALLOWED_ORIGINS = [
-    origin.strip()
-    for origin in os.getenv(
-        "CORS_ALLOWED_ORIGINS",
-        "http://localhost:5173,http://127.0.0.1:5173",
-    ).split(",")
-    if origin.strip()
-]
+CORS_ALLOWED_ORIGINS = _parse_origins(
+    os.getenv("CORS_ALLOWED_ORIGINS", ""),
+    [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "https://edu-control-azure.vercel.app",
+    ],
+)
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-    )
+    ),
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticated",
+    ),
 }
 
 SIMPLE_JWT = {
@@ -131,3 +178,9 @@ SIMPLE_JWT = {
 
 if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    SECURE_SSL_REDIRECT = os.getenv("SECURE_SSL_REDIRECT", "True") == "True"
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True

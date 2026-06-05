@@ -83,8 +83,8 @@ def save_rol(request):
     except Rol.DoesNotExist:
         return Response({"error": "Rol no encontrado"}, status=404)
 
-    except Exception as e:
-        return Response({"error": str(e)}, status=400)
+    except Exception:
+        return Response({"error": "Error al guardar el rol"}, status=400)
 
 # LISTAR MENÚ POR ROL (CON CHECKED)
 @api_view(['GET'])
