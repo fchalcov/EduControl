@@ -41,9 +41,9 @@ class Kardex(models.Model):
     stock_nuevo = models.IntegerField()
     
     # PRECIOS
-    # - Para Ingreso (Compra): precio_costo = precio de compra
-    # - Para Salida (Venta): precio_venta = precio de venta, precio_costo = costo del producto
-    precio_costo = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    # - Para Ingreso (Compra): precio_compra = precio de compra
+    # - Para Salida (Venta): precio_venta = precio de venta, precio_compra = costo del producto
+    precio_compra = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
     precio_venta = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
     subtotal = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
     
@@ -64,3 +64,12 @@ class Kardex(models.Model):
     
     class Meta:
         ordering = ['-fecha_movimiento']
+
+# INSERT INTO kardex_tipomovimiento (codigo, nombre, tipo, activo) VALUES
+# ( 'VENTA', 'Venta', 2, true),              -- tipo 2 = Salida
+# ( 'COMPRA', 'Compra', 1, true),            -- tipo 1 = Ingreso
+# ( 'DEVOLUCION_VENTA', 'Devolución de Venta', 1, true),     -- Ingreso (devuelven producto)
+# ( 'DEVOLUCION_COMPRA', 'Devolución de Compra', 2, true),   -- Salida (devuelves a proveedor)
+# ( 'AJUSTE_ENTRADA', 'Ajuste de Entrada', 1, true),         -- Ingreso
+# ( 'AJUSTE_SALIDA', 'Ajuste de Salida', 2, true),           -- Salida
+# ( 'INVENTARIO_INICIAL', 'Inventario Inicial', 1, true);    -- Ingreso

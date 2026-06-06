@@ -45,8 +45,8 @@ def registrar_kardex_al_vender(sender, instance, created, **kwargs):
         cantidad=int(instance.cantidad_venta),
         stock_anterior=stock_anterior,
         stock_nuevo=producto.cantidad_producto,
-        precio_costo=0, ## SOLO PARA INGRESO NUEVOS
-        precio_venta=float(instance.precio_venta),
+        precio_compra=0, ## SOLO PARA INGRESO NUEVOS
+        precio_venta=float(instance.precio_venta), ## PARA VENTA, EL COSTO ES EL PRECIO DE VENTA
         subtotal=float(instance.sub_total_venta),
         correlativo_referencia=venta.correlativo_venta,
         id_venta=instance.id_venta,

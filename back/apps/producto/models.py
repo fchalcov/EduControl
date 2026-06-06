@@ -38,10 +38,17 @@ class Producto(models.Model):
     # ============================================
     def restar_stock(self, cantidad):
         """Resta stock de este producto"""
+        print(f"🔄 RESTANDO STOCK - Producto: {self.nombre_producto}")
+        print(f"   Stock actual: {self.cantidad_producto}")
+        print(f"   Cantidad a restar: {cantidad}")
+        
         if self.cantidad_producto >= cantidad:
             self.cantidad_producto -= cantidad
-            self.save()
+            self.save(update_fields=['cantidad_producto'])
+            print(f"   ✅ Nuevo stock: {self.cantidad_producto}")
             return True
+        
+        print(f"Stock insuficiente")
         return False
     
     def aumentar_stock(self, cantidad):

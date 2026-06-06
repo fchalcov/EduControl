@@ -63,6 +63,13 @@ def crear_venta(request):
     # CREAR DETALLES Y RESTAR STOCK
     # ========================================
     for detalle_data in data['detalles']:
+
+        # Restar stock usando el método del modelo Producto
+        producto = Producto.objects.get(id=detalle_data['producto_id'], estado=True)
+        if not producto.restar_stock(detalle_data['cantidad_venta']):
+            return Response({
+                'error': f'Error al restar stock de {producto.nombre_producto}'
+            }, status=status.HTTP_400_BAD_REQUEST)
         # Crear detalle de venta
         DetalleVenta.objects.create(
             id_venta=venta.id_venta,
@@ -73,13 +80,6 @@ def crear_venta(request):
             precio_venta=detalle_data['precio_venta'],
             sub_total_venta=detalle_data['sub_total_venta']
         )
-        
-        # Restar stock usando el método del modelo Producto
-        producto = Producto.objects.get(id=detalle_data['producto_id'], estado=True)
-        if not producto.restar_stock(detalle_data['cantidad_venta']):
-            return Response({
-                'error': f'Error al restar stock de {producto.nombre_producto}'
-            }, status=status.HTTP_400_BAD_REQUEST)
     
     # Crear pagos
     for pago_data in data['pagos']:

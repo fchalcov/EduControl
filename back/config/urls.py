@@ -20,6 +20,7 @@ urlpatterns = [
     path("rol/", include("apps.rol.urls")),
     path("producto/", include("apps.producto.urls")),
     path("venta/", include("apps.venta.urls")),
+    path("kardex/", include("apps.kardex.urls")),
     path(
         "api/token/refresh/",
         PublicTokenRefreshView.as_view(),
