@@ -45,6 +45,11 @@ const routes = [
         name: "Historial de Ventas",
         component: () => import("../modules/historial_venta/view/historial_venta.vue"),
       },
+      {
+        path: "kardex",
+        name: "Kardex",
+        component: () => import("../modules/kardex/view/kardex.vue"),
+      },
     ],
   },
 
