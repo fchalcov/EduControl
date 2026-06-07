@@ -205,9 +205,9 @@
                     <button @click="verDetalleCompleto(venta)" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg">
                       Ver detalle
                     </button>
-                    <!-- <button @click="abrirDevolucion(venta)" :disabled="venta.estado_venta === 3" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed rounded-b-lg">
+                    <button @click="abrirDevolucion(venta)" :disabled="venta.estado_venta === 3" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed rounded-b-lg">
                       Registrar devolución
-                    </button> -->
+                    </button>
                   </div>
                 </td>
               </tr>
@@ -378,9 +378,9 @@
           <button @click="cerrarModalDetalle" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
             Cerrar
           </button>
-          <!-- <button @click="abrirDevolucionDesdeDetalle" :disabled="ventaDetalle?.estado_venta === 3" class="px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">
+          <button @click="abrirDevolucionDesdeDetalle" :disabled="ventaDetalle?.estado_venta === 3" class="px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">
             {{ ventaDetalle?.estado_venta === 2 ? 'Modificar devolución' : 'Registrar devolución' }}
-          </button> -->
+          </button>
         </div>
       </div>
     </div>
@@ -479,7 +479,7 @@
           <!-- Step 2: Total Return -->
           <div v-if="wizardStep === 2 && tipoDevolucion === 'total'" class="text-center">
             <div class="max-w-md mx-auto">
-              <div class="w-12 h-12 bg-orange-100 rounded-full mx-auto mb-4"></div>
+              <!-- <div class="w-12 h-12 bg-orange-100 rounded-full mx-auto mb-4"></div> -->
               <h3 class="text-lg font-semibold text-gray-900 mb-2">Confirmar devolución total</h3>
               <p class="text-gray-600 mb-6">
                 Se devolverá <strong>S/ {{ formatNumber((ventaSeleccionada?.total_venta || 0) - (ventaSeleccionada?.devolucion_total_monto || 0)) }}</strong>

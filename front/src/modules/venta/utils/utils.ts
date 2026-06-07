@@ -30,8 +30,6 @@ export const QUICK_BUTTON_LABELS = {
   QUICK_AMOUNT: (amount: number) => `S/ ${amount}`,
 };
 
-export const MAX_YAPE_AMOUNT = 500;
-
 // ==================== FORMATOS DE MONEDA Y NÚMEROS ====================
 
 export const formatCurrency = (value: number | null | undefined): string => {
@@ -95,23 +93,6 @@ export interface PaymentMethod {
   icon: string;
 }
 
-export const getPaymentMethods = (): PaymentMethod[] => {
-  return [
-    { 
-      value: PAYMENT_CODES.CASH, 
-      label: PAYMENT_LABELS[PAYMENT_CODES.CASH], 
-      color: PAYMENT_COLORS[PAYMENT_CODES.CASH], 
-      icon: PAYMENT_ICONS[PAYMENT_CODES.CASH] 
-    },
-    { 
-      value: PAYMENT_CODES.YAPE, 
-      label: PAYMENT_LABELS[PAYMENT_CODES.YAPE], 
-      color: PAYMENT_COLORS[PAYMENT_CODES.YAPE], 
-      icon: PAYMENT_ICONS[PAYMENT_CODES.YAPE] 
-    },
-  ];
-};
-
 // ==================== CÁLCULOS DE PAGOS ====================
 
 export interface PaymentCalculations {
@@ -156,25 +137,6 @@ export const updatePaymentCalculations = (
   };
 };
 
-export const calculateCashDifference = (
-  cashAmount: number | null,
-  remainingBalance: number
-): number => {
-  const received = cashAmount || 0;
-  if (received >= remainingBalance) {
-    return Math.round((received - remainingBalance) * 100) / 100;
-  }
-  return Math.round((remainingBalance - received) * 100) / 100;
-};
-
-export const isCashPaymentComplete = (
-  cashAmount: number | null,
-  remainingBalance: number
-): boolean => {
-  const received = cashAmount || 0;
-  return received >= remainingBalance;
-};
-
 // ==================== MANEJO DE PAGOS ====================
 
 export const createYapePayment = (amount: number): Payment => {
@@ -209,26 +171,6 @@ export const createEfectivoPayment = (
 
 // ==================== VALIDACIONES ====================
 
-export const validateYapePayment = (
-  amount: number | null,
-  remainingBalance: number,
-  maxAmount: number
-): { valid: boolean; errorMessage?: string } => {
-  if (!amount || amount <= 0) {
-    return { valid: false, errorMessage: 'Ingrese un monto válido' };
-  }
-  
-  if (amount > remainingBalance) {
-    return { valid: false, errorMessage: `El monto no puede exceder el saldo pendiente (${formatCurrency(remainingBalance)})` };
-  }
-  
-  if (amount > maxAmount) {
-    return { valid: false, errorMessage: `${PAYMENT_LABELS[PAYMENT_CODES.YAPE]} tiene un límite de ${formatCurrency(maxAmount)} por transacción` };
-  }
-  
-  return { valid: true };
-};
-
 export const validateEfectivoPayment = (
   amount: number | null
 ): { valid: boolean; errorMessage?: string } => {
@@ -256,17 +198,6 @@ export const showToast = (message: string, type: 'success' | 'error' | 'info' | 
   });
 };
 
-export const showSuccessAlert = (message: string, title: string = '¡Éxito!') => {
-  Swal.fire({
-    icon: 'success',
-    title: title,
-    text: message,
-    confirmButtonColor: '#1e293b',
-    confirmButtonText: 'Aceptar',
-    timer: 2500
-  });
-};
-
 export const showErrorAlert = (message: string, title: string = 'Error') => {
   Swal.fire({
     icon: 'error',
@@ -280,7 +211,7 @@ export const showErrorAlert = (message: string, title: string = 'Error') => {
 export const showSaleCompletedAlert = (correlativo: string, total: number): Promise<any> => {
   return Swal.fire({
     icon: 'success',
-    title: '✅ ¡Venta completada!',
+    title: '¡Venta completada!',
     text: `Correlativo: ${correlativo}\nTotal: ${formatCurrency(total)}\n\n¡Gracias por su compra!`,
     confirmButtonColor: '#1e293b',
     confirmButtonText: 'Aceptar'
@@ -359,8 +290,4 @@ export const playBeep = () => {
 
 export const getPaymentLabel = (methodCode: number): string => {
   return PAYMENT_LABELS[methodCode as keyof typeof PAYMENT_LABELS] || 'Desconocido';
-};
-
-export const getPaymentIcon = (methodCode: number): string => {
-  return PAYMENT_ICONS[methodCode as keyof typeof PAYMENT_ICONS] || '💳';
 };

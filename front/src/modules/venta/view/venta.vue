@@ -1,153 +1,160 @@
 <template>
-  <div class="h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col">
-    <!-- Header Separado - Sticky -->
-    <div class="bg-white border-b border-slate-200 px-6 py-4 sticky top-0 z-10 shadow-sm flex-shrink-0">
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-        <div>
-          <h1 class="text-xl md:text-2xl font-bold text-slate-800 tracking-tight">POS Executive</h1>
-          <p class="text-xs md:text-sm text-slate-500 mt-0.5">Sistema de punto de venta profesional</p>
+  <div class="h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col">
+    <!-- Header Rediseñado -->
+    <div class="bg-white/80 backdrop-blur-sm border-b border-gray-200/80 px-4 sm:px-6 md:px-8 py-3 sm:py-4 sticky top-0 z-10 flex-shrink-0 shadow-sm">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0">
+            <span class="text-white text-sm font-bold">P</span>
+          </div>
+          <div>
+            <h1 class="text-base sm:text-xl font-semibold text-gray-800 tracking-tight">Punto de Venta</h1>
+            <p class="text-xs text-gray-500 hidden sm:block">Sistema de gestión</p>
+          </div>
         </div>
         
-        <div class="flex items-center gap-6">
+        <div class="flex items-center justify-between sm:justify-end gap-4 sm:gap-6">
           <div class="text-right">
-            <p class="text-xs text-slate-400 uppercase tracking-wide">Fecha</p>
-            <p class="text-sm font-semibold text-slate-700">{{ currentDate }}</p>
+            <p class="text-[10px] text-gray-400 uppercase tracking-wider hidden sm:block">Fecha y hora</p>
+            <p class="text-xs sm:text-sm font-medium text-gray-700">{{ currentDate }}</p>
+          </div>
+          <div class="w-px h-8 bg-gray-200 hidden sm:block"></div>
+          <div class="text-right">
+            <p class="text-[10px] text-gray-400 uppercase tracking-wider hidden sm:block">Usuario</p>
+            <p class="text-xs sm:text-sm font-medium text-gray-700 truncate max-w-[120px] sm:max-w-none">{{ nombreUsuario }}</p>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Contenido Principal -->
-    <div class="flex-1 px-6 py-4 min-h-0">
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
-        <!-- Panel Izquierdo: Buscador + Catálogo -->
-        <div class="lg:col-span-2 flex flex-col gap-4 min-h-0">
-          <!-- Card Escáner -->
-          <div class="bg-white rounded-xl border border-slate-200 shadow-sm flex-shrink-0">
-            <div class="px-5 py-3 border-b border-slate-100 bg-slate-50/50">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                  <div class="p-1.5 bg-slate-100 rounded-lg">
-                    <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                  </div>
-                  <h2 class="text-sm font-semibold text-slate-700">Escáner rápido</h2>
-                </div>
-                <button 
-                  @click="toggleScanner"
-                  :class="[
-                    'px-3 py-1.5 text-xs font-medium rounded-lg transition-all',
-                    isScanning ? 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200' : 'bg-slate-800 text-white hover:bg-slate-700 shadow-sm'
-                  ]"
-                >
-                  {{ isScanning ? 'Detener' : 'Activar cámara' }}
-                </button>
-              </div>
+    <!-- Contenido Principal - VERSION CORRECTAMENTE RESPONSIVE -->
+    <div class="flex-1 px-4 sm:px-6 md:px-8 py-4 sm:py-6 min-h-0 overflow-y-auto">
+      <!-- En móvil: apilado (flex-col), en desktop: lado a lado (lg:flex-row) -->
+      <div class="flex flex-col lg:flex-row gap-4 md:gap-6 lg:gap-8 h-full">
+        
+        <!-- Panel Izquierdo: Catálogo -->
+        <div class="flex-1 lg:w-[70%] lg:flex-none flex flex-col gap-4 md:gap-5 min-h-[650px] lg:min-h-0">
+          
+          <!-- Buscador rediseñado -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200/60 flex-shrink-0 overflow-hidden">
+            <div class="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50/50 border-b border-gray-200/60">
+              <h2 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                <span class="w-1 h-4 bg-gray-400 rounded-full"></span>
+                Buscar producto
+              </h2>
             </div>
             
-            <div class="p-5">
-              <div v-if="isScanning" style="display: none;">
-                <div ref="scannerViewport"></div>
-              </div>
-              
-              <div class="relative">
+            <div class="p-4 sm:p-5">
+              <div class="relative group">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                  <svg class="h-4 w-4 text-gray-400 group-focus-within:text-gray-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </div>
                 <input 
                   v-model="searchTerm" 
                   @keyup.enter="handleSearch"
                   type="text" 
-                  placeholder="Buscar por nombre o código... (Enter busca)"
-                  class="w-full pl-9 pr-20 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent"
+                  placeholder="Buscar por nombre o código de barras..."
+                  class="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-200 transition-all bg-gray-50/30"
                 />
-                <div class="absolute inset-y-0 right-0 flex items-center pr-1">
+              </div>
+              
+              <div class="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <button 
+                  v-if="searchTerm || filtroEstado !== 'todos'"
+                  @click="limpiarFiltros"
+                  class="text-xs text-gray-500 hover:text-gray-700 transition-colors flex items-center gap-1 order-2 sm:order-1"
+                >
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  Limpiar filtros
+                </button>
+                
+                <div class="flex items-center gap-3 order-1 sm:order-2">
+                  <select v-model="filtroEstado" @change="handleFilterChange" class="text-xs border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-700 focus:outline-none focus:border-gray-400">
+                    <option value="todos">Todos los productos</option>
+                    <option value="true">Activos</option>
+                    <option value="false">Inactivos</option>
+                  </select>
                   <button 
-                    @click="handleSearch"
-                    class="px-3 py-1 bg-slate-100 text-slate-700 text-xs font-medium rounded-md hover:bg-slate-200 transition-colors"
+                    @click="toggleScanner"
+                    :class="[
+                      'px-3 py-1.5 text-xs font-medium rounded-lg transition-all flex items-center gap-1.5 whitespace-nowrap',
+                      isScanning ? 'bg-red-50 text-red-600 border border-red-200' : 'border border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300'
+                    ]"
                   >
-                    Buscar
+                    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span class="hidden sm:inline">{{ isScanning ? 'Detener' : 'Escáner' }}</span>
+                    <span class="sm:hidden">{{ isScanning ? '✕' : '📷' }}</span>
                   </button>
                 </div>
               </div>
               
-              <div class="mt-3 flex items-center justify-between">
-                <div v-if="isScanning" class="flex items-center gap-1.5 bg-green-50 px-2 py-0.5 rounded-full">
-                  <div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
-                  <span class="text-xs text-green-700 font-medium">Escaneando</span>
-                </div>
-                <button 
-                  v-if="searchTerm || filtroEstado !== 'todos'"
-                  @click="limpiarFiltros"
-                  class="text-xs text-slate-500 hover:text-slate-700"
-                >
-                  Limpiar filtros
-                </button>
+              <div v-if="isScanning" style="display: none;">
+                <div ref="scannerViewport"></div>
               </div>
             </div>
           </div>
 
-          <!-- Catálogo de productos -->
-          <div class="bg-white rounded-xl border border-slate-200 shadow-sm flex-1 flex flex-col overflow-hidden min-h-0">
-            <div class="px-5 py-3 border-b border-slate-100 bg-slate-50/50 flex-shrink-0">
+          <!-- Catálogo de productos rediseñado -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200/60 flex-1 flex flex-col overflow-hidden transition-all hover:shadow-md">
+            <div class="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50/50 border-b border-gray-200/60 flex-shrink-0">
               <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                  <div class="p-1.5 bg-slate-100 rounded-lg">
-                    <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                  </div>
-                  <h2 class="text-sm font-semibold text-slate-700">Catálogo de productos</h2>
-                </div>
-                <div class="flex items-center gap-2">
-                  <select v-model="filtroEstado" @change="handleFilterChange" class="text-xs border border-slate-200 rounded-lg px-2 py-1 bg-white">
-                    <option value="todos">Todos</option>
-                    <option value="true">Activos</option>
-                    <option value="false">Inactivos</option>
-                  </select>
-                  <span class="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">{{ pagination?.total || 0 }} productos</span>
-                </div>
+                <h2 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                  <span class="w-1 h-4 bg-gray-400 rounded-full"></span>
+                  Catálogo de productos
+                </h2>
+                <span class="text-xs text-gray-500 bg-white px-2.5 py-1 rounded-full shadow-sm">{{ pagination?.total || 0 }} productos</span>
               </div>
             </div>
             
-            <div class="flex-1 overflow-y-auto p-4">
-              <div v-if="loading" class="flex items-center justify-center py-12">
+            <div class="flex-1 overflow-y-auto p-4 sm:p-5">
+              <div v-if="loading" class="flex items-center justify-center py-16">
                 <div class="text-center">
-                  <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-slate-800"></div>
-                  <p class="mt-2 text-slate-500">Cargando productos...</p>
+                  <div class="inline-block animate-spin rounded-full h-8 w-8 border-2 border-gray-300 border-t-gray-600"></div>
+                  <p class="mt-3 text-sm text-gray-500">Cargando productos...</p>
                 </div>
               </div>
               
-              <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div 
                   v-for="product in productos" 
                   :key="product.id"
                   @click="addToCart(product)"
                   :class="[
-                    'group p-3 border rounded-lg cursor-pointer transition-all hover:shadow-sm',
+                    'group p-3 sm:p-4 rounded-xl cursor-pointer transition-all duration-200 transform hover:-translate-y-0.5',
                     product.estado === false || product.estado === 'false' 
-                      ? 'border-red-100 bg-red-50/30 hover:bg-red-50/50' 
-                      : 'border-slate-100 hover:bg-slate-50 hover:border-slate-200'
+                      ? 'border-red-200 bg-red-50/30 hover:shadow-md hover:border-red-300' 
+                      : 'border border-gray-200 hover:shadow-md hover:border-gray-300 bg-white'
                   ]"
                 >
-                  <div class="flex justify-between items-start">
-                    <div class="flex-1">
-                      <p class="text-sm font-semibold text-slate-800">{{ product.nombre_producto }}</p>
-                      <p class="text-xs text-slate-500 font-mono mt-1">Codigo barra: {{ product.codigo_barra || 'Sin código' }}</p>
-                      <p class="text-xs text-slate-500 mt-1">Stock: {{ product.cantidad_producto }}</p>
+                  <div class="flex justify-between items-start gap-2">
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm font-semibold text-gray-800 group-hover:text-gray-900 transition-colors truncate">{{ product.nombre_producto }}</p>
+                      <p class="text-xs text-gray-500 mt-1.5 font-mono truncate">Código: {{ product.codigo_barra || '---' }}</p>
+                      <div class="mt-2 flex items-center gap-2">
+                        <span class="text-xs text-gray-500 flex-shrink-0">Stock:</span>
+                        <span :class="[
+                          'text-xs font-medium px-2 py-0.5 rounded-full',
+                          product.cantidad_producto <= 5 ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-600'
+                        ]">
+                          {{ product.cantidad_producto }} unidades
+                        </span>
+                      </div>
                     </div>
-                    <div class="text-right flex flex-col items-end gap-1">
-                      <p class="text-sm font-bold text-slate-900">{{ formatCurrency(product.precio_unitario) }}</p>
+                    <div class="text-right flex-shrink-0">
+                      <p class="text-base font-bold text-gray-900">{{ formatCurrency(product.precio_unitario) }}</p>
                       <span 
                         :class="[
-                          'text-xs px-2 py-0.5 rounded-full font-medium',
+                          'text-xs px-2 py-0.5 rounded-full mt-2 inline-block',
                           product.estado === false || product.estado === 'false'
-                            ? 'bg-red-100 text-red-700'
-                            : 'bg-green-100 text-green-700'
+                            ? 'bg-red-100 text-red-600'
+                            : 'bg-green-100 text-green-600'
                         ]"
                       >
                         {{ product.estado === false || product.estado === 'false' ? 'Inactivo' : 'Activo' }}
@@ -155,353 +162,396 @@
                     </div>
                   </div>
                 </div>
-                <div v-if="productos.length === 0" class="col-span-2 text-center text-slate-400 py-12">
-                  ✨ No se encontraron productos
+                <div v-if="productos.length === 0" class="col-span-2 text-center py-16">
+                  <svg class="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                  </svg>
+                  <p class="text-gray-400 text-sm">No se encontraron productos</p>
                 </div>
               </div>
             </div>
 
-            <div v-if="pagination && pagination.total > 0 && !loading" class="px-5 py-3 border-t border-slate-100 bg-slate-50/50 flex-shrink-0">
+            <div v-if="pagination && pagination.total > 0 && !loading" class="px-4 sm:px-6 py-3 border-t border-gray-200/60 bg-gray-50/30 flex-shrink-0">
               <div class="flex items-center justify-between flex-wrap gap-2">
-                <div class="text-xs text-slate-500">
-                  Mostrando {{ pagination.from }} - {{ pagination.to }} de {{ pagination.total }} productos
+                <div class="text-xs text-gray-500">
+                  Mostrando {{ pagination.from }} - {{ pagination.to }} de {{ pagination.total }}
                 </div>
                 <div class="flex gap-2">
                   <button 
                     @click="cambiarPagina(pagination.previousPage)"
                     :disabled="!pagination.previousPage"
-                    class="px-3 py-1 text-xs border rounded-lg hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    class="px-3 py-1.5 text-xs border border-gray-200 rounded-lg hover:bg-white hover:border-gray-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
                   >
-                    ← Anterior
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    Anterior
                   </button>
                   <button 
                     @click="cambiarPagina(pagination.nextPage)"
                     :disabled="!pagination.nextPage"
-                    class="px-3 py-1 text-xs border rounded-lg hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    class="px-3 py-1.5 text-xs border border-gray-200 rounded-lg hover:bg-white hover:border-gray-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
                   >
-                    Siguiente →
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Panel Derecho: Carrito -->
-        <div class="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col overflow-hidden min-h-0">
-          <div class="px-5 py-3 border-b border-slate-100 bg-slate-50/50 flex-shrink-0">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2">
-                <div class="p-1.5 bg-slate-100 rounded-lg">
-                  <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6M17 13l1.5 6M9 21h6M12 15v6"></path>
-                  </svg>
-                </div>
-                <h2 class="text-sm font-semibold text-slate-700">Carrito de compra</h2>
-              </div>
-              <span class="text-xs font-medium bg-slate-100 px-2 py-0.5 rounded-full">{{ cart.length }} items</span>
-            </div>
-          </div>
-
-          <div class="flex-1 overflow-y-auto p-4 space-y-3">
-            <div v-for="(item, index) in cart" :key="item.id" class="bg-slate-50 rounded-lg p-3 hover:shadow-sm transition-shadow">
-              <div class="flex justify-between items-start mb-2">
-                <div class="flex-1">
-                  <p class="text-sm font-semibold text-slate-800">{{ item.nombre_producto }}</p>
-                  <p class="text-xs text-slate-400 font-mono">{{ item.codigo_barra || 'Sin código' }}</p>
-                </div>
-                <button @click="removeFromCart(index)" class="text-slate-400 hover:text-red-500 transition-colors ml-2">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path>
-                  </svg>
-                </button>
-              </div>
-              <div class="flex justify-between items-center">
-                <div class="flex items-center gap-3">
-                  <button @click="updateQuantity(index, -1)" class="w-7 h-7 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 text-sm font-medium">−</button>
-                  <span class="text-sm font-semibold text-slate-800 min-w-[30px] text-center">{{ item.quantity }}</span>
-                  <button @click="updateQuantity(index, 1)" class="w-7 h-7 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 text-sm font-medium">+</button>
-                </div>
-                <div class="text-right">
-                  <p class="text-sm font-bold text-slate-900">{{ formatCurrency(item.precio_unitario * item.quantity) }}</p>
-                  <p class="text-xs text-slate-400">P.U: {{ formatNumberExact(item.precio_unitario) }}</p>
-                </div>
-              </div>
-            </div>
-            
-            <div v-if="cart.length === 0" class="text-center text-slate-400 py-12">
-              <svg class="w-12 h-12 mx-auto mb-3 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6M17 13l1.5 6M9 21h6M12 15v6"></path>
-              </svg>
-              <p class="text-sm">Carrito vacío</p>
-              <p class="text-xs mt-1">Escanea o busca productos</p>
-            </div>
-          </div>
-
-          <div class="border-t border-slate-200 p-4 space-y-3 bg-slate-50/30 flex-shrink-0">
-            <div class="space-y-1.5">
-              <div class="flex justify-between text-sm">
-                <span class="text-slate-500">Subtotal</span>
-                <span class="text-slate-700 font-medium">{{ formatCurrency(subtotal) }}</span>
-              </div>
-              <div class="flex justify-between text-sm">
-                <span class="text-slate-500">IGV (0%)</span>
-                <span class="text-slate-700 font-medium">{{ formatCurrency(igvTotal) }}</span>
-              </div>
-              <div class="flex justify-between pt-2 border-t border-slate-200">
-                <span class="text-base font-bold text-slate-900">Total</span>
-                <span class="text-base font-bold text-slate-900">{{ formatCurrency(total) }}</span>
-              </div>
-            </div>
-            
-            <button 
-              @click="processSale"
-              :disabled="cart.length === 0 || procesandoVenta"
-              class="w-full py-2 bg-slate-800 text-white text-sm font-semibold rounded-lg hover:bg-slate-700 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {{ procesandoVenta ? 'Procesando...' : (cart.length === 0 ? 'Carrito vacío' : 'Procesar venta') }}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal de Pago -->
-    <div v-if="showPaymentModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div class="flex justify-between items-center p-6 border-b sticky top-0 bg-white rounded-t-2xl">
-          <div>
-            <h3 class="text-xl font-semibold text-slate-900">Registrar pagos</h3>
-            <p class="text-sm text-slate-500 mt-1">Selecciona el método de pago para completar la venta</p>
-          </div>
-          <button @click="closePaymentModal" class="text-slate-400 hover:text-slate-600 transition-colors">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </button>
-        </div>
-
-        <div class="p-6">
-          <div class="bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl p-5 mb-6">
-            <div class="flex justify-between items-center mb-3 pb-3 border-b border-slate-200">
-              <span class="text-slate-600 text-sm font-medium">Total de la compra</span>
-              <span class="text-2xl font-bold text-slate-900">{{ formatCurrency(total) }}</span>
-            </div>
-            <div class="flex justify-between items-center">
-              <div>
-                <span class="text-slate-600 text-sm font-medium">Pago pendiente</span>
-                <div class="text-3xl font-bold mt-1" :class="remainingBalance > 0 ? 'text-amber-600' : 'text-emerald-600'">
-                  {{ formatCurrency(remainingBalance) }}
-                </div>
-              </div>
-              <div class="text-right">
-                <span class="text-slate-500 text-xs">Pagado</span>
-                <div class="text-lg font-semibold text-slate-700">{{ formatCurrency(totalPaid) }}</div>
-              </div>
-            </div>
-          </div>
-
-          <div v-if="payments.length > 0" class="mb-6">
-            <h4 class="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
-              <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-              </svg>
-              Pagos realizados
-            </h4>
-            <div class="space-y-2">
-              <div v-for="(payment, idx) in payments" :key="idx" class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100">
-                <div class="flex items-center gap-3">
-                  <div :class="[
-                    'w-8 h-8 rounded-full flex items-center justify-center',
-                    payment.method === PAYMENT_CODES.YAPE ? 'bg-purple-100' : 'bg-green-100'
-                  ]">
-                    <span class="text-sm font-bold" :class="payment.method === PAYMENT_CODES.YAPE ? 'text-purple-600' : 'text-green-600'">
-                      {{ payment.method === PAYMENT_CODES.YAPE ? 'Y' : 'S/' }}
-                    </span>
-                  </div>
-                  <div>
-                    <span :class="[
-                      'text-sm font-medium',
-                      payment.method === PAYMENT_CODES.YAPE ? 'text-purple-700' : 'text-green-700'
-                    ]">
-                      {{ getPaymentLabel(payment.method) }}
-                    </span>
-                    <p class="text-xs text-slate-400">
-                      {{ payment.date || new Date().toLocaleTimeString() }}
-                    </p>
-                  </div>
-                  <span class="font-bold text-slate-800 ml-2">{{ formatCurrency(payment.amount) }}</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span v-if="payment.method === PAYMENT_CODES.CASH && payment.changeAmount > 0" class="text-xs text-emerald-600 font-medium">
-                    Vuelto: {{ formatCurrency(payment.changeAmount) }}
-                  </span>
-                  <button @click="removePayment(idx)" class="text-slate-400 hover:text-red-500 transition-colors p-1">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    Siguiente
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                   </button>
                 </div>
               </div>
             </div>
           </div>
+        </div>
 
-          <div v-if="remainingBalance > 0" class="border-t pt-5">
-            <h4 class="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
-              <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-              </svg>
-              Agregar pago
-            </h4>
-            
-            <div class="flex gap-3 mb-6">
-              <button 
-                v-for="method in paymentMethods"
-                :key="method.value"
-                @click="selectedPaymentMethod = method.value"
-                :class="[
-                  'flex-1 py-3 px-4 rounded-xl font-semibold transition-all border-2',
-                  selectedPaymentMethod === method.value 
-                    ? method.color + ' text-white border-transparent shadow-md' 
-                    : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300 hover:bg-slate-50'
-                ]"
-              >
-                <div class="flex items-center justify-center gap-2">
-                  <span class="text-lg">{{ method.icon }}</span>
-                  {{ method.label }}
-                </div>
-              </button>
+        <!-- Panel Derecho: Carrito rediseñado - CORREGIDO: misma altura que catálogo -->
+        <div class="flex-1 lg:w-[30%] lg:flex-none flex flex-col min-h-[650px] lg:min-h-0">
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200/60 flex flex-col overflow-hidden transition-all hover:shadow-md h-full">
+            <div class="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50/50 border-b border-gray-200/60 flex-shrink-0">
+              <div class="flex items-center justify-between">
+                <h2 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                  <span class="w-1 h-4 bg-gray-400 rounded-full"></span>
+                  Carrito de compras
+                </h2>
+                <span class="text-xs text-gray-500 bg-white px-2.5 py-1 rounded-full shadow-sm">{{ cart.length }} items</span>
+              </div>
             </div>
 
-            <!-- Formulario Yape -->
-            <div v-if="selectedPaymentMethod === PAYMENT_CODES.YAPE" class="text-center">
-              <div class="mb-4">
-                <label class="block text-sm font-medium text-slate-700 mb-2 text-left">Monto a pagar con {{ getPaymentLabel(PAYMENT_CODES.YAPE) }} (S/)</label>
-                <div class="relative">
-                  <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 font-medium">S/</span>
-                  <input 
-                    :value="yapeAmountText"
-                    @input="updateYapeAmount"
-                    type="text"
-                    inputmode="decimal"
-                    class="w-full pl-8 pr-3 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg font-semibold font-mono"
-                    placeholder="0.00"
-                  >
-                </div>
-                <div class="flex gap-2 mt-2">
-                  <button @click="setYapeAmount(remainingBalance)" class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-lg hover:bg-blue-200 transition">{{ QUICK_BUTTON_LABELS.PAY_ALL }}</button>
-                </div>
-              </div>
-              <button 
-                @click="addPaymentYape"
-                :disabled="!yapeAmount || yapeAmount <= 0 || yapeAmount > remainingBalance"
-                class="w-full py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-xl hover:from-purple-700 hover:to-purple-800 transition-all font-semibold shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <span class="flex items-center justify-center gap-2">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                  </svg>
-                  Pagar {{ formatCurrency(yapeAmount || 0) }} con {{ getPaymentLabel(PAYMENT_CODES.YAPE) }}
-                </span>
-              </button>
-            </div>
-
-            <!-- Formulario Efectivo -->
-            <div v-if="selectedPaymentMethod === PAYMENT_CODES.CASH" class="space-y-4">
-              <div>
-                <label class="block text-sm font-medium text-slate-700 mb-2">{{ getPaymentLabel(PAYMENT_CODES.CASH) }} - Monto recibido (S/)</label>
-                <div class="relative">
-                  <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 font-medium">S/</span>
-                  <input 
-                    :value="cashAmountText"
-                    @input="updateCashAmount"
-                    type="text"
-                    inputmode="decimal"
-                    class="w-full pl-8 pr-3 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent text-lg font-semibold font-mono"
-                    placeholder="0.00"
-                  >
-                </div>
-                <div class="flex gap-2 mt-2 flex-wrap">
-                  <button 
-                    @click="setCashAmount(remainingBalance)" 
-                    class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-lg hover:bg-green-200 transition"
-                  >
-                    {{ QUICK_BUTTON_LABELS.PAY_ALL }}
-                  </button>
-                  <button 
-                    v-for="amount in QUICK_CASH_AMOUNTS" 
-                    :key="amount"
-                    @click="setCashAmount(Math.min(amount, remainingBalance))" 
-                    class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-lg hover:bg-green-200 transition"
-                  >
-                    {{ QUICK_BUTTON_LABELS.QUICK_AMOUNT(amount) }}
-                  </button>
-                </div>
-              </div>
-              
-              <div v-if="cashAmount && cashAmount > 0" class="rounded-xl p-4" :class="isCashPaymentComplete ? 'bg-emerald-50' : 'bg-amber-50'">
-                <div class="flex justify-between items-center">
-                  <div>
-                    <p class="text-sm font-medium" :class="isCashPaymentComplete ? 'text-emerald-800' : 'text-amber-800'">
-                      {{ isCashPaymentComplete ? 'Vuelto del cliente' : 'Monto a pagar' }}
-                    </p>
-                    <p class="text-2xl font-bold mt-1" :class="isCashPaymentComplete ? 'text-emerald-600' : 'text-amber-600'">
-                      {{ formatCurrency(calculateCashDifference) }}
-                    </p>
+            <div class="flex-1 overflow-y-auto p-3 sm:p-5 space-y-3">
+              <div v-for="(item, index) in cart" :key="item.id" class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm hover:shadow-md transition-all">
+                <div class="flex justify-between items-start mb-3 gap-2">
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-semibold text-gray-800 truncate">{{ item.nombre_producto }}</p>
+                    <p class="text-xs text-gray-400 font-mono mt-0.5 truncate">{{ item.codigo_barra || 'Sin código' }}</p>
                   </div>
-                  <div class="text-right">
-                    <p class="text-xs text-slate-500">Recibido: {{ formatCurrency(cashAmount || 0) }}</p>
-                    <p class="text-xs text-slate-500">Saldo: {{ formatCurrency(remainingBalance) }}</p>
+                  <button @click="removeFromCart(index)" class="text-gray-400 hover:text-red-500 transition-colors p-1 flex-shrink-0">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+                <div class="flex justify-between items-center gap-2">
+                  <div class="flex items-center gap-2 bg-gray-50 rounded-lg p-1">
+                    <!-- Botón - -->
+                    <button @click="updateQuantity(index, -1)" class="w-7 h-7 sm:w-8 sm:h-8 rounded-md border border-gray-200 bg-white text-gray-600 hover:bg-gray-100 transition-colors text-sm font-medium flex items-center justify-center">−</button>
+                    
+                    <!-- Input editable -->
+                    <input 
+                      type="number"
+                      :value="item.quantity"
+                      @input="updateQuantityManually(index, $event)"
+                      min="1"
+                      :max="item.cantidad_producto"
+                      class="text-sm font-semibold text-gray-800 w-12 text-center border-0 focus:outline-none focus:ring-0 bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    />
+                    
+                    <!-- Botón + -->
+                    <button @click="updateQuantity(index, 1)" class="w-7 h-7 sm:w-8 sm:h-8 rounded-md border border-gray-200 bg-white text-gray-600 hover:bg-gray-100 transition-colors text-sm font-medium flex items-center justify-center">+</button>
+                  </div>
+                  <div class="text-right flex-shrink-0">
+                    <p class="text-sm font-bold text-gray-900">{{ formatCurrency(item.precio_unitario * item.quantity) }}</p>
+                    <p class="text-xs text-gray-400">P.U: {{ formatNumberExact(item.precio_unitario) }}</p>
                   </div>
                 </div>
               </div>
               
+              <div v-if="cart.length === 0" class="text-center py-16">
+                <svg class="w-16 h-16 text-gray-200 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+                <p class="text-gray-400 text-sm">Carrito vacío</p>
+                <p class="text-xs text-gray-300 mt-1">Seleccione productos del catálogo</p>
+              </div>
+            </div>
+
+            <div class="border-t border-gray-200/60 p-4 sm:p-5 space-y-3 sm:space-y-4 bg-gradient-to-r from-gray-50 to-white flex-shrink-0">
+              <div class="space-y-2">
+                <div class="flex justify-between text-sm">
+                  <span class="text-gray-500">Subtotal</span>
+                  <span class="text-gray-700 font-medium">{{ formatCurrency(subtotal) }}</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                  <span class="text-gray-500">IGV (0%)</span>
+                  <span class="text-gray-700 font-medium">{{ formatCurrency(igvTotal) }}</span>
+                </div>
+                <div class="flex justify-between pt-2 sm:pt-3 border-t border-gray-200">
+                  <span class="text-sm sm:text-base font-bold text-gray-900">Total a pagar</span>
+                  <span class="text-sm sm:text-base font-bold text-gray-900">{{ formatCurrency(total) }}</span>
+                </div>
+              </div>
+              
               <button 
-                @click="addPaymentEfectivo"
-                :disabled="!cashAmount || cashAmount <= 0"
-                class="w-full py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl hover:from-green-700 hover:to-green-800 transition-all font-semibold shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                @click="processSale"
+                :disabled="cart.length === 0 || procesandoVenta"
+                class="w-full py-2.5 bg-gray-800 text-white text-sm font-semibold rounded-xl hover:bg-gray-700 transition-all transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 shadow-md"
               >
-                <span class="flex items-center justify-center gap-2">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                  </svg>
-                  {{ cashAmount >= remainingBalance ? 'Registrar pago' : 'Registrar pago' }}
-                </span>
+                {{ procesandoVenta ? 'Procesando...' : (cart.length === 0 ? 'Carrito vacío' : 'Procesar venta') }}
               </button>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
 
-          <div v-if="remainingBalance <= 0" class="bg-gradient-to-r from-emerald-50 to-green-50 p-5 rounded-xl text-center mt-4 border border-emerald-200">
-            <svg class="w-12 h-12 text-emerald-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            <p class="text-emerald-800 font-semibold text-lg">¡Pago completado!</p>
-            <p class="text-sm text-emerald-600 mt-1">Total pagado: {{ formatCurrency(totalPaid) }}</p>
-            <p v-if="totalVuelto > 0" class="text-sm text-emerald-600 font-medium mt-2">
-              Vuelto total: {{ formatCurrency(totalVuelto) }}
-            </p>
+    <!-- Modal de Pago Rediseñado -->
+    <div v-if="showPaymentModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4">
+      <div class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[95vh] sm:max-h-[90vh] flex flex-col overflow-hidden animate-fadeInUp">
+        
+        <!-- Header -->
+        <div class="px-4 sm:px-7 py-4 sm:py-5 border-b border-gray-100 flex justify-between items-center bg-white">
+          <div>
+            <h3 class="text-lg sm:text-xl font-semibold text-gray-900">Registrar pago</h3>
+          </div>
+          <button @click="closePaymentModal" class="text-gray-400 hover:text-gray-600 text-2xl leading-none transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100">
+            ×
+          </button>
+        </div>
+
+        <!-- Contenido -->
+        <div class="flex-1 overflow-y-auto p-4 sm:p-7 bg-gray-50/50">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
+            
+            <!-- Resumen del carrito mejorado -->
+            <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+              <div class="bg-gray-50/80 px-4 sm:px-5 py-2 sm:py-3 border-b border-gray-200">
+                <h4 class="text-sm font-semibold text-gray-700">Detalles de compra</h4>
+              </div>
+              <div class="p-3 sm:p-4 space-y-2 max-h-[350px] overflow-y-auto">
+                <div v-for="(item, idx) in cart" :key="idx" class="flex justify-between text-sm py-2 border-b border-gray-100 last:border-0">
+                  <div class="flex-1">
+                    <span class="text-gray-700 font-medium">{{ item.nombre_producto }}</span>
+                    <span class="text-gray-400 ml-2 text-xs">x{{ item.quantity }}</span>
+                  </div>
+                  <span class="text-gray-800 font-semibold">{{ formatCurrency(item.precio_unitario * item.quantity) }}</span>
+                </div>
+              </div>
+              <div class="bg-gray-50 px-4 sm:px-5 py-2 sm:py-3 border-t border-gray-200 flex justify-between font-bold text-gray-900">
+                <span>Total</span>
+                <span>{{ formatCurrency(total) }}</span>
+              </div>
+            </div>
+
+            <!-- Flujo de pago uniforme mejorado -->
+            <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+              
+              <!-- Paso 1: Selección de método -->
+              <div v-if="!selectedPaymentMethod && remainingBalance > 0" class="p-4 sm:p-5">
+                <h4 class="text-sm font-semibold text-gray-700 mb-4">Seleccionar método de pago</h4>
+                <div class="space-y-3">
+                  <button 
+                    @click="selectPaymentMethod(PAYMENT_CODES.CASH)"
+                    class="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-xl text-left hover:border-gray-300 hover:bg-gray-50 transition-all"
+                  >
+                    <div class="flex items-center gap-3">
+                      <div class="w-10 h-10 bg-green-50 rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <span class="font-semibold text-gray-800">Efectivo</span>
+                        <p class="text-xs text-gray-500 mt-0.5 hidden sm:block">Pago con billetes y monedas</p>
+                      </div>
+                    </div>
+                  </button>
+                  
+                  <button 
+                    @click="selectPaymentMethod(PAYMENT_CODES.YAPE)"
+                    class="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-xl text-left hover:border-gray-300 hover:bg-gray-50 transition-all"
+                  >
+                    <div class="flex items-center gap-3">
+                      <div class="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <span class="font-semibold text-gray-800">Yape</span>
+                        <p class="text-xs text-gray-500 mt-0.5 hidden sm:block">Pago mediante Yape</p>
+                      </div>
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Paso 2: Formulario de pago uniforme -->
+              <div v-else-if="selectedPaymentMethod && remainingBalance > 0" class="p-4 sm:p-5">
+                <div class="flex items-center gap-3 mb-5">
+                  <button @click="selectedPaymentMethod = null" class="text-gray-400 hover:text-gray-600 transition-colors p-1">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                  </button>
+                  <h4 class="text-sm font-semibold text-gray-700">
+                    {{ selectedPaymentMethod === PAYMENT_CODES.CASH ? 'Pago en efectivo' : 'Pago con Yape' }}
+                  </h4>
+                </div>
+
+                <div class="bg-gradient-to-r from-blue-50 to-gray-50 rounded-xl p-4 mb-5 border border-blue-100">
+                  <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-600">Saldo pendiente:</span>
+                    <span class="text-xl sm:text-2xl font-bold text-red-500">{{ formatCurrency(remainingBalance) }}</span>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-600 mb-2">
+                    {{ selectedPaymentMethod === PAYMENT_CODES.CASH ? 'Monto recibido' : 'Monto a pagar con Yape' }}
+                  </label>
+                  <input 
+                    :ref="selectedPaymentMethod === PAYMENT_CODES.CASH ? 'cashInput' : 'yapeInput'"
+                    :value="selectedPaymentMethod === PAYMENT_CODES.CASH ? cashAmountText : yapeAmountText"
+                    @input="selectedPaymentMethod === PAYMENT_CODES.CASH ? updateCashAmount($event) : updateYapeAmount($event)"
+                    type="text"
+                    inputmode="decimal"
+                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-base sm:text-lg font-mono focus:outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-200 transition-all"
+                    placeholder="0.00"
+                  >
+                </div>
+
+                <div v-if="getCurrentAmount > 0" class="mt-5 rounded-xl p-4 text-center" :class="getStatusClass">
+                  <div v-if="getCurrentAmount < remainingBalance">
+                    <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Falta por pagar</p>
+                    <p class="text-xl sm:text-2xl font-bold text-red-600">{{ formatCurrency(remainingBalance - getCurrentAmount) }}</p>
+                    <p class="text-xs text-gray-500 mt-2">
+                      Monto ingresado: {{ formatCurrency(getCurrentAmount) }}
+                    </p>
+                  </div>
+                  
+                  <div v-else-if="getCurrentAmount === remainingBalance">
+                    <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Pago completado</p>
+                    <p class="text-sm font-medium text-green-600">No hay saldo pendiente</p>
+                  </div>
+                  
+                  <div v-else-if="selectedPaymentMethod === PAYMENT_CODES.CASH">
+                    <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Vuelto</p>
+                    <p class="text-xl sm:text-2xl font-bold text-green-600">{{ formatCurrency(getCurrentAmount - remainingBalance) }}</p>
+                    <p class="text-xs text-gray-500 mt-2">
+                      Recibido: {{ formatCurrency(getCurrentAmount) }} | Total: {{ formatCurrency(remainingBalance) }}
+                    </p>
+                  </div>
+                </div>
+
+                <div class="space-y-3 mt-5">
+                  <button 
+                    @click="addPayment"
+                    :disabled="!getCurrentAmount || getCurrentAmount <= 0"
+                    class="w-full py-2.5 bg-gray-800 text-white rounded-xl font-semibold hover:bg-gray-700 transition-all disabled:opacity-50 shadow-md"
+                  >
+                    Registrar pago
+                  </button>
+
+                  <button 
+                    @click="setFullPayment"
+                    class="w-full py-2.5 border-2 border-gray-200 text-gray-700 rounded-xl font-medium text-sm hover:bg-gray-50 transition-all"
+                  >
+                    Pagar total ({{ formatCurrency(remainingBalance) }})
+                  </button>
+                </div>
+              </div>
+
+              <!-- Pagos registrados -->
+              <div v-if="payments.length > 0" class="border-t border-gray-200 bg-gray-50">
+                <div class="p-3 sm:p-4">
+                  <h5 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                    Pagos realizados (Total: {{ formatCurrency(totalPaid) }})
+                  </h5>
+                  <div class="space-y-2 max-h-[200px] overflow-y-auto">
+                    <div v-for="(payment, idx) in payments" :key="idx" class="flex justify-between items-center text-sm p-2 sm:p-3 bg-white rounded-xl border border-gray-200 shadow-sm">
+                      <div class="flex gap-2 sm:gap-3">
+                        <span class="font-semibold text-gray-700">{{ payment.method === PAYMENT_CODES.YAPE ? 'Yape' : 'Efectivo' }}</span>
+                        <span class="text-gray-400 text-xs">{{ payment.date }}</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="font-bold text-gray-900">{{ formatCurrency(payment.received || payment.amount) }}</span>
+                        <button @click="removePayment(idx)" class="text-gray-400 hover:text-red-500 transition-colors p-1">
+                          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- PAGO COMPLETADO -->
+              <div v-if="remainingBalance <= 0" class="border-t border-gray-200 bg-gray-50 p-4 sm:p-5">
+                <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+                  <div class="bg-gray-800 px-4 sm:px-5 py-2 sm:py-3">
+                    <h4 class="text-xs sm:text-sm font-semibold text-white tracking-wide">COMPROBANTE DE PAGO</h4>
+                  </div>
+                  
+                  <div class="p-4 sm:p-5 space-y-3 sm:space-y-4">
+                    <div class="flex justify-between items-baseline pb-3 border-b border-gray-100">
+                      <span class="text-xs sm:text-sm text-gray-500 uppercase tracking-wide">Total venta</span>
+                      <span class="text-xl sm:text-2xl font-bold text-gray-900">{{ formatCurrency(total) }}</span>
+                    </div>
+                    
+                    <div class="flex justify-between items-baseline pb-3 border-b border-gray-100">
+                      <span class="text-xs sm:text-sm text-gray-500 uppercase tracking-wide">Monto recibido</span>
+                      <span class="text-base sm:text-xl font-semibold text-gray-800">{{ formatCurrency(totalRecibido) }}</span>
+                    </div>
+                    
+                    <div v-if="totalVuelto > 0" class="flex justify-between items-baseline pt-2">
+                      <span class="text-xs sm:text-sm font-medium text-gray-600 uppercase tracking-wide">Vuelto</span>
+                      <span class="text-xl sm:text-2xl font-bold text-green-600">{{ formatCurrency(totalVuelto) }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="p-6 border-t bg-slate-50 flex justify-end gap-3 rounded-b-2xl">
+        <!-- Footer -->
+        <div class="px-4 sm:px-7 py-3 sm:py-4 border-t border-gray-100 bg-white flex justify-end gap-3 rounded-b-2xl">
           <button 
             @click="closePaymentModal"
-            class="px-5 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-xl transition"
+            class="px-4 sm:px-5 py-2 border-2 border-gray-200 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-all text-sm sm:text-base"
           >
             Cancelar
           </button>
           <button 
             @click="finalizeSale"
             :disabled="remainingBalance > 0 || procesandoVenta"
-            class="px-6 py-2.5 text-sm font-semibold text-white bg-slate-800 hover:bg-slate-700 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+            class="px-5 sm:px-6 py-2 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition-all transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 shadow-md text-sm sm:text-base"
           >
-            {{ procesandoVenta ? 'Registrando...' : 'Finalizar compra' }}
+            {{ remainingBalance > 0 ? `Faltan ${formatCurrency(remainingBalance)}` : (procesandoVenta ? 'Registrando...' : 'Finalizar venta') }}
           </button>
         </div>
+
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+/* Mejor experiencia táctil en móvil */
+@media (max-width: 640px) {
+  button, 
+  [role="button"],
+  .cursor-pointer {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Animación del modal */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.3s ease-out;
+}
+</style>
 
 <script>
 import { list_producto } from '../../productos/api/producto.ts';
@@ -509,9 +559,6 @@ import { create_venta } from '../api/venta';
 import Quagga from '@ericblade/quagga2';
 import {
   PAYMENT_CODES,
-  QUICK_CASH_AMOUNTS,
-  QUICK_BUTTON_LABELS,
-  MAX_YAPE_AMOUNT,
   formatCurrency,
   formatNumberDisplay,
   formatNumberExact,
@@ -520,8 +567,6 @@ import {
   parseCurrencyInput,
   calculateTotals,
   updatePaymentCalculations,
-  calculateCashDifference,
-  isCashPaymentComplete,
   createYapePayment,
   createEfectivoPayment,
   showToast,
@@ -535,9 +580,6 @@ import {
   showInvalidAmountAlert,
   showIncompletePaymentAlert,
   showSaleErrorAlert,
-  validateYapePayment,
-  validateEfectivoPayment,
-  getPaymentMethods,
   getPaymentLabel,
   getCurrentDateFormatted,
   playBeep
@@ -547,13 +589,8 @@ export default {
   name: "POSVentas",
   data() {
     return {
-      // Constantes expuestas al template
       PAYMENT_CODES,
-      QUICK_CASH_AMOUNTS,
-      QUICK_BUTTON_LABELS,
-      MAX_YAPE_AMOUNT,
       
-      // Estado
       productos: [],
       cart: [],
       searchTerm: "",
@@ -565,14 +602,13 @@ export default {
       scannerViewport: null,
       pagination: null,
       showPaymentModal: false,
-      selectedPaymentMethod: PAYMENT_CODES.YAPE,
+      selectedPaymentMethod: null,
       payments: [],
       cashAmount: null,
       cashAmountText: '',
       yapeAmount: null,
       yapeAmountText: '',
       procesandoVenta: false,
-      paymentMethods: getPaymentMethods(),
       totals: {
         subtotal: 0,
         igvTotal: 0,
@@ -586,6 +622,18 @@ export default {
   computed: {
     currentDate() {
       return getCurrentDateFormatted();
+    },
+    nombreUsuario() {
+      try {
+        const auth = localStorage.getItem("auth");
+        if (auth) {
+          const data = JSON.parse(auth);
+          return data.user?.nombre || 'Administrador';
+        }
+        return 'Administrador';
+      } catch (error) {
+        return 'Administrador';
+      }
     },
     subtotal() {
       return this.totals.subtotal;
@@ -602,14 +650,31 @@ export default {
     remainingBalance() {
       return this.totals.remainingBalance;
     },
-    calculateCashDifference() {
-      return calculateCashDifference(this.cashAmount, this.remainingBalance);
-    },
-    isCashPaymentComplete() {
-      return isCashPaymentComplete(this.cashAmount, this.remainingBalance);
-    },
     totalVuelto() {
       return this.totals.totalVuelto;
+    },
+    totalRecibido() {
+      return this.payments.reduce((sum, p) => sum + (p.received || p.amount), 0);
+    },
+    paymentProgress() {
+      if (this.total === 0) return 0;
+      return (this.totalPaid / this.total) * 100;
+    },
+    getCurrentAmount() {
+      if (this.selectedPaymentMethod === PAYMENT_CODES.CASH) {
+        return this.cashAmount || 0;
+      } else if (this.selectedPaymentMethod === PAYMENT_CODES.YAPE) {
+        return this.yapeAmount || 0;
+      }
+      return 0;
+    },
+    getStatusClass() {
+      const amount = this.getCurrentAmount;
+      if (!amount || amount <= 0) return '';
+      if (amount < this.remainingBalance) return 'bg-red-50 border-red-200';
+      if (amount === this.remainingBalance) return 'bg-green-50 border-green-200';
+      if (this.selectedPaymentMethod === PAYMENT_CODES.CASH) return 'bg-green-50 border-green-200';
+      return 'bg-red-50 border-red-200';
     },
     idUsuarioVenta() {
       try {
@@ -620,39 +685,65 @@ export default {
         }
         return 1;
       } catch (error) {
-        console.error("Error leyendo usuario:", error);
         return 1;
       }
     }
   },
   watch: {
-    cart: {
-      deep: true,
-      handler() {
-        this.updateTotals();
-      }
-    },
-    payments: {
-      deep: true,
-      handler() {
-        this.updateTotals();
-      }
-    }
+    cart: { deep: true, handler() { this.updateTotals(); } },
+    payments: { deep: true, handler() { this.updateTotals(); } }
   },
   mounted() {
     this.cargarProductos();
     this.updateTotals();
   },
   beforeDestroy() {
-    if (this.isScanning) {
-      this.stopScanner();
-    }
+    if (this.isScanning) this.stopScanner();
   },
   methods: {
     formatCurrency,
     formatNumberDisplay,
     formatNumberExact,
     getPaymentLabel,
+    
+    updateQuantityManually(index, event) {
+      const item = this.cart[index];
+      let newQuantity = parseInt(event.target.value);
+      
+      if (isNaN(newQuantity) || newQuantity < 1) {
+        newQuantity = 1;
+      }
+      
+      if (newQuantity > item.cantidad_producto) {
+        newQuantity = item.cantidad_producto;
+        showInsufficientStockAlert(item.nombre_producto, item.cantidad_producto);
+      }
+      
+      item.quantity = newQuantity;
+      
+      if (newQuantity === 0) {
+        this.cart.splice(index, 1);
+      }
+    },
+
+    selectPaymentMethod(method) {
+      this.selectedPaymentMethod = method;
+      this.$nextTick(() => {
+        if (method === PAYMENT_CODES.CASH && this.$refs.cashInput) {
+          this.$refs.cashInput.focus();
+        } else if (method === PAYMENT_CODES.YAPE && this.$refs.yapeInput) {
+          this.$refs.yapeInput.focus();
+        }
+      });
+    },
+    
+    setFullPayment() {
+      if (this.selectedPaymentMethod === PAYMENT_CODES.CASH) {
+        this.setCashAmount(this.remainingBalance);
+      } else if (this.selectedPaymentMethod === PAYMENT_CODES.YAPE) {
+        this.setYapeAmount(this.remainingBalance);
+      }
+    },
     
     updateTotals() {
       const baseTotals = calculateTotals(this.cart);
@@ -663,7 +754,15 @@ export default {
       const value = event.target.value;
       const sanitized = sanitizeCurrencyInput(value);
       this.yapeAmountText = sanitized;
-      this.yapeAmount = parseCurrencyInput(sanitized);
+      let amount = parseCurrencyInput(sanitized);
+      
+      if (amount > this.remainingBalance) {
+        amount = this.remainingBalance;
+        this.yapeAmountText = amount.toString();
+        showToast(`El monto no puede exceder el saldo pendiente. Se ajustó a ${formatCurrency(amount)}`, 'warning');
+      }
+      
+      this.yapeAmount = amount;
     },
     
     updateCashAmount(event) {
@@ -676,29 +775,104 @@ export default {
     setCashAmount(amount) {
       const roundedAmount = roundToTwoDecimals(amount);
       this.cashAmount = roundedAmount;
-      this.cashAmountText = roundedAmount !== null && !isNaN(roundedAmount) 
-        ? roundedAmount.toString() 
-        : '';
+      this.cashAmountText = roundedAmount !== null && !isNaN(roundedAmount) ? roundedAmount.toString() : '';
     },
     
     setYapeAmount(amount) {
       const roundedAmount = roundToTwoDecimals(amount);
       this.yapeAmount = roundedAmount;
-      this.yapeAmountText = roundedAmount !== null && !isNaN(roundedAmount) 
-        ? roundedAmount.toString() 
-        : '';
+      this.yapeAmountText = roundedAmount !== null && !isNaN(roundedAmount) ? roundedAmount.toString() : '';
+    },
+    
+    addPayment() {
+      if (this.selectedPaymentMethod === PAYMENT_CODES.CASH) {
+        this.addPaymentEfectivo();
+      } else if (this.selectedPaymentMethod === PAYMENT_CODES.YAPE) {
+        this.addPaymentYape();
+      }
+    },
+    
+    addPaymentYape() {
+      let amount = this.yapeAmount;
+      
+      if (!amount || amount <= 0) {
+        showErrorAlert('Ingrese un monto válido');
+        return;
+      }
+      
+      if (amount > this.remainingBalance) {
+        showErrorAlert(`El monto no puede exceder el saldo pendiente (${formatCurrency(this.remainingBalance)})`);
+        return;
+      }
+      
+      amount = roundToTwoDecimals(amount) || 0;
+      const payment = createYapePayment(amount);
+      this.payments.push(payment);
+      this.setYapeAmount(null);
+      this.selectedPaymentMethod = null;
+      
+      if (this.remainingBalance <= 0) {
+        showPaymentCompletedAlert(this.totalPaid, this.totalVuelto);
+      } else {
+        console.log(`Pago Yape registrado: ${formatCurrency(amount)}. Faltan: ${formatCurrency(this.remainingBalance)}`, 'success');
+      }
+    },
+    
+    addPaymentEfectivo() {
+      let amount = this.cashAmount;
+      
+      if (!amount || amount <= 0) {
+        showInvalidAmountAlert();
+        return;
+      }
+      
+      amount = roundToTwoDecimals(amount) || 0;
+      
+      let paymentAmount = amount;
+      let changeAmount = 0;
+      
+      if (amount >= this.remainingBalance) {
+        paymentAmount = this.remainingBalance;
+        changeAmount = roundToTwoDecimals(amount - this.remainingBalance) || 0;
+      }
+      
+      const payment = {
+        method: PAYMENT_CODES.CASH,
+        amount: paymentAmount,
+        changeAmount: changeAmount,
+        received: amount,
+        date: new Date().toLocaleTimeString()
+      };
+      
+      this.payments.push(payment);
+      this.setCashAmount(null);
+      this.selectedPaymentMethod = null;
+      
+      if (this.remainingBalance <= 0) {
+        showPaymentCompletedAlert(this.totalPaid, this.totalVuelto);
+      } else {
+        console.log(`Pago efectivo registrado: ${formatCurrency(paymentAmount)}. Recibido: ${formatCurrency(amount)}. Faltan: ${formatCurrency(this.remainingBalance)}`);
+      }
+    },
+    
+    removePayment(index) {
+      this.payments.splice(index, 1);
+    },
+    
+    closePaymentModal() {
+      this.showPaymentModal = false;
+      this.payments = [];
+      this.selectedPaymentMethod = null;
+      this.setCashAmount(null);
+      this.setYapeAmount(null);
     },
     
     async cargarProductos(params = {}) {
       this.loading = true;
       try {
         const defaultParams = {};
-        if (this.filtroEstado !== 'todos') {
-          defaultParams.estado = this.filtroEstado;
-        }
-        if (this.searchTerm) {
-          defaultParams.search = this.searchTerm;
-        }
+        if (this.filtroEstado !== 'todos') defaultParams.estado = this.filtroEstado;
+        if (this.searchTerm) defaultParams.search = this.searchTerm;
         
         const finalParams = { ...defaultParams, ...params };
         const response = await list_producto(finalParams);
@@ -726,7 +900,7 @@ export default {
         }
       } catch (error) {
         console.error("Error cargando productos:", error);
-        showErrorAlert('Error al cargar productos', 'Error de carga');
+        showErrorAlert('Error al cargar productos');
         this.productos = [];
       } finally {
         this.loading = false;
@@ -756,19 +930,14 @@ export default {
         }
       } catch (error) {
         console.error("Error cambiando página:", error);
-        showErrorAlert('Error al cambiar de página', 'Error');
+        showErrorAlert('Error al cambiar de página');
       } finally {
         this.loading = false;
       }
     },
     
-    handleSearch() {
-      this.cargarProductos({ page: 1 });
-    },
-    
-    handleFilterChange() {
-      this.cargarProductos({ page: 1 });
-    },
+    handleSearch() { this.cargarProductos({ page: 1 }); },
+    handleFilterChange() { this.cargarProductos({ page: 1 }); },
     
     limpiarFiltros() {
       this.searchTerm = "";
@@ -778,26 +947,19 @@ export default {
     
     async startScanner() {
       if (this.quaggaInitialized) {
-        try {
-          Quagga.offDetected(this.onDetected);
-          Quagga.stop();
-        } catch (err) {}
+        try { Quagga.offDetected(this.onDetected); Quagga.stop(); } catch (err) {}
         this.quaggaInitialized = false;
       }
 
       if (!this.scannerViewport) {
-        showErrorAlert('Error al iniciar el escáner', 'Error');
+        showErrorAlert('Error al iniciar el escáner');
         this.isScanning = false;
         return;
       }
 
       try {
         await Quagga.init({
-          inputStream: {
-            type: 'LiveStream',
-            target: this.scannerViewport,
-            constraints: { width: { min: 640 }, height: { min: 480 }, facingMode: 'environment' },
-          },
+          inputStream: { type: 'LiveStream', target: this.scannerViewport, constraints: { width: { min: 640 }, height: { min: 480 }, facingMode: 'environment' } },
           locator: { patchSize: 'medium', halfSample: true },
           numOfWorkers: navigator.hardwareConcurrency || 4,
           decoder: { readers: ['code_128_reader', 'ean_reader', 'ean_8_reader', 'code_39_reader', 'upc_reader', 'upc_e_reader', 'codabar_reader'] },
@@ -809,7 +971,7 @@ export default {
         Quagga.onDetected(this.onDetected);
       } catch (err) {
         console.error('Error al iniciar escáner:', err);
-        showErrorAlert('No se pudo acceder a la cámara', 'Error de cámara');
+        showErrorAlert('No se pudo acceder a la cámara');
         this.isScanning = false;
       }
     },
@@ -819,7 +981,7 @@ export default {
       const code = result.codeResult.code;
       this.searchTerm = code;
       this.handleSearch();
-      showToast(`🔍 Buscando producto con código: ${code}`, 'info');
+      showToast(`Producto buscado: ${code}`, 'info');
       playBeep();
       this.scanTimeout = setTimeout(() => { this.scanTimeout = null; }, 1000);
     },
@@ -890,56 +1052,7 @@ export default {
       }
       this.showPaymentModal = true;
       this.payments = [];
-      this.setCashAmount(null);
-      this.setYapeAmount(null);
-      this.selectedPaymentMethod = PAYMENT_CODES.YAPE;
-    },
-    
-    addPaymentYape() {
-      let amount = this.yapeAmount;
-      
-      const validation = validateYapePayment(amount, this.remainingBalance, this.maxYapeAmount);
-      if (!validation.valid) {
-        showErrorAlert(validation.errorMessage || 'Monto inválido', 'Monto inválido');
-        return;
-      }
-      
-      amount = roundToTwoDecimals(amount) || 0;
-      const payment = createYapePayment(amount);
-      this.payments.push(payment);
-      this.setYapeAmount(null);
-      
-      if (this.remainingBalance <= 0) {
-        showPaymentCompletedAlert(this.totalPaid, this.totalVuelto);
-      }
-    },
-    
-    addPaymentEfectivo() {
-      let amount = this.cashAmount;
-      
-      const validation = validateEfectivoPayment(amount);
-      if (!validation.valid) {
-        showInvalidAmountAlert();
-        return;
-      }
-      
-      amount = roundToTwoDecimals(amount) || 0;
-      const payment = createEfectivoPayment(amount, this.remainingBalance);
-      this.payments.push(payment);
-      this.setCashAmount(null);
-      
-      if (this.remainingBalance <= 0) {
-        showPaymentCompletedAlert(this.totalPaid, this.totalVuelto);
-      }
-    },
-    
-    removePayment(index) {
-      this.payments.splice(index, 1);
-    },
-    
-    closePaymentModal() {
-      this.showPaymentModal = false;
-      this.payments = [];
+      this.selectedPaymentMethod = null;
       this.setCashAmount(null);
       this.setYapeAmount(null);
     },
@@ -950,14 +1063,10 @@ export default {
         return;
       }
       
-      if (this.procesandoVenta) {
-        return;
-      }
-      
+      if (this.procesandoVenta) return;
       this.procesandoVenta = true;
       
       try {
-        
         const detalles = this.cart.map(item => ({
           descripcion_producto: item.nombre_producto,
           codigo_barra: item.codigo_barra || '',
@@ -969,16 +1078,14 @@ export default {
         }));
 
         const pagos = this.payments.map(payment => {
-          const pago = {
-            forma_pago: payment.method,
-            monto_pagar: payment.amount,
+          const pago = { 
+            forma_pago: payment.method, 
+            monto_pagar: payment.amount 
           };
-          
           if (payment.method === PAYMENT_CODES.CASH) {
             pago.efectivo_recibido = payment.received || payment.amount;
             pago.efectivo_vuelto = payment.changeAmount || 0;
           }
-          
           return pago;
         });
         
@@ -996,14 +1103,9 @@ export default {
         } else {
           showSaleErrorAlert('Error al registrar la venta');
         }
-        
       } catch (error) {
         console.error('Error al registrar venta:', error);
-        let errorMsg = 'Error al registrar la venta';
-        if (error.response?.data) {
-          errorMsg = JSON.stringify(error.response.data);
-        }
-        showSaleErrorAlert(errorMsg);
+        showSaleErrorAlert('Error al registrar la venta');
       } finally {
         this.procesandoVenta = false;
       }
