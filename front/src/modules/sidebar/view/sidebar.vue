@@ -9,15 +9,28 @@
   <!-- Sidebar -->
   <aside
     :class="[
-      'fixed left-0 top-0 h-full bg-gradient-to-br from-[#1e3c72] to-[#2a5298] transition-all duration-300 z-30 shadow-xl',
+      'fixed left-0 top-0 h-full bg-white transition-all duration-300 z-30 shadow-xl',
       isCollapsed ? 'w-20' : 'w-64',
       isMobileMenuOpen
         ? 'translate-x-0'
         : '-translate-x-full lg:translate-x-0',
     ]"
   >
+    <!-- ========== LOGO / HEADER ========== -->
+    <div :class="[
+      'flex items-center justify-center border-b border-gray-200 mb-2',
+      !isCollapsed ? 'h-32 md:h-36 lg:h-44' : 'h-14 md:h-16 lg:h-16'
+    ]">
+      <div v-if="!isCollapsed" class="flex items-center gap-2 px-3">
+        <img src="/logo_1.png" alt="Logo Micali" class="h-16 md:h-20 lg:h-28 w-auto"/>
+      </div>
+      <div v-else class="flex justify-center w-full">
+        <img src="/logo_1.png" alt="Logo" class="h-7 md:h-8 lg:h-9 w-auto rounded-lg" />
+      </div>
+    </div>
+
     <!-- Menú -->
-    <nav class="mt-4 px-2">
+    <nav class="mt-2 px-2">
       <div v-for="item in menuItems" :key="item.id">
 
         <!-- ITEM -->
@@ -30,8 +43,8 @@
           :class="[
             'flex items-center px-3 py-3 mb-1 rounded-lg cursor-pointer transition-all',
             isActive(item.ruta)
-              ? 'bg-white/20 text-white shadow-md'
-              : 'text-white/70 hover:bg-white/10 hover:text-white',
+              ? 'bg-gray-900 text-white shadow-md'
+              : 'text-gray-700 hover:bg-gray-300 hover:text-gray-600',
           ]"
         >
           <component
@@ -44,11 +57,10 @@
             {{ item.titulo }}
           </span>
 
-          <!-- Flecha -->
           <svg
             v-if="item.children && item.children.length && !isCollapsed"
             :class="[
-              'w-4 h-4 transition-transform',
+              'w-4 h-4 transition-transform text-gray-500',
               openMenus[item.id] ? 'rotate-90' : '',
             ]"
             fill="none"
@@ -70,16 +82,16 @@
             :key="child.id"
             @click="navigate(child.ruta)"
             :class="[
-              'flex items-center px-3 py-2 mb-1 rounded-lg cursor-pointer text-xs transition-all',
+              'flex items-center px-3 py-3 mb-1 rounded-lg cursor-pointer transition-all text-xs font-medium',
               isActive(child.ruta)
-                ? 'bg-white/20 text-white'
-                : 'text-white/70 hover:bg-white/10 hover:text-white',
+                ? 'bg-gray-900 text-white shadow-md'
+                : 'text-gray-700 hover:bg-gray-300 hover:text-gray-600',
             ]"
           >
             <component
               v-if="Icons[child.icono]"
               :is="Icons[child.icono]"
-              class="w-4 h-4"
+              class="w-5 h-5"
             />
             <span class="ml-3">{{ child.titulo }}</span>
           </div>
@@ -92,7 +104,7 @@
     <button
       v-if="!isMobile"
       @click="$emit('toggleSidebar')"
-      class="absolute bottom-4 left-1/2 -translate-x-1/2 p-2 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-all"
+      class="absolute bottom-4 left-1/2 -translate-x-1/2 p-2 rounded-lg bg-gray-200 text-gray-600 hover:bg-gray-300 transition-all"
     >
       <svg
         v-if="!isCollapsed"
@@ -123,7 +135,7 @@
 import * as Icons from "@heroicons/vue/24/outline";
 import { ref, onMounted, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { useMenuStore } from "../../../store/menu.ts"; // 👈 STORE
+import { useMenuStore } from "../../../store/menu.ts";
 
 /* PROPS */
 defineProps({
@@ -139,38 +151,38 @@ defineEmits(["closeMobile", "toggleSidebar"]);
 const router = useRouter();
 const route = useRoute();
 
-/* STORE 👇 */
+/* STORE */
 const { menuItems, loadMenu } = useMenuStore();
 
 /* STATE */
 const openMenus = ref({});
 
-/* 🔧 NORMALIZAR RUTA */
+/* NORMALIZAR RUTA */
 const normalizePath = (path) => {
   if (!path) return null;
   return path.startsWith("/") ? path : "/" + path;
 };
 
-/* 🚀 NAVIGATE */
+/* NAVIGATE */
 const navigate = (path) => {
   const finalPath = normalizePath(path);
   if (!finalPath) return;
   router.push(finalPath);
 };
 
-/* 🎯 ACTIVE */
+/* ACTIVE */
 const isActive = (path) => {
   const finalPath = normalizePath(path);
   if (!finalPath) return false;
   return route.path.startsWith(finalPath);
 };
 
-/* 🔽 TOGGLE */
+/* TOGGLE */
 const toggleMenu = (id) => {
   openMenus.value[id] = !openMenus.value[id];
 };
 
-/* 📂 ABRIR MENÚ ACTIVO */
+/* ABRIR MENÚ ACTIVO */
 const openActiveMenu = () => {
   const currentPath = route.path;
 
@@ -187,15 +199,14 @@ const openActiveMenu = () => {
   });
 };
 
-/* 👀 WATCH ROUTE */
+/* WATCH ROUTE */
 watch(() => route.path, () => {
   openActiveMenu();
 });
 
-/* 🚀 INIT */
+/* INIT */
 onMounted(async () => {
   console.log("Sidebar montado");
-
   await loadMenu();
   openActiveMenu();
 });

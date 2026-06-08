@@ -50,6 +50,11 @@ const routes = [
         name: "Kardex",
         component: () => import("../modules/kardex/view/kardex.vue"),
       },
+      {
+        path: "solicitud_pedido",
+        name: "Solicitud de pedido",
+        component: () => import("../modules/solicitud_pedido/view/solicitud_pedido.vue"),
+      },
     ],
   },
 

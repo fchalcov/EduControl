@@ -68,10 +68,10 @@
       </header>
 
       <!-- CONTENIDO -->
-      <main class="p-4 md:p-6 bg-gray-100 min-h-[calc(100vh-4rem)] flex flex-col">
+      <main class="p-4 md:p-4 bg-gray-100 min-h-[calc(100vh-4rem)] flex flex-col">
         <div class="flex-1 flex flex-col bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div class="flex-1 overflow-auto p-4 md:p-6">
-            <div class="flex-1 overflow-auto p-4 md:p-6">
+          <div class="flex-1 overflow-auto p-4 md:p-4">
+            <div class="flex-1 overflow-auto p-4 md:p-4">
               <router-view />
             </div>
           </div>

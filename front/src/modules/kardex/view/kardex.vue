@@ -3,9 +3,14 @@
     <!-- Header -->
     <header class="bg-white border-b border-gray-200 px-8 py-6">
       <div class="flex justify-between items-start">
-        <div>
-          <h1 class="text-2xl font-semibold text-gray-900">Kardex de Inventario</h1>
-          <p class="text-sm text-gray-500 mt-1">Gestión y control de movimientos de stock</p>
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0">
+            <span class="text-white text-sm font-bold">K</span>
+          </div>
+          <div>
+            <h1 class="text-base sm:text-xl font-semibold text-gray-800 tracking-tight">Kardex de Inventario</h1>
+            <p class="text-xs text-gray-500 hidden sm:block">Gestión y control de movimientos de stock</p>
+          </div>
         </div>
         <div class="flex gap-3">
           <button class="px-5 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2">
@@ -75,7 +80,10 @@
         <!-- Filters Panel -->
         <div class="bg-white rounded-lg border border-gray-200 mb-8">
           <div class="px-6 py-4 border-b border-gray-200">
-            <span class="text-sm font-semibold text-gray-700">Filtros de Búsqueda</span>
+            <h2 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+              <span class="w-1 h-4 bg-gray-900 rounded-full"></span>
+              Filtro de busqueda
+            </h2>
           </div>
           
           <div class="p-6">
@@ -154,7 +162,10 @@
         <!-- Transactions Table -->
         <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
           <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-            <span class="text-sm font-semibold text-gray-700">Registro de Movimientos</span>
+            <h2 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+              <span class="w-1 h-4 bg-gray-900 rounded-full"></span>
+              Historial de movimientos
+            </h2>
             <span class="text-xs text-gray-500">{{ pagination.total || 0 }} resultados</span>
           </div>
           

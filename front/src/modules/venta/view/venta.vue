@@ -1,35 +1,28 @@
 <template>
   <div class="h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col">
     <!-- Header Rediseñado -->
-    <div class="bg-white/80 backdrop-blur-sm border-b border-gray-200/80 px-4 sm:px-6 md:px-8 py-3 sm:py-4 sticky top-0 z-10 flex-shrink-0 shadow-sm">
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+    <header class="bg-white border-b border-gray-200 px-8 py-6">
+      <div class="flex justify-between items-start">
         <div class="flex items-center gap-3">
           <div class="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0">
-            <span class="text-white text-sm font-bold">P</span>
+            <span class="text-white text-sm font-bold">V</span>
           </div>
           <div>
             <h1 class="text-base sm:text-xl font-semibold text-gray-800 tracking-tight">Punto de Venta</h1>
-            <p class="text-xs text-gray-500 hidden sm:block">Sistema de gestión</p>
+            <p class="text-xs text-gray-500 hidden sm:block">Sistema de gestión de ventas</p>
           </div>
         </div>
-        
-        <div class="flex items-center justify-between sm:justify-end gap-4 sm:gap-6">
+        <div class="flex gap-3">
           <div class="text-right">
-            <p class="text-[10px] text-gray-400 uppercase tracking-wider hidden sm:block">Fecha y hora</p>
-            <p class="text-xs sm:text-sm font-medium text-gray-700">{{ currentDate }}</p>
-          </div>
-          <div class="w-px h-8 bg-gray-200 hidden sm:block"></div>
-          <div class="text-right">
-            <p class="text-[10px] text-gray-400 uppercase tracking-wider hidden sm:block">Usuario</p>
-            <p class="text-xs sm:text-sm font-medium text-gray-700 truncate max-w-[120px] sm:max-w-none">{{ nombreUsuario }}</p>
+            <p class="text-xs text-gray-500">{{ currentDate }}</p>
+            <p class="text-xs font-medium text-gray-700">{{ nombreUsuario }}</p>
           </div>
         </div>
       </div>
-    </div>
+    </header>
 
-    <!-- Contenido Principal - VERSION CORRECTAMENTE RESPONSIVE -->
-    <div class="flex-1 px-4 sm:px-6 md:px-8 py-4 sm:py-6 min-h-0 overflow-y-auto">
-      <!-- En móvil: apilado (flex-col), en desktop: lado a lado (lg:flex-row) -->
+    <!-- Contenido Principal -->
+    <main class="flex-1 px-4 sm:px-6 md:px-8 py-4 sm:py-6 min-h-0 overflow-y-auto">
       <div class="flex flex-col lg:flex-row gap-4 md:gap-6 lg:gap-8 h-full">
         
         <!-- Panel Izquierdo: Catálogo -->
@@ -39,7 +32,7 @@
           <div class="bg-white rounded-xl shadow-sm border border-gray-200/60 flex-shrink-0 overflow-hidden">
             <div class="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50/50 border-b border-gray-200/60">
               <h2 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                <span class="w-1 h-4 bg-gray-400 rounded-full"></span>
+                <span class="w-1 h-4 bg-gray-900 rounded-full"></span>
                 Buscar producto
               </h2>
             </div>
@@ -52,10 +45,11 @@
                   </svg>
                 </div>
                 <input 
+                  ref="searchInput"
                   v-model="searchTerm" 
-                  @keyup.enter="handleSearch"
+                  @input="handleManualSearch"
                   type="text" 
-                  placeholder="Buscar por nombre o código de barras..."
+                  placeholder="Escriba para buscar productos..."
                   class="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-200 transition-all bg-gray-50/30"
                 />
               </div>
@@ -78,25 +72,7 @@
                     <option value="true">Activos</option>
                     <option value="false">Inactivos</option>
                   </select>
-                  <button 
-                    @click="toggleScanner"
-                    :class="[
-                      'px-3 py-1.5 text-xs font-medium rounded-lg transition-all flex items-center gap-1.5 whitespace-nowrap',
-                      isScanning ? 'bg-red-50 text-red-600 border border-red-200' : 'border border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300'
-                    ]"
-                  >
-                    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    <span class="hidden sm:inline">{{ isScanning ? 'Detener' : 'Escáner' }}</span>
-                    <span class="sm:hidden">{{ isScanning ? '✕' : '📷' }}</span>
-                  </button>
                 </div>
-              </div>
-              
-              <div v-if="isScanning" style="display: none;">
-                <div ref="scannerViewport"></div>
               </div>
             </div>
           </div>
@@ -106,7 +82,7 @@
             <div class="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50/50 border-b border-gray-200/60 flex-shrink-0">
               <div class="flex items-center justify-between">
                 <h2 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                  <span class="w-1 h-4 bg-gray-400 rounded-full"></span>
+                  <span class="w-1 h-4 bg-gray-900 rounded-full"></span>
                   Catálogo de productos
                 </h2>
                 <span class="text-xs text-gray-500 bg-white px-2.5 py-1 rounded-full shadow-sm">{{ pagination?.total || 0 }} productos</span>
@@ -136,7 +112,7 @@
                   <div class="flex justify-between items-start gap-2">
                     <div class="flex-1 min-w-0">
                       <p class="text-sm font-semibold text-gray-800 group-hover:text-gray-900 transition-colors truncate">{{ product.nombre_producto }}</p>
-                      <p class="text-xs text-gray-500 mt-1.5 font-mono truncate">Código: {{ product.codigo_barra || '---' }}</p>
+                      <p class="text-xs text-gray-500 mt-1.5">Código barra: {{ product.codigo_barra || '---' }}</p>
                       <div class="mt-2 flex items-center gap-2">
                         <span class="text-xs text-gray-500 flex-shrink-0">Stock:</span>
                         <span :class="[
@@ -203,13 +179,13 @@
           </div>
         </div>
 
-        <!-- Panel Derecho: Carrito rediseñado - CORREGIDO: misma altura que catálogo -->
+        <!-- Panel Derecho: Carrito rediseñado -->
         <div class="flex-1 lg:w-[30%] lg:flex-none flex flex-col min-h-[650px] lg:min-h-0">
           <div class="bg-white rounded-xl shadow-sm border border-gray-200/60 flex flex-col overflow-hidden transition-all hover:shadow-md h-full">
             <div class="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50/50 border-b border-gray-200/60 flex-shrink-0">
               <div class="flex items-center justify-between">
                 <h2 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                  <span class="w-1 h-4 bg-gray-400 rounded-full"></span>
+                  <span class="w-1 h-4 bg-gray-900 rounded-full"></span>
                   Carrito de compras
                 </h2>
                 <span class="text-xs text-gray-500 bg-white px-2.5 py-1 rounded-full shadow-sm">{{ cart.length }} items</span>
@@ -231,10 +207,8 @@
                 </div>
                 <div class="flex justify-between items-center gap-2">
                   <div class="flex items-center gap-2 bg-gray-50 rounded-lg p-1">
-                    <!-- Botón - -->
                     <button @click="updateQuantity(index, -1)" class="w-7 h-7 sm:w-8 sm:h-8 rounded-md border border-gray-200 bg-white text-gray-600 hover:bg-gray-100 transition-colors text-sm font-medium flex items-center justify-center">−</button>
                     
-                    <!-- Input editable -->
                     <input 
                       type="number"
                       :value="item.quantity"
@@ -244,7 +218,6 @@
                       class="text-sm font-semibold text-gray-800 w-12 text-center border-0 focus:outline-none focus:ring-0 bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
                     
-                    <!-- Botón + -->
                     <button @click="updateQuantity(index, 1)" class="w-7 h-7 sm:w-8 sm:h-8 rounded-md border border-gray-200 bg-white text-gray-600 hover:bg-gray-100 transition-colors text-sm font-medium flex items-center justify-center">+</button>
                   </div>
                   <div class="text-right flex-shrink-0">
@@ -290,7 +263,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </main>
 
     <!-- Modal de Pago Rediseñado -->
     <div v-if="showPaymentModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4">
@@ -360,8 +333,9 @@
                   >
                     <div class="flex items-center gap-3">
                       <div class="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center flex-shrink-0">
-                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <circle cx="12" cy="12" r="8" stroke-width="1.5"/>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 8L12 12L16 8M12 12L12 18" />
                         </svg>
                       </div>
                       <div>
@@ -556,7 +530,6 @@
 <script>
 import { list_producto } from '../../productos/api/producto.ts';
 import { create_venta } from '../api/venta';
-import Quagga from '@ericblade/quagga2';
 import {
   PAYMENT_CODES,
   formatCurrency,
@@ -595,11 +568,7 @@ export default {
       cart: [],
       searchTerm: "",
       filtroEstado: "todos",
-      isScanning: false,
       loading: false,
-      quaggaInitialized: false,
-      scanTimeout: null,
-      scannerViewport: null,
       pagination: null,
       showPaymentModal: false,
       selectedPaymentMethod: null,
@@ -616,7 +585,12 @@ export default {
         totalPaid: 0,
         remainingBalance: 0,
         totalVuelto: 0
-      }
+      },
+      // Variables para capturar escaneo de pistola
+      barcodeBuffer: '',
+      barcodeTimeout: null,
+      lastKeyTime: 0,
+      isScanning: false
     };
   },
   computed: {
@@ -691,20 +665,97 @@ export default {
   },
   watch: {
     cart: { deep: true, handler() { this.updateTotals(); } },
-    payments: { deep: true, handler() { this.updateTotals(); } }
+    payments: { deep: true, handler() { this.updateTotals(); } },
+    // Debounce para búsqueda manual
+    searchTerm() {
+      this.handleManualSearch();
+    }
   },
   mounted() {
     this.cargarProductos();
     this.updateTotals();
+    // Escuchar eventos de teclado globales para capturar el escáner
+    window.addEventListener('keydown', this.handleKeyDown);
+    window.addEventListener('keyup', this.handleKeyUp);
   },
   beforeDestroy() {
-    if (this.isScanning) this.stopScanner();
+    window.removeEventListener('keydown', this.handleKeyDown);
+    window.removeEventListener('keyup', this.handleKeyUp);
+    if (this.barcodeTimeout) clearTimeout(this.barcodeTimeout);
   },
   methods: {
     formatCurrency,
     formatNumberDisplay,
     formatNumberExact,
     getPaymentLabel,
+    
+    // Capturar teclas para detectar escaneo de pistola
+    handleKeyDown(event) {
+      // Ignorar si el foco está en un input (es escritura manual)
+      const activeElement = document.activeElement;
+      const isInputFocused = activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA');
+      
+      // Si el usuario está escribiendo manualmente, no interferir
+      if (isInputFocused) {
+        return;
+      }
+      
+      // Detectar si es un escaneo (teclas rápidas)
+      const now = Date.now();
+      const timeDiff = now - this.lastKeyTime;
+      
+      // Si la diferencia es menor a 50ms, es un escaneo rápido de pistola
+      if (timeDiff < 50) {
+        this.isScanning = true;
+      }
+      
+      this.lastKeyTime = now;
+      
+      // Capturar la tecla presionada (solo caracteres imprimibles)
+      if (event.key.length === 1 && !event.ctrlKey && !event.altKey && !event.metaKey) {
+        // Prevenir que el carácter se escriba en cualquier lugar
+        event.preventDefault();
+        
+        // Agregar al buffer del código de barras
+        this.barcodeBuffer += event.key;
+        
+        // Reiniciar timeout para esperar el Enter
+        if (this.barcodeTimeout) clearTimeout(this.barcodeTimeout);
+        this.barcodeTimeout = setTimeout(() => {
+          // Timeout alcanzado, probablemente no era un escaneo completo
+          this.barcodeBuffer = '';
+          this.isScanning = false;
+        }, 100);
+      }
+      
+      // Detectar la tecla Enter (fin del escaneo)
+      if (event.key === 'Enter' && this.barcodeBuffer.length > 0) {
+        event.preventDefault();
+        
+        // Procesar el código de barras
+        const codigo = this.barcodeBuffer;
+        this.barcodeBuffer = '';
+        this.isScanning = false;
+        
+        if (this.barcodeTimeout) clearTimeout(this.barcodeTimeout);
+        
+        // Agregar el producto al carrito
+        this.buscarProductoPorCodigo(codigo);
+      }
+    },
+    
+    handleKeyUp(event) {
+      // No es necesario hacer nada aquí por ahora
+    },
+    
+    // Búsqueda manual (solo filtra, no agrega al carrito)
+    handleManualSearch() {
+      // Usar debounce para no hacer muchas peticiones
+      if (this.searchTimeout) clearTimeout(this.searchTimeout);
+      this.searchTimeout = setTimeout(() => {
+        this.cargarProductos({ page: 1 });
+      }, 500);
+    },
     
     updateQuantityManually(index, event) {
       const item = this.cart[index];
@@ -936,7 +987,6 @@ export default {
       }
     },
     
-    handleSearch() { this.cargarProductos({ page: 1 }); },
     handleFilterChange() { this.cargarProductos({ page: 1 }); },
     
     limpiarFiltros() {
@@ -945,68 +995,66 @@ export default {
       this.cargarProductos({ page: 1 });
     },
     
-    async startScanner() {
-      if (this.quaggaInitialized) {
-        try { Quagga.offDetected(this.onDetected); Quagga.stop(); } catch (err) {}
-        this.quaggaInitialized = false;
-      }
-
-      if (!this.scannerViewport) {
-        showErrorAlert('Error al iniciar el escáner');
-        this.isScanning = false;
-        return;
-      }
-
+    // Función para buscar producto por código de barras y agregarlo al carrito
+    async buscarProductoPorCodigo(codigoBarra) {
       try {
-        await Quagga.init({
-          inputStream: { type: 'LiveStream', target: this.scannerViewport, constraints: { width: { min: 640 }, height: { min: 480 }, facingMode: 'environment' } },
-          locator: { patchSize: 'medium', halfSample: true },
-          numOfWorkers: navigator.hardwareConcurrency || 4,
-          decoder: { readers: ['code_128_reader', 'ean_reader', 'ean_8_reader', 'code_39_reader', 'upc_reader', 'upc_e_reader', 'codabar_reader'] },
-          locate: true,
-          frequency: 5,
+        // Buscar el producto por código de barras
+        const response = await list_producto({ 
+          codigo_barra: codigoBarra,
+          estado: 'true' // Solo productos activos
         });
-        Quagga.start();
-        this.quaggaInitialized = true;
-        Quagga.onDetected(this.onDetected);
-      } catch (err) {
-        console.error('Error al iniciar escáner:', err);
-        showErrorAlert('No se pudo acceder a la cámara');
-        this.isScanning = false;
+        
+        if (response.data && response.data.results && response.data.results.length > 0) {
+          const producto = response.data.results[0];
+          
+          // Verificar si el producto está activo
+          if (producto.estado === false || producto.estado === 'false') {
+            showProductInactiveAlert(producto.nombre_producto);
+            playBeep();
+            return false;
+          }
+          
+          // Verificar stock
+          if (producto.cantidad_producto <= 0) {
+            showNoStockAlert(producto.nombre_producto);
+            playBeep();
+            return false;
+          }
+          
+          // Agregar al carrito
+          this.agregarProductoAlCarrito(producto);
+          playBeep(); // Sonido de éxito
+          showToast(`✓ "${producto.nombre_producto}" agregado al carrito`, 'success');
+          return true;
+        } else {
+          showErrorAlert(`No se encontró el producto con código: ${codigoBarra}`, 'Producto no encontrado');
+          playBeep(); // Sonido de error
+          return false;
+        }
+      } catch (error) {
+        console.error("Error buscando producto por código:", error);
+        showErrorAlert('Error al buscar el producto');
+        return false;
       }
     },
     
-    onDetected(result) {
-      if (!this.isScanning || this.scanTimeout) return;
-      const code = result.codeResult.code;
-      this.searchTerm = code;
-      this.handleSearch();
-      showToast(`Producto buscado: ${code}`, 'info');
-      playBeep();
-      this.scanTimeout = setTimeout(() => { this.scanTimeout = null; }, 1000);
-    },
-    
-    stopScanner() {
-      if (this.quaggaInitialized) {
-        Quagga.offDetected(this.onDetected);
-        Quagga.stop();
-        this.quaggaInitialized = false;
-      }
-      this.isScanning = false;
-      if (this.scanTimeout) clearTimeout(this.scanTimeout);
-    },
-    
-    async toggleScanner() {
-      if (this.isScanning) {
-        this.stopScanner();
+    // Método auxiliar para agregar producto al carrito
+    agregarProductoAlCarrito(producto) {
+      const existing = this.cart.find(item => item.id === producto.id);
+      
+      if (existing) {
+        if (existing.quantity < producto.cantidad_producto) {
+          existing.quantity++;
+          showToast(`Cantidad de "${producto.nombre_producto}" incrementada`, 'info');
+        } else {
+          showInsufficientStockAlert(producto.nombre_producto, producto.cantidad_producto);
+        }
       } else {
-        this.isScanning = true;
-        await this.$nextTick();
-        this.scannerViewport = this.$refs.scannerViewport;
-        await this.startScanner();
+        this.cart.push({ ...producto, quantity: 1 });
       }
     },
     
+    // Método para agregar desde el catálogo (clic)
     addToCart(product) {
       if (product.estado === false || product.estado === 'false') {
         showProductInactiveAlert(product.nombre_producto);

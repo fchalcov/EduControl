@@ -19,3 +19,13 @@ export const update_producto = (id: number, data: any) => {
 export const delete_producto = (id: number) => {
   return http.delete(`/producto/producto_delete/${id}/`);  
 };
+
+export const importar_productos_excel = (file: File) => {
+  const formData = new FormData();
+  formData.append('archivo', file);
+  return http.post('/producto/producto_importar_excel/', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
+};

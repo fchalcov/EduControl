@@ -3,9 +3,14 @@
     <!-- Header -->
     <header class="bg-white border-b border-gray-200 px-8 py-6">
       <div class="flex justify-between items-start">
-        <div>
-          <h1 class="text-2xl font-semibold text-gray-900">Historial de Ventas</h1>
-          <p class="text-sm text-gray-500 mt-1">Administración de transacciones</p>
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0">
+            <span class="text-white text-sm font-bold">H</span>
+          </div>
+          <div>
+            <h1 class="text-base sm:text-xl font-semibold text-gray-800 tracking-tight">Historial de Ventas</h1>
+            <p class="text-xs text-gray-500 hidden sm:block">Administración de transacciones</p>
+          </div>
         </div>
         <div class="flex gap-3">
           <button class="px-5 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
@@ -32,15 +37,15 @@
           <div class="flex justify-between items-start">
             <div>
               <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Devoluciones</p>
-              <p class="text-2xl font-bold text-gray-900 mt-2">S/ {{ formatNumber(totalDevuelto) }}</p>
+              <p class="text-2xl font-bold text-rose-600 mt-2">S/ {{ formatNumber(totalDevuelto) }}</p>
             </div>
           </div>
         </div>
         
         <div class="bg-white rounded-lg border border-gray-200 p-5">
           <div>
-            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Resultado Neto</p>
-            <p class="text-2xl font-bold text-gray-900 mt-2">S/ {{ formatNumber(totalVentas - totalDevuelto) }}</p>
+            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Saldo Final</p>
+            <p class="text-2xl font-bold text-emerald-600 mt-2">S/ {{ formatNumber(totalVentas - totalDevuelto) }}</p>
           </div>
         </div>
         
@@ -57,7 +62,10 @@
       <!-- Filters Panel -->
       <div class="bg-white rounded-lg border border-gray-200 mb-8">
         <div class="px-6 py-4 border-b border-gray-200">
-          <span class="text-sm font-semibold text-gray-700">Filtros de Búsqueda</span>
+          <h2 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+            <span class="w-1 h-4 bg-gray-900 rounded-full"></span>
+            Filtros de busqueda
+          </h2>
         </div>
         
         <div class="p-6">
@@ -142,7 +150,10 @@
       <!-- Transactions Table -->
       <div v-else class="bg-white rounded-lg border border-gray-200 overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-          <span class="text-sm font-semibold text-gray-700">Registro de Transacciones</span>
+          <h2 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+            <span class="w-1 h-4 bg-gray-900 rounded-full"></span>
+            Historial de transacciones
+          </h2>
           <span class="text-xs text-gray-500">{{ pagination.total }} resultados</span>
         </div>
         
@@ -153,11 +164,11 @@
                 <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Nº de Venta</th>
                 <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Fecha / Hora</th>
                 <th class="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Importe Total</th>
-                <th class="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Monto Devuelto</th>
-                <th class="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Saldo Neto</th>
+                <th class="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Devoluciones</th>
+                <th class="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Saldo Final</th>
                 <th class="text-center px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Estado</th>
                 <th class="text-center px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Métodos de Pago</th>
-                <th class="text-center px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider"></th>
+                <th class="text-center px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
@@ -197,16 +208,18 @@
                     </span>
                   </div>
                 </td>
-                <td class="px-6 py-4 text-center relative">
-                  <button @click="toggleDropdown(venta.id_venta)" class="px-2 py-1 text-white bg-black rounded hover:text-white text-xs leading-none px-2">
-                  Acciones
-                  </button>
-                  <div v-if="activeDropdown === venta.id_venta" class="absolute right-6 top-12 mt-1 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
-                    <button @click="verDetalleCompleto(venta)" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg">
-                      Ver detalle
+                <td class="px-6 py-4 text-center">
+                  <div class="flex justify-center gap-2">
+                    <button @click="verDetalleCompleto(venta)"
+                      class="text-xs font-medium text-gray-600 hover:text-blue-600 px-3 py-1.5 rounded-md hover:bg-blue-50 transition-all">
+                      <Icons.EyeIcon class="w-4 h-4 inline mr-1" />
+                      Ver
                     </button>
-                    <button @click="abrirDevolucion(venta)" :disabled="venta.estado_venta === 3" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed rounded-b-lg">
-                      Registrar devolución
+                    <!-- 1 = Pagado : 2 = Devolucion parcial : 3 = Devolucion total -->
+                    <button @click="abrirDevolucion(venta)" :disabled="venta.estado_venta === 3"
+                      class="text-xs font-medium text-gray-600 hover:text-orange-600 px-3 py-1.5 rounded-md hover:bg-orange-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                      <Icons.ArrowUturnLeftIcon class="w-4 h-4 inline mr-1" />
+                      Devolver
                     </button>
                   </div>
                 </td>
@@ -277,11 +290,11 @@
               </div>
             </div>
             <div class="bg-gray-50 rounded-lg p-4">
-              <p class="text-xs text-gray-500 uppercase tracking-wide">Total transacción</p>
+              <p class="text-xs text-gray-500 uppercase tracking-wide">Total Venta</p>
               <p class="text-xl font-bold text-gray-900 mt-1">S/ {{ formatNumber(ventaDetalle?.total_venta) }}</p>
             </div>
             <div class="bg-gray-50 rounded-lg p-4">
-              <p class="text-xs text-gray-500 uppercase tracking-wide">Total devuelto</p>
+              <p class="text-xs text-gray-500 uppercase tracking-wide">Total Devolución</p>
               <p class="text-xl font-bold text-red-600 mt-1">S/ {{ formatNumber(ventaDetalle?.devolucion_total_monto) }}</p>
             </div>
           </div>
@@ -292,9 +305,9 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               <div v-for="pago in ventaDetalle?.pagos" :key="pago.id_pago" class="bg-gray-50 rounded-lg p-3 border border-gray-200">
                 <p class="font-medium text-gray-900 text-sm">{{ getFormaPagoTexto(pago.forma_pago) }}</p>
-                <p class="text-lg font-bold text-gray-900 mt-1">S/ {{ formatNumber(pago.monto_pagar) }}</p>
+                <p class="text-lg font-bold text-gray-900 mt-1">S/ {{ formatNumber(pago.efectivo_recibido || pago.monto_pagar) }}</p>
                 <div v-if="pago.forma_pago === 1 && pago.efectivo_recibido" class="mt-2 pt-2 border-t border-gray-200 text-xs text-gray-500">
-                  <p>Recibido: S/ {{ formatNumber(pago.efectivo_recibido) }}</p>
+                  <!-- <p>Recibido: S/ {{ formatNumber(pago.efectivo_recibido) }}</p> -->
                   <p class="text-green-600">Vuelto: S/ {{ formatNumber(pago.efectivo_vuelto) }}</p>
                 </div>
               </div>
@@ -309,19 +322,20 @@
                 <thead class="bg-gray-50">
                   <tr>
                     <th class="text-left px-3 py-2 text-xs font-semibold text-gray-500">Producto</th>
-                    <th class="text-left px-3 py-2 text-xs font-semibold text-gray-500">Código</th>
+                    <th class="text-left px-3 py-2 text-xs font-semibold text-gray-500">Código barra</th>
                     <th class="text-right px-3 py-2 text-xs font-semibold text-gray-500">Cantidad</th>
                     <th class="text-right px-3 py-2 text-xs font-semibold text-gray-500">Precio Unit.</th>
                     <th class="text-right px-3 py-2 text-xs font-semibold text-gray-500">Subtotal</th>
                     <th class="text-center px-3 py-2 text-xs font-semibold text-gray-500">Estado</th>
-                    <th class="text-right px-3 py-2 text-xs font-semibold text-gray-500">Devuelto</th>
-                    <th class="text-right px-3 py-2 text-xs font-semibold text-gray-500">Neto</th>
+                    <th class="text-right px-3 py-2 text-xs font-semibold text-gray-500">Cantidad Devuelta</th>
+                    <th class="text-right px-3 py-2 text-xs font-semibold text-gray-500">Devolución</th>
+                    <th class="text-right px-3 py-2 text-xs font-semibold text-gray-500">Total</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
                   <tr v-for="detalle in ventaDetalle?.detalles" :key="detalle.id_detalle">
                     <td class="px-3 py-3 font-medium text-gray-900">{{ detalle.descripcion_producto }}</td>
-                    <td class="px-3 py-3 font-mono text-gray-500 text-xs">{{ detalle.codigo_barra }}</td>
+                    <td class="px-3 py-3 font-medium text-gray-500 text-xs">{{ detalle.codigo_barra }}</td>
                     <td class="px-3 py-3 text-right">{{ detalle.cantidad_venta }}</td>
                     <td class="px-3 py-3 text-right">S/ {{ formatNumber(detalle.precio_venta) }}</td>
                     <td class="px-3 py-3 text-right">S/ {{ formatNumber(detalle.sub_total_venta) }}</td>
@@ -334,6 +348,7 @@
                         {{ getEstadoTexto(detalle.estado_venta) }}
                       </span>
                     </td>
+                    <td class="px-3 py-3 text-right">{{ detalle.devolucion_cantidad }}</td>
                     <td class="px-3 py-3 text-right">
                       <div v-if="detalle.devolucion_cantidad > 0">
                         <span class="text-gray-700">{{ detalle.devolucion_cantidad }} und.</span>
@@ -346,7 +361,7 @@
                 </tbody>
                 <tfoot class="bg-gray-50">
                   <tr>
-                    <td colspan="6" class="px-3 py-3 text-right font-medium text-gray-700">Total Neto</td>
+                    <td colspan="7" class="px-3 py-3 text-right font-medium text-gray-700">Suma total</td>
                     <td colspan="2" class="px-3 py-3 text-right font-bold text-lg text-gray-900">
                       S/ {{ formatNumber((ventaDetalle?.total_venta || 0) - (ventaDetalle?.devolucion_total_monto || 0)) }}
                     </td>
@@ -391,7 +406,7 @@
         <div class="border-b border-gray-200 px-6 py-5 flex justify-between items-center bg-white">
           <div>
             <h2 class="text-lg font-semibold text-gray-900">Registro de Devolución</h2>
-            <p class="text-sm text-gray-500 font-mono">Transacción #{{ ventaSeleccionada?.correlativo_venta }}</p>
+            <p class="text-sm text-gray-500 font-mono">Transacción {{ ventaSeleccionada?.correlativo_venta }}</p>
           </div>
           <button @click="cerrarModal" class="text-gray-400 hover:text-gray-600 text-2xl leading-none">✕</button>
         </div>
@@ -439,7 +454,7 @@
                   <div class="flex-1">
                     <h4 class="font-semibold text-gray-900">{{ detalle.descripcion_producto }}</h4>
                     <div class="flex gap-4 mt-2 text-xs text-gray-500">
-                      <span>Código: {{ detalle.codigo_barra }}</span>
+                      <span>Código barra: {{ detalle.codigo_barra || '---'}}</span>
                       <span>Comprados: {{ detalle.cantidad_venta }}</span>
                       <span v-if="detalle.devolucion_cantidad > 0">Devueltos: {{ detalle.devolucion_cantidad }}</span>
                       <span>Disponibles: {{ detalle.cantidad_venta - (detalle.devolucion_cantidad || 0) }}</span>
@@ -798,9 +813,8 @@ export default {
     formatFechaCompleta(fecha) {
       if (!fecha) return ''
       return new Date(fecha).toLocaleDateString('es-PE', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
+        year: 'numeric', 
+        month: 'short', 
         day: 'numeric',
         hour: '2-digit',
         minute: '2-digit'

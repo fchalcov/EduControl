@@ -193,6 +193,7 @@ def venta_detail(request, pk):
                 'id_detalle': d.id_detalle,
                 'descripcion_producto': d.descripcion_producto,
                 'codigo_barra': d.codigo_barra,
+                'codigo_interno': d.codigo_interno,
                 'cantidad_venta': float(d.cantidad_venta),
                 'precio_venta': float(d.precio_venta),
                 'sub_total_venta': float(d.sub_total_venta),
