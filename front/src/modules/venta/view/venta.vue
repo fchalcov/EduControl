@@ -1,5 +1,16 @@
 <template>
   <div class="h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col">
+    <!-- Input ÚNICO Y EXCLUSIVO para escáner de código de barras -->
+    <input 
+      ref="scannerInput"
+      v-model="codigoEscaneado"
+      @keydown.enter.prevent="procesarEscaneo"
+      type="text"
+      class="fixed opacity-0 pointer-events-none"
+      style="position: fixed; top: 0; left: 0; width: 1px; height: 1px; opacity: 0;"
+      aria-hidden="true"
+    />
+
     <!-- Header Rediseñado -->
     <header class="bg-white border-b border-gray-200 px-8 py-6">
       <div class="flex justify-between items-start">
@@ -28,7 +39,7 @@
         <!-- Panel Izquierdo: Catálogo -->
         <div class="flex-1 lg:w-[70%] lg:flex-none flex flex-col gap-4 md:gap-5 min-h-[650px] lg:min-h-0">
           
-          <!-- Buscador rediseñado -->
+          <!-- Buscador Manual (Totalmente separado del escáner) -->
           <div class="bg-white rounded-xl shadow-sm border border-gray-200/60 flex-shrink-0 overflow-hidden">
             <div class="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50/50 border-b border-gray-200/60">
               <h2 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
@@ -44,12 +55,15 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </div>
+                <!-- Input de búsqueda MANUAL - Con eventos para no interferir -->
                 <input 
                   ref="searchInput"
                   v-model="searchTerm" 
                   @input="handleManualSearch"
+                  @focus="onBuscadorFocus"
+                  @blur="onBuscadorBlur"
                   type="text" 
-                  placeholder="Escriba para buscar productos..."
+                  placeholder="Buscar productos por nombre o código..."
                   class="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-200 transition-all bg-gray-50/30"
                 />
               </div>
@@ -232,7 +246,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                 </svg>
                 <p class="text-gray-400 text-sm">Carrito vacío</p>
-                <p class="text-xs text-gray-300 mt-1">Seleccione productos del catálogo</p>
+                <p class="text-xs text-gray-300 mt-1">Seleccione productos del catálogo o use el escáner</p>
               </div>
             </div>
 
@@ -586,11 +600,12 @@ export default {
         remainingBalance: 0,
         totalVuelto: 0
       },
-      // Variables para capturar escaneo de pistola
-      barcodeBuffer: '',
-      barcodeTimeout: null,
-      lastKeyTime: 0,
-      isScanning: false
+      // Variables para el escáner
+      codigoEscaneado: '',
+      ultimoCodigo: '',
+      escaneoTimeout: null,
+      // 👈 NUEVA BANDERA para saber si el buscador está activo
+      buscadorActivo: false
     };
   },
   computed: {
@@ -666,7 +681,6 @@ export default {
   watch: {
     cart: { deep: true, handler() { this.updateTotals(); } },
     payments: { deep: true, handler() { this.updateTotals(); } },
-    // Debounce para búsqueda manual
     searchTerm() {
       this.handleManualSearch();
     }
@@ -674,14 +688,18 @@ export default {
   mounted() {
     this.cargarProductos();
     this.updateTotals();
-    // Escuchar eventos de teclado globales para capturar el escáner
-    window.addEventListener('keydown', this.handleKeyDown);
-    window.addEventListener('keyup', this.handleKeyUp);
+    
+    // Inicializar el escáner
+    this.iniciarEnfoqueAutomatico();
+    
+    // Agregar evento para mantener el foco del escáner
+    document.addEventListener('click', this.handleDocumentClick);
   },
   beforeDestroy() {
-    window.removeEventListener('keydown', this.handleKeyDown);
-    window.removeEventListener('keyup', this.handleKeyUp);
-    if (this.barcodeTimeout) clearTimeout(this.barcodeTimeout);
+    if (this.searchTimeout) clearTimeout(this.searchTimeout);
+    if (this.enfoqueInterval) clearInterval(this.enfoqueInterval);
+    if (this.escaneoTimeout) clearTimeout(this.escaneoTimeout);
+    document.removeEventListener('click', this.handleDocumentClick);
   },
   methods: {
     formatCurrency,
@@ -689,68 +707,106 @@ export default {
     formatNumberExact,
     getPaymentLabel,
     
-    // Capturar teclas para detectar escaneo de pistola
-    handleKeyDown(event) {
-      // Ignorar si el foco está en un input (es escritura manual)
-      const activeElement = document.activeElement;
-      const isInputFocused = activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA');
+    // 👈 NUEVO: Cuando el buscador recibe foco
+    onBuscadorFocus() {
+      this.buscadorActivo = true;
+      console.log('🔍 Buscador activo - escáner pausado');
+    },
+    
+    // 👈 NUEVO: Cuando el buscador pierde foco
+    onBuscadorBlur() {
+      this.buscadorActivo = false;
+      setTimeout(() => {
+        this.enfocarScanner();
+      }, 300);
+      console.log('🔍 Buscador inactivo - escáner reactivado');
+    },
+    
+    // Manejar clics en el documento para mantener el foco del escáner
+    handleDocumentClick(event) {
+      // Si el clic no es en el input de búsqueda manual, re-enfocar el escáner
+      const isSearchInput = event.target === this.$refs.searchInput;
+      const isModalOpen = this.showPaymentModal;
+      const isInputField = event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA';
       
-      // Si el usuario está escribiendo manualmente, no interferir
-      if (isInputFocused) {
+      // 👈 MODIFICADO: No enfocar si el buscador está activo
+      if (!isSearchInput && !isModalOpen && !isInputField && !this.buscadorActivo) {
+        setTimeout(() => {
+          this.enfocarScanner();
+        }, 100);
+      }
+    },
+    
+    // Iniciar enfoque automático para el escáner
+    iniciarEnfoqueAutomatico() {
+      setTimeout(() => {
+        this.enfocarScanner();
+      }, 500);
+      
+      // 👈 MODIFICADO: No re-enfocar si el buscador está activo
+      this.enfoqueInterval = setInterval(() => {
+        if (!this.showPaymentModal && this.$refs.scannerInput && !this.buscadorActivo) {
+          this.enfocarScanner();
+        }
+      }, 3000);
+    },
+    
+    // Enfocar el input del escáner
+    enfocarScanner() {
+      // 👈 MODIFICADO: No enfocar si el buscador está activo
+      if (this.$refs.scannerInput && !this.showPaymentModal && !this.buscadorActivo) {
+        this.$refs.scannerInput.focus();
+        console.log('📷 Escáner activado y listo');
+      }
+    },
+    
+    // Procesar el código escaneado (simplificado y más robusto)
+    async procesarEscaneo() {
+      const codigo = this.codigoEscaneado.trim();
+      
+      if (!codigo) {
+        this.codigoEscaneado = '';
         return;
       }
       
-      // Detectar si es un escaneo (teclas rápidas)
-      const now = Date.now();
-      const timeDiff = now - this.lastKeyTime;
+      // Limpiar timeout anterior
+      if (this.escaneoTimeout) clearTimeout(this.escaneoTimeout);
       
-      // Si la diferencia es menor a 50ms, es un escaneo rápido de pistola
-      if (timeDiff < 50) {
-        this.isScanning = true;
-      }
-      
-      this.lastKeyTime = now;
-      
-      // Capturar la tecla presionada (solo caracteres imprimibles)
-      if (event.key.length === 1 && !event.ctrlKey && !event.altKey && !event.metaKey) {
-        // Prevenir que el carácter se escriba en cualquier lugar
-        event.preventDefault();
+      // Pequeño delay para asegurar que el código está completo
+      this.escaneoTimeout = setTimeout(async () => {
+        // Evitar duplicados
+        if (this.ultimoCodigo === codigo) {
+          console.log('Código duplicado, ignorando');
+          this.codigoEscaneado = '';
+          this.ultimoCodigo = '';
+          return;
+        }
         
-        // Agregar al buffer del código de barras
-        this.barcodeBuffer += event.key;
+        this.ultimoCodigo = codigo;
+        console.log('📷 Código escaneado:', codigo);
         
-        // Reiniciar timeout para esperar el Enter
-        if (this.barcodeTimeout) clearTimeout(this.barcodeTimeout);
-        this.barcodeTimeout = setTimeout(() => {
-          // Timeout alcanzado, probablemente no era un escaneo completo
-          this.barcodeBuffer = '';
-          this.isScanning = false;
+        // Limpiar input
+        this.codigoEscaneado = '';
+        
+        // Buscar y agregar producto
+        await this.buscarProductoPorCodigo(codigo);
+        
+        // Limpiar el último código después de 1 segundo
+        setTimeout(() => {
+          this.ultimoCodigo = '';
+        }, 1000);
+        
+        // Re-enfocar el escáner (solo si no está activo el buscador)
+        setTimeout(() => {
+          if (!this.buscadorActivo) {
+            this.enfocarScanner();
+          }
         }, 100);
-      }
-      
-      // Detectar la tecla Enter (fin del escaneo)
-      if (event.key === 'Enter' && this.barcodeBuffer.length > 0) {
-        event.preventDefault();
-        
-        // Procesar el código de barras
-        const codigo = this.barcodeBuffer;
-        this.barcodeBuffer = '';
-        this.isScanning = false;
-        
-        if (this.barcodeTimeout) clearTimeout(this.barcodeTimeout);
-        
-        // Agregar el producto al carrito
-        this.buscarProductoPorCodigo(codigo);
-      }
+      }, 50);
     },
     
-    handleKeyUp(event) {
-      // No es necesario hacer nada aquí por ahora
-    },
-    
-    // Búsqueda manual (solo filtra, no agrega al carrito)
+    // Búsqueda manual (no interfiere con el escáner)
     handleManualSearch() {
-      // Usar debounce para no hacer muchas peticiones
       if (this.searchTimeout) clearTimeout(this.searchTimeout);
       this.searchTimeout = setTimeout(() => {
         this.cargarProductos({ page: 1 });
@@ -916,6 +972,10 @@ export default {
       this.selectedPaymentMethod = null;
       this.setCashAmount(null);
       this.setYapeAmount(null);
+      
+      setTimeout(() => {
+        this.enfocarScanner();
+      }, 300);
     },
     
     async cargarProductos(params = {}) {
@@ -995,57 +1055,82 @@ export default {
       this.cargarProductos({ page: 1 });
     },
     
-    // Función para buscar producto por código de barras y agregarlo al carrito
+    // Función para buscar producto por código de barras (solo para escáner)
     async buscarProductoPorCodigo(codigoBarra) {
+      console.log('🔍 Buscando producto con código:', codigoBarra);
+      
+      // Buscar en memoria primero
+      const productoEncontrado = this.productos.find(p => p.codigo_barra === codigoBarra);
+      
+      if (productoEncontrado) {
+        console.log('✅ Producto encontrado:', productoEncontrado.nombre_producto);
+        
+        if (productoEncontrado.estado === false || productoEncontrado.estado === 'false') {
+          showProductInactiveAlert(productoEncontrado.nombre_producto);
+          playBeep();
+          return false;
+        }
+        
+        if (productoEncontrado.cantidad_producto <= 0) {
+          showNoStockAlert(productoEncontrado.nombre_producto);
+          playBeep();
+          return false;
+        }
+        
+        this.agregarProductoAlCarrito(productoEncontrado);
+        playBeep();
+        showToast(`✓ "${productoEncontrado.nombre_producto}" agregado`, 'success');
+        return true;
+      }
+      
+      // Buscar en backend
       try {
-        // Buscar el producto por código de barras
+        console.log('🔄 Buscando en backend...');
         const response = await list_producto({ 
           codigo_barra: codigoBarra,
-          estado: 'true' // Solo productos activos
+          estado: 'true'
         });
         
         if (response.data && response.data.results && response.data.results.length > 0) {
           const producto = response.data.results[0];
+          console.log('✅ Producto encontrado en backend:', producto.nombre_producto);
           
-          // Verificar si el producto está activo
           if (producto.estado === false || producto.estado === 'false') {
             showProductInactiveAlert(producto.nombre_producto);
             playBeep();
             return false;
           }
           
-          // Verificar stock
           if (producto.cantidad_producto <= 0) {
             showNoStockAlert(producto.nombre_producto);
             playBeep();
             return false;
           }
           
-          // Agregar al carrito
           this.agregarProductoAlCarrito(producto);
-          playBeep(); // Sonido de éxito
-          showToast(`✓ "${producto.nombre_producto}" agregado al carrito`, 'success');
+          playBeep();
+          showToast(`✓ "${producto.nombre_producto}" agregado`, 'success');
+          this.cargarProductos(); // Recargar para actualizar stock
           return true;
         } else {
-          showErrorAlert(`No se encontró el producto con código: ${codigoBarra}`, 'Producto no encontrado');
-          playBeep(); // Sonido de error
+          console.log('❌ Producto no encontrado');
+          showErrorAlert(`Producto no encontrado: ${codigoBarra}`);
+          playBeep();
           return false;
         }
       } catch (error) {
-        console.error("Error buscando producto por código:", error);
+        console.error('❌ Error:', error);
         showErrorAlert('Error al buscar el producto');
         return false;
       }
     },
     
-    // Método auxiliar para agregar producto al carrito
     agregarProductoAlCarrito(producto) {
       const existing = this.cart.find(item => item.id === producto.id);
       
       if (existing) {
         if (existing.quantity < producto.cantidad_producto) {
           existing.quantity++;
-          showToast(`Cantidad de "${producto.nombre_producto}" incrementada`, 'info');
         } else {
           showInsufficientStockAlert(producto.nombre_producto, producto.cantidad_producto);
         }
@@ -1054,7 +1139,6 @@ export default {
       }
     },
     
-    // Método para agregar desde el catálogo (clic)
     addToCart(product) {
       if (product.estado === false || product.estado === 'false') {
         showProductInactiveAlert(product.nombre_producto);
@@ -1100,7 +1184,7 @@ export default {
       }
       this.showPaymentModal = true;
       this.payments = [];
-      this.selectedPaymentMethod = null;
+      this.selectedPaymentMethod = PAYMENT_CODES.YAPE;
       this.setCashAmount(null);
       this.setYapeAmount(null);
     },

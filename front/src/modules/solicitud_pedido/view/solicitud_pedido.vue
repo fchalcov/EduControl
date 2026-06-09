@@ -270,7 +270,7 @@
     <div v-if="modalSolicitudVisible"
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
       @click.self="cerrarModalSolicitud">
-      <div class="bg-white rounded-xl w-full max-w-7xl max-h-[90vh] flex flex-col overflow-hidden">
+      <div class="bg-white rounded-xl w-full h-full flex flex-col overflow-hidden">
         <div class="border-b border-gray-200 px-6 py-5 flex justify-between items-center bg-white sticky top-0">
           <div>
             <h2 class="text-lg font-semibold text-gray-900">{{ solicitudEditando ? 'Editar Solicitud' : 'Nueva Solicitud' }}</h2>
