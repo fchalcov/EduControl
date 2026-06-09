@@ -13,10 +13,10 @@
           </div>
         </div>
         <div class="flex gap-3">
-          <!-- <button @click="abrirModalExcel"
+          <button @click="abrirModalExcel"
             class="px-5 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
             Subir Excel
-          </button> -->
+          </button>
           <button @click="openModal(null)"
             class="px-5 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors">
             Nuevo Producto
