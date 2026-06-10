@@ -355,31 +355,18 @@
                 <table class="w-full text-sm">
                   <thead class="bg-gray-50 border-b border-gray-200">
                     <tr>
-                      <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider w-8">#
-                      </th>
-                      <th
-                        class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider min-w-[300px]">
-                        Producto *</th>
-                      <th class="text-center px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                        Cantidad *</th>
-                      <th class="text-right px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                        Precio Compra</th>
-                      <th class="text-right px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                        Subtotal</th>
-                      <th class="text-right px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                        Costo por Unidad</th>
-                      <th class="text-right px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                        Precio Venta Sugerido</th>
-                      <th class="text-right px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                        Posible Ganancia</th>
-                      <th
-                        class="text-center px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider w-16">
-                        Acciones</th>
+                      <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider w-8">#</th>
+                      <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider min-w-[300px]">Producto *</th>
+                      <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Cantidad *</th>
+                      <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Precio Compra</th>
+                      <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Subtotal</th>
+                      <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Costo por Unidad</th>
+                      <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Precio Venta Sugerido</th>
+                      <th class="text-center px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider w-16">Acciones</th>
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-gray-100">
-                    <tr v-for="(producto, index) in solicitudForm.productos" :key="index"
-                      class="hover:bg-gray-50 transition-colors">
+                    <tr v-for="(producto, index) in solicitudForm.productos" :key="index" class="hover:bg-gray-50 transition-colors">
                       <td class="px-4 py-3 text-gray-500 text-center">{{ index + 1 }}</td>
                       <td class="px-4 py-3">
                         <div class="relative">
@@ -449,17 +436,6 @@
                         </div>
                       </td>
 
-                      <td class="px-4 py-3 text-right">
-                        <div class="font-bold"
-                          :class="producto.ganancia_total >= 0 ? 'text-emerald-600' : 'text-red-600'">
-                          S/ {{ formatNumber(producto.ganancia_total || 0) }}
-                        </div>
-                        <div class="text-xs"
-                          :class="producto.ganancia_total >= 0 ? 'text-emerald-400' : 'text-red-400'">
-                          {{ producto.ganancia_porcentaje >= 0 ? '+' : '' }}{{ producto.ganancia_porcentaje || 0 }}%
-                        </div>
-                      </td>
-
                       <td class="px-4 py-3 text-center">
                         <button type="button" @click="eliminarProducto(index)"
                           class="text-red-400 hover:text-red-600 transition-colors">
@@ -473,48 +449,11 @@
                     </tr>
 
                     <tr v-if="solicitudForm.productos.length === 0">
-                      <td colspan="9" class="px-4 py-8 text-center text-gray-500">
+                      <td colspan="8" class="px-4 py-8 text-center text-gray-500">
                         No hay productos agregados
                       </td>
                     </tr>
                   </tbody>
-                  <tfoot v-if="solicitudForm.productos.length > 0" class="bg-gray-50 border-t border-gray-200">
-                    <tr>
-                      <td colspan="5" class="px-4 py-3 text-right font-semibold text-gray-700">Subtotal:</td>
-                      <td class="px-4 py-3 text-right font-bold text-gray-900">S/ {{ formatNumber(subtotalSolicitud) }}
-                      </td>
-                      <td colspan="2"></td>
-                    </tr>
-                    <tr>
-                      <td colspan="5" class="px-4 py-3 text-right font-semibold text-gray-700">IGV (18%):</td>
-                      <td class="px-4 py-3 text-right font-bold text-gray-900">S/ {{ formatNumber(subtotalSolicitud *
-                        0.18) }}</td>
-                      <td colspan="2"></td>
-                    </tr>
-                    <tr class="border-t border-gray-300">
-                      <td colspan="5" class="px-4 py-3 text-right text-base font-bold text-gray-900">TOTAL:</td>
-                      <td class="px-4 py-3 text-right text-base font-bold text-gray-900">S/ {{
-                        formatNumber(subtotalSolicitud * 1.18) }}</td>
-                      <td colspan="2"></td>
-                    </tr>
-                    <tr class="border-t border-gray-200 bg-gray-100">
-                      <td colspan="7" class="px-4 py-3 text-right font-semibold text-gray-700">Ganancia Total Potencial:
-                      </td>
-                      <td class="px-4 py-3 text-right font-bold text-lg"
-                        :class="gananciaTotalPotencial >= 0 ? 'text-emerald-600' : 'text-red-600'">
-                        S/ {{ formatNumber(gananciaTotalPotencial) }}
-                      </td>
-                      <td></td>
-                    </tr>
-                    <tr class="bg-gray-100">
-                      <td colspan="7" class="px-4 py-3 text-right text-sm text-gray-600">Porcentaje de Ganancia:</td>
-                      <td class="px-4 py-3 text-right font-bold text-sm"
-                        :class="porcentajeGananciaTotal >= 0 ? 'text-emerald-600' : 'text-red-600'">
-                        {{ porcentajeGananciaTotal }}%
-                      </td>
-                      <td></td>
-                    </tr>
-                  </tfoot>
                 </table>
               </div>
             </div>
@@ -803,15 +742,6 @@ export default {
         total += this.recepcionCantidades[detalle.id_detalle_solicitud] || 0
       }
       return total
-    },
-    gananciaTotalPotencial() {
-      return this.solicitudForm.productos.reduce((sum, p) => sum + (p.ganancia_total || 0), 0)
-    },
-    porcentajeGananciaTotal() {
-      if (this.subtotalSolicitud === 0) return 0
-      const ganancia = this.gananciaTotalPotencial
-      const porcentaje = (ganancia / this.subtotalSolicitud) * 100
-      return porcentaje.toFixed(2)
     }
   },
   mounted() { this.cargarDatosSimulados() },

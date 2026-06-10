@@ -40,7 +40,7 @@
             <button @click="showUserMenu = !showUserMenu"
               class="flex items-center gap-2 md:gap-3 hover:bg-gray-50 px-2 md:px-3 py-2 rounded-lg transition-colors">
               <div
-                class="w-8 h-8 rounded-full bg-gradient-to-r from-[#1e3c72] to-[#2a5298] flex items-center justify-center text-white text-sm font-medium">
+                class="w-8 h-8 rounded-full bg-gradient-to-r from-[#0F0E0E] to-[#0F0E0E] flex items-center justify-center text-white text-sm font-medium">
                 {{ userInitial }}
               </div>
 

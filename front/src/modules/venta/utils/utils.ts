@@ -181,12 +181,13 @@ export const validateEfectivoPayment = (
   return { valid: true };
 };
 
-// ==================== ALERTAS ====================
+// ==================== ALERTAS CON SWEETALERT2 NATURAL ====================
 
+// Toast - Notificaciones rápidas
 export const showToast = (message: string, type: 'success' | 'error' | 'info' | 'warning' = 'success') => {
   const Toast = Swal.mixin({
     toast: true,
-    position: 'top-end',
+    position: 'bottom-end',
     showConfirmButton: false,
     timer: 3000,
     timerProgressBar: true,
@@ -198,68 +199,110 @@ export const showToast = (message: string, type: 'success' | 'error' | 'info' | 
   });
 };
 
+// Alerta de error
 export const showErrorAlert = (message: string, title: string = 'Error') => {
   Swal.fire({
     icon: 'error',
     title: title,
     text: message,
-    confirmButtonColor: '#1e293b',
-    confirmButtonText: 'Entendido'
+    confirmButtonText: 'OK'
   });
 };
 
+// Alerta de venta completada
 export const showSaleCompletedAlert = (correlativo: string, total: number): Promise<any> => {
   return Swal.fire({
     icon: 'success',
     title: '¡Venta completada!',
-    text: `Correlativo: ${correlativo}\nTotal: ${formatCurrency(total)}\n\n¡Gracias por su compra!`,
-    confirmButtonColor: '#1e293b',
+    text: `Correlativo: ${correlativo}\nTotal: ${formatCurrency(total)}`,
     confirmButtonText: 'Aceptar'
   });
 };
 
+// Alerta de pago registrado
 export const showPaymentCompletedAlert = (totalPaid: number, vuelto: number) => {
   let message = `Total pagado: ${formatCurrency(totalPaid)}`;
   if (vuelto > 0) {
-    message += `\nVuelto total: ${formatCurrency(vuelto)}`;
+    message += `\nVuelto: ${formatCurrency(vuelto)}`;
   }
   
   Swal.fire({
     icon: 'success',
     title: '¡Pago registrado!',
     text: message,
-    confirmButtonColor: '#1e293b',
     confirmButtonText: 'Continuar',
     timer: 2000
   });
 };
 
+// Alerta de pago incompleto
 export const showIncompletePaymentAlert = (remainingBalance: number) => {
-  showErrorAlert(`Falta saldo por pagar: ${formatCurrency(remainingBalance)}`, 'Pago incompleto');
+  Swal.fire({
+    icon: 'warning',
+    title: 'Pago incompleto',
+    text: `Falta saldo por pagar: ${formatCurrency(remainingBalance)}`,
+    confirmButtonText: 'OK'
+  });
 };
 
+// Alerta de error al registrar venta
 export const showSaleErrorAlert = (errorMsg: string) => {
-  showErrorAlert(errorMsg, 'Error al registrar la venta');
+  Swal.fire({
+    icon: 'error',
+    title: 'Error al registrar la venta',
+    text: errorMsg,
+    confirmButtonText: 'Cerrar'
+  });
 };
 
+// Alerta de producto inactivo
 export const showProductInactiveAlert = (productName: string) => {
-  showErrorAlert(`El producto "${productName}" está inactivo`, 'Producto inactivo');
+  Swal.fire({
+    icon: 'error',
+    title: 'Producto inactivo',
+    text: `El producto "${productName}" está inactivo`,
+    confirmButtonText: 'OK'
+  });
 };
 
+// Alerta de stock insuficiente
 export const showInsufficientStockAlert = (productName: string, maxStock: number) => {
-  showErrorAlert(`Stock máximo disponible: ${maxStock} unidades`, `Stock insuficiente de "${productName}"`);
+  Swal.fire({
+    icon: 'warning',
+    title: 'Stock insuficiente',
+    text: `${productName} - Stock máximo disponible: ${maxStock}.`,
+    confirmButtonText: 'OK'
+  });
 };
 
+// Alerta sin stock
 export const showNoStockAlert = (productName: string) => {
-  showErrorAlert(`El producto "${productName}" no tiene stock disponible`, 'Sin stock');
+  Swal.fire({
+    icon: 'error',
+    title: 'Sin stock',
+    text: `El producto "${productName}" no tiene stock disponible`,
+    confirmButtonText: 'OK'
+  });
 };
 
+// Alerta carrito vacío
 export const showEmptyCartAlert = () => {
-  showErrorAlert('El carrito está vacío', 'No hay productos');
+  Swal.fire({
+    icon: 'info',
+    title: 'Carrito vacío',
+    text: 'No hay productos en el carrito',
+    confirmButtonText: 'OK'
+  });
 };
 
+// Alerta monto inválido
 export const showInvalidAmountAlert = () => {
-  showErrorAlert('Ingrese un monto válido', 'Monto inválido');
+  Swal.fire({
+    icon: 'error',
+    title: 'Monto inválido',
+    text: 'Ingrese un monto válido mayor a cero',
+    confirmButtonText: 'OK'
+  });
 };
 
 // ==================== UTILIDADES ====================

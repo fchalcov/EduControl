@@ -12,11 +12,11 @@
             <p class="text-xs text-gray-500 hidden sm:block">Administración de transacciones</p>
           </div>
         </div>
-        <div class="flex gap-3">
+        <!-- <div class="flex gap-3">
           <button class="px-5 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
             Exportar
           </button>
-        </div>
+        </div> -->
       </div>
     </header>
 
