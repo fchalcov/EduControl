@@ -17,6 +17,20 @@ class ProductoPagination(PageNumberPagination):
     page_size_query_param = 'page_size'
     max_page_size = 100
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def producto_por_codigo(request):
+    codigo_barra = request.GET.get('codigo_barra', '')
+    if not codigo_barra:
+        return Response({'error': 'Se requiere codigo_barra'}, status=400)
+    
+    try:
+        producto = Producto.objects.get(codigo_barra=codigo_barra)
+        serializer = ProductoSerializer(producto)
+        return Response(serializer.data)
+    except Producto.DoesNotExist:
+        return Response({'error': 'Producto no encontrado'}, status=404)
+
 # ============================================
 # 1. LISTAR PRODUCTOS
 # ============================================

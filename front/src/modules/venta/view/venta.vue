@@ -1,5 +1,10 @@
 <template>
-  <div class="h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col">
+  <!-- ✅ SOLO AGREGUE ESTOS 2 EVENTOS -->
+  <div 
+    @keydown="handleKeydown"
+    @paste="handlePaste"
+    class="h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col"
+  >
     <!-- Header -->
     <header class="bg-white border-b border-gray-200 px-8 py-6">
       <div class="flex justify-between items-start">
@@ -164,11 +169,14 @@
                   {{ selectedPaymentMethod === PAYMENT_CODES.CASH ? 'Monto recibido' : 'Monto a pagar con Yape' }}
                 </label>
                 <input 
+                  ref="cashInput"
                   :value="selectedPaymentMethod === PAYMENT_CODES.CASH ? cashAmountText : yapeAmountText"
                   @input="selectedPaymentMethod === PAYMENT_CODES.CASH ? updateCashAmount($event) : updateYapeAmount($event)"
+                  @focus="onPaymentInputFocus"
+                  @blur="onPaymentInputBlur"
                   type="number"
                   inputmode="decimal"
-                  class="w-full px-3 py-1 border-2 border-gray-200 rounded-lg text-base sm:text-lg focus:outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-200 transition-all"
+                  class="w-full px-3 py-1 border-2 border-gray-200 rounded-lg text-base sm:text-lg focus:outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-200 transition-all payment-input"
                   placeholder="0.00"
                   :disabled="remainingBalance <= 0"
                 >
@@ -415,7 +423,7 @@
 
 <script>
 import { list_producto } from '../../productos/api/producto.ts';
-import { create_venta } from '../api/venta';
+import { create_venta, producto_list_x_codigo } from '../api/venta';
 import {
   PAYMENT_CODES,
   formatCurrency,
@@ -467,6 +475,7 @@ export default {
       yapeAmount: null,
       yapeAmountText: '',
       procesandoVenta: false,
+      isPaymentInputFocused: false,
       totals: {
         subtotal: 0,
         igvTotal: 0,
@@ -479,7 +488,8 @@ export default {
       // ESCÁNER: Variables para el código de barras
       codigoEscaneado: '',
       escaneoTimeout: null,
-      lastKeyTime: null
+      lastKeyTime: null,
+      escaneando: false 
     };
   },
   computed: {
@@ -539,61 +549,69 @@ export default {
   },
   mounted() {
     this.updateTotals();
-    this.iniciarListenerEscanner();
   },
   beforeDestroy() {
-    if (this.modalSearchTimeout) clearTimeout(this.modalSearchTimeout);
-    if (this.escaneoTimeout) clearTimeout(this.escaneoTimeout);
-    this.detenerListenerEscanner();
+    if (this.modalSearchTimeout) {
+      clearTimeout(this.modalSearchTimeout);
+      this.modalSearchTimeout = null;
+    }
+    if (this.escaneoTimeout) {
+      clearTimeout(this.escaneoTimeout);
+      this.escaneoTimeout = null;
+    }
+    this.escaneando = false;
   },
   methods: {
     formatCurrency,
 
-    // ==================== ESCÁNER DE CÓDIGO DE BARRAS ====================
-    iniciarListenerEscanner() {
-      console.log('🎯 Iniciando listener de escáner');
-      window.removeEventListener('keydown', this.handleKeydown);
-      window.removeEventListener('paste', this.handlePaste);
-      window.addEventListener('keydown', this.handleKeydown);
-      window.addEventListener('paste', this.handlePaste);
+    isProductActive(product) {
+      return product.estado === true || product.estado === 'true' || product.estado === 1;
+    },
+
+    // ==================== MÉTODOS PARA CONTROLAR EL FOCO DEL INPUT DE PAGO ====================
+    onPaymentInputFocus() {
+      this.isPaymentInputFocused = true;
+      console.log('💰 Input de pago enfocado - escáner desactivado');
     },
     
-    detenerListenerEscanner() {
-      console.log('🛑 Deteniendo listener de escáner');
-      window.removeEventListener('keydown', this.handleKeydown);
-      window.removeEventListener('paste', this.handlePaste);
+    onPaymentInputBlur() {
+      this.isPaymentInputFocused = false;
+      console.log('💰 Input de pago perdió foco - escáner reactivado');
     },
+
+    // ==================== ESCÁNER DE CÓDIGO DE BARRAS ====================
+    // ✅ ELIMINÉ iniciarListenerEscanner y detenerListenerEscanner
     
     handlePaste(event) {
       const target = event.target;
       
-      // 🔥 Si el modal está abierto, solo llenar el input de búsqueda
+      // Si el modal está abierto, solo llenar el input de búsqueda
       if (this.showProductModal) {
         console.log('📋 Modal abierto - pegando código en búsqueda');
         event.preventDefault();
         const pastedText = event.clipboardData?.getData('text') || '';
         if (pastedText) {
-          // Solo actualizar el input de búsqueda, NO agregar al carrito
           this.modalSearchTerm = pastedText.trim();
-          this.handleModalSearch(); // Ejecutar búsqueda automática
+          this.handleModalSearch();
         }
         return;
       }
       
-      // 🔥 Si NO hay modal abierto, comportamiento normal (agregar al carrito)
+      // Verificar si estamos en un input de pago
       const isPaymentInput = target.tagName === 'INPUT' && 
-        (target.placeholder?.toLowerCase().includes('monto') ||
-        target.classList.contains('payment-input'));
+        (target.classList.contains('payment-input') ||
+        target.placeholder?.toLowerCase().includes('monto') ||
+        target.placeholder?.toLowerCase().includes('recibido'));
       
       if (isPaymentInput) {
-        console.log('💰 Input de pago enfocado, ignorando pegado');
+        console.log('💰 Input de pago detectado, permitiendo pegado normal');
         return;
       }
       
       const pastedText = event.clipboardData?.getData('text') || '';
       
       if (pastedText) {
-        console.log('📋 Texto pegado (fuera del modal):', pastedText);
+        console.log('📋 Texto pegado:', pastedText);
         event.preventDefault();
         const codigo = pastedText.trim();
         if (codigo) {
@@ -605,33 +623,30 @@ export default {
     handleKeydown(event) {
       const target = event.target;
       
-      // 🔥 Si el modal está abierto, verificar si el foco está en el input del modal
       if (this.showProductModal) {
-        // Verificar si el foco está en el input de búsqueda del modal
-        const isModalSearchInput = target === this.$refs.modalSearchInput || 
-                                   target.classList?.contains('modal-search-input');
-        
-        // Si el foco está en el input del modal, permitir escritura normal
+        const isModalSearchInput = this.$refs.modalSearchInput && target === this.$refs.modalSearchInput;
         if (isModalSearchInput) {
-          return; // Dejar que el input maneje el texto normalmente
+          return;
         }
-        
-        // Si el foco NO está en el input del modal, ignorar el escáner
-        console.log('🚫 Modal abierto y foco no está en búsqueda, ignorando escáner');
+        console.log('Modal abierto, ignorando escáner');
         return;
       }
-      
-      // 🔥 Si NO hay modal abierto, comportamiento normal
+      if (this.isPaymentInputFocused) {
+        console.log('Input de pago enfocado, ignorando teclas');
+        return;
+      }
+    
       const isPaymentInput = target.tagName === 'INPUT' && 
-        (target.placeholder?.toLowerCase().includes('monto') ||
-        target.classList.contains('payment-input'));
+        (target.classList.contains('payment-input') ||
+        target.placeholder?.toLowerCase().includes('monto') ||
+        target.placeholder?.toLowerCase().includes('recibido'));
       
       if (isPaymentInput) {
+        console.log('Input de pago detectado, ignorando escáner');
         return;
       }
       
       if (event.ctrlKey && event.key === 'v') {
-        console.log('📋 Ctrl+V detectado, será manejado por handlePaste');
         return;
       }
       
@@ -660,75 +675,112 @@ export default {
     },
     
     async procesarEscaneo() {
+      // ✅ Si ya hay un escaneo en proceso, ignorar
+      if (this.escaneando) {
+        console.log('Escaneo en proceso, ignorando...');
+        return;
+      }
+      
       const codigo = this.codigoEscaneado.trim();
       
       if (!codigo) {
         this.codigoEscaneado = '';
         return;
       }
-      
-      console.log('📷 Código escaneado (tecla por tecla):', codigo);
+
+      this.escaneando = true;
+      console.log('Escaneando código:', codigo);
       const codigoProcesar = codigo;
       this.codigoEscaneado = '';
       
-      await this.buscarProductoPorCodigo(codigoProcesar);
+      try {
+        await this.buscarProductoPorCodigo(codigoProcesar);
+      } catch (error) {
+        console.error('Error en escaneo:', error);
+      } finally {
+        this.escaneando = false;
+      }
     },
     
     async buscarProductoPorCodigo(codigoBarra) {
-      console.log('🔍 Buscando producto con código:', codigoBarra);
+      console.log('Buscando producto con código:', codigoBarra);
+      
+      if (!codigoBarra || codigoBarra.trim() === '') {
+        console.log('Código vacío');
+        return false;
+      }
+      
       try {
-        const response = await list_producto({ 
-          codigo_barra: codigoBarra,
-          estado: 'true'
-        });
+        const response = await producto_list_x_codigo(codigoBarra, 'true');
         
-        if (response.data && response.data.results && response.data.results.length > 0) {
-          const producto = response.data.results[0];
-          console.log('✅ Producto encontrado:', producto.nombre_producto);
-          
-          if (producto.estado === false || producto.estado === 'false') {
-            showProductInactiveAlert(producto.nombre_producto);
-            playBeep();
-            return false;
-          }
-          
-          if (producto.cantidad_producto <= 0) {
-            showNoStockAlert(producto.nombre_producto);
-            playBeep();
-            return false;
-          }
-          
-          this.agregarProductoAlCarrito(producto);
-          playBeep();
-          showToast(`"${producto.nombre_producto}" agregado al carrito`, 'success');
-          return true;
-        } else {
-          console.log('❌ Producto no encontrado para código:', codigoBarra);
+        const producto = response.data;
+        
+        if (!producto || !producto.id) {
+          console.log('Producto no encontrado:', codigoBarra);
           showErrorAlert(`Producto no encontrado: ${codigoBarra}`);
           playBeep();
           return false;
         }
-      } catch (error) {
-        console.error('❌ Error al buscar producto:', error);
-        showErrorAlert('Error al buscar el producto');
+        
+        console.log('Producto encontrado:', producto.nombre_producto);
+        
+        if (!this.isProductActive(producto)) {
+          showProductInactiveAlert(producto.nombre_producto);
+          playBeep();
+          return false;
+        }
+        
+        if (producto.cantidad_producto <= 0) {
+          showNoStockAlert(producto.nombre_producto);
+          playBeep();
+          return false;
+        }
+        
+        const existingItem = this.cart.find(item => item.id === producto.id);
+        
+        if (existingItem) {
+          if (existingItem.quantity < producto.cantidad_producto) {
+            existingItem.quantity++;
+            showToast(`"${producto.nombre_producto}" cantidad aumentada a ${existingItem.quantity}`, 'success');
+            playBeep();
+          } else {
+            showInsufficientStockAlert(producto.nombre_producto, producto.cantidad_producto);
+            playBeep();
+          }
+        } else {
+          this.agregarProductoAlCarrito(producto);
+          showToast(`"${producto.nombre_producto}" agregado al carrito`, 'success');
+          playBeep();
+        }
+        
+        return true;
+        
+      } catch (error) {        
+        if (error.response && error.response.status === 404) {
+          showErrorAlert(`Producto no encontrado: ${codigoBarra}`);
+        } else {
+          console.error('Error en búsqueda:', error);
+          showErrorAlert('Error al buscar el producto');
+        }
+        playBeep();
         return false;
       }
     },
-    
+
     agregarProductoAlCarrito(producto) {
-      console.log('➕ Agregando al carrito:', producto.nombre_producto);
+      console.log('Agregando al carrito:', producto.nombre_producto);
       const existing = this.cart.find(item => item.id === producto.id);
       
       if (existing) {
         if (existing.quantity < producto.cantidad_producto) {
           existing.quantity++;
-          console.log('📦 Cantidad actualizada:', existing.quantity);
+          console.log('Cantidad actualizada:', existing.quantity);
         } else {
           showInsufficientStockAlert(producto.nombre_producto, producto.cantidad_producto);
         }
       } else {
         this.cart.push({ ...producto, quantity: 1 });
-        console.log('🆕 Producto nuevo agregado, carrito tiene:', this.cart.length, 'productos');
+        console.log('Producto nuevo agregado, carrito tiene:', this.cart.length, 'productos');
       }
     },
 
@@ -736,13 +788,13 @@ export default {
       if (this.selectedPaymentMethod === PAYMENT_CODES.CASH) {
         const amount = this.remainingBalance;
         this.cashAmount = amount;
-        this.cashAmountText = amount.toString();
+        this.cashAmountText = amount.toFixed(2);
       } else if (this.selectedPaymentMethod === PAYMENT_CODES.YAPE) {
         const amount = this.remainingBalance;
         this.yapeAmount = amount;
-        this.yapeAmountText = amount.toString();
+        this.yapeAmountText = amount.toFixed(2);
       }
-    },    
+    },
     
     // ==================== CARRITO ====================
     updateQuantity(index, delta) {
@@ -777,8 +829,7 @@ export default {
       } else {
         this.selectedPaymentMethod = method;
         if (method === PAYMENT_CODES.YAPE && this.remainingBalance > 0) {
-        
-        this.$nextTick(() => {
+          this.$nextTick(() => {
             this.registrarPagoYapeAutomatico();
           });
         }
@@ -796,25 +847,44 @@ export default {
     },
     
     updateYapeAmount(event) {
-      const value = event.target.value;
-      const sanitized = sanitizeCurrencyInput(value);
-      this.yapeAmountText = sanitized;
-      let amount = parseCurrencyInput(sanitized);
-      if (amount > this.remainingBalance) {
-        amount = this.remainingBalance;
-        this.yapeAmountText = amount.toString();
+      try {
+        const value = event.target.value;
+        const sanitized = sanitizeCurrencyInput(value);
+        this.yapeAmountText = sanitized;
+        let amount = parseCurrencyInput(sanitized);
+        if (isNaN(amount)) amount = 0;
+        if (amount > this.remainingBalance) {
+          amount = this.remainingBalance;
+          this.yapeAmountText = amount.toFixed(2);
+        }
+        this.yapeAmount = amount;
+      } catch (error) {
+        console.error('Error actualizando monto Yape:', error);
+        this.yapeAmount = 0;
+        this.yapeAmountText = '0';
       }
-      this.yapeAmount = amount;
     },
     
     updateCashAmount(event) {
-      const value = event.target.value;
-      const sanitized = sanitizeCurrencyInput(value);
-      this.cashAmountText = sanitized;
-      this.cashAmount = parseCurrencyInput(sanitized);
+      try {
+        const value = event.target.value;
+        const sanitized = sanitizeCurrencyInput(value);
+        this.cashAmountText = sanitized;
+        let amount = parseCurrencyInput(sanitized);
+        if (isNaN(amount)) amount = 0;
+        this.cashAmount = amount;
+      } catch (error) {
+        console.error('Error actualizando monto efectivo:', error);
+        this.cashAmount = 0;
+        this.cashAmountText = '0';
+      }
     },
     
     addPayment() {
+      if (!this.selectedPaymentMethod) {
+        showErrorAlert('Seleccione un método de pago');
+        return;
+      }
       if (this.selectedPaymentMethod === PAYMENT_CODES.CASH) {
         this.addPaymentEfectivo();
       } else if (this.selectedPaymentMethod === PAYMENT_CODES.YAPE) {
@@ -873,7 +943,10 @@ export default {
     },
     
     removePayment(index) {
-      this.payments.splice(index, 1);
+      if (confirm('¿Estás seguro de eliminar este pago?')) {
+        this.payments.splice(index, 1);
+        showToast('Pago eliminado', 'info');
+      }
     },
     
     // ==================== MODAL DE BÚSQUEDA ====================
@@ -884,13 +957,12 @@ export default {
       this.modalPagination = null;
       this.modalCurrentPage = 1;
       this.cargarProductosModal(1);
-      // Enfocar el input del modal después de abrir
       this.$nextTick(() => {
         if (this.$refs.modalSearchInput) {
           this.$refs.modalSearchInput.focus();
         }
       });
-      console.log('🟢 Modal abierto - escáner solo para búsqueda');
+      console.log('Modal abierto');
     },
     
     closeProductModal() {
@@ -899,7 +971,7 @@ export default {
       this.modalProducts = [];
       this.modalPagination = null;
       if (this.modalSearchTimeout) clearTimeout(this.modalSearchTimeout);
-      console.log('🔴 Modal cerrado - escáner reactivado para agregar productos');
+      console.log('Modal cerrado');
     },
     
     handleModalSearch() {
@@ -956,7 +1028,7 @@ export default {
     },
     
     agregarDesdeModal(product) {
-      if (product.estado === false || product.estado === 'false') {
+      if (!this.isProductActive(product)) {  // ✅ Usar el helper
         showProductInactiveAlert(product.nombre_producto);
         return;
       }
@@ -984,9 +1056,14 @@ export default {
     
     // ==================== FINALIZAR VENTA ====================
     async finalizeSale() {
+
       if (this.cart.length === 0) {
         showEmptyCartAlert();
         return;
+      }
+
+      if (this.showProductModal) {
+        this.closeProductModal();
       }
       
       if (this.remainingBalance > 0) {

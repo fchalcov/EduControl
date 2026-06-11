@@ -4,6 +4,14 @@ export const create_venta = (data: any) => {
   return http.post("/venta/venta_create/", data);
 };  
 
+export const producto_list_x_codigo = (codigoBarra: string, estado?: string) => {
+  const params: any = { codigo_barra: codigoBarra };
+  if (estado) {
+    params.estado = estado;
+  }
+  return http.get("/producto/producto_list_x_codigo/", { params });
+};
+
 export interface Venta {
     id_venta: number;
     correlativo_venta: string;

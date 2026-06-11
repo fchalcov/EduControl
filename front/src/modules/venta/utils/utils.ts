@@ -1,4 +1,3 @@
-// utils/pos-utils.ts
 import Swal from 'sweetalert2';
 
 // ==================== CONSTANTES Y CÓDIGOS ====================
@@ -181,9 +180,9 @@ export const validateEfectivoPayment = (
   return { valid: true };
 };
 
-// ==================== ALERTAS CON SWEETALERT2 NATURAL ====================
+// ==================== ALERTAS Y TOASTS ====================
 
-// Toast - Notificaciones rápidas
+// Toast principal - para todas las notificaciones
 export const showToast = (message: string, type: 'success' | 'error' | 'info' | 'warning' = 'success') => {
   const Toast = Swal.mixin({
     toast: true,
@@ -199,110 +198,64 @@ export const showToast = (message: string, type: 'success' | 'error' | 'info' | 
   });
 };
 
-// Alerta de error
-export const showErrorAlert = (message: string, title: string = 'Error') => {
-  Swal.fire({
-    icon: 'error',
-    title: title,
-    text: message,
-    confirmButtonText: 'OK'
-  });
+export const showProductInactiveAlert = (productName: string): Promise<any> => {
+  showToast(`"${productName}" está inactivo`, 'warning');
+  return Promise.resolve();
 };
 
-// Alerta de venta completada
+export const showNoStockAlert = (productName: string): Promise<any> => {
+  showToast(`"${productName}" no tiene stock disponible`, 'error');
+  return Promise.resolve();
+};
+
+export const showErrorAlert = (message: string, title: string = 'Error'): Promise<any> => {
+  showToast(`${title}: ${message}`, 'error');
+  return Promise.resolve();
+};
+
+export const showInsufficientStockAlert = (productName: string, maxStock: number): Promise<any> => {
+  showToast(`"${productName}" - Stock máximo: ${maxStock}`, 'warning');
+  return Promise.resolve();
+};
+
 export const showSaleCompletedAlert = (correlativo: string, total: number): Promise<any> => {
   return Swal.fire({
     icon: 'success',
     title: '¡Venta completada!',
     text: `Correlativo: ${correlativo}\nTotal: ${formatCurrency(total)}`,
-    confirmButtonText: 'Aceptar'
+    confirmButtonText: 'Aceptar',
+    timer: 3000,
+    timerProgressBar: true
   });
 };
 
-// Alerta de pago registrado
-export const showPaymentCompletedAlert = (totalPaid: number, vuelto: number) => {
-  let message = `Total pagado: ${formatCurrency(totalPaid)}`;
+export const showPaymentCompletedAlert = (totalPaid: number, vuelto: number): Promise<any> => {
+  let message = `Pagado: ${formatCurrency(totalPaid)}`;
   if (vuelto > 0) {
-    message += `\nVuelto: ${formatCurrency(vuelto)}`;
+    message += ` | Vuelto: ${formatCurrency(vuelto)}`;
   }
-  
-  Swal.fire({
-    icon: 'success',
-    title: '¡Pago registrado!',
-    text: message,
-    confirmButtonText: 'Continuar',
-    timer: 2000
-  });
+  showToast(message, 'success');
+  return Promise.resolve();
 };
 
-// Alerta de pago incompleto
-export const showIncompletePaymentAlert = (remainingBalance: number) => {
-  Swal.fire({
-    icon: 'warning',
-    title: 'Pago incompleto',
-    text: `Falta saldo por pagar: ${formatCurrency(remainingBalance)}`,
-    confirmButtonText: 'OK'
-  });
+export const showIncompletePaymentAlert = (remainingBalance: number): Promise<any> => {
+  showToast(`Falta pagar: ${formatCurrency(remainingBalance)}`, 'warning');
+  return Promise.resolve();
 };
 
-// Alerta de error al registrar venta
-export const showSaleErrorAlert = (errorMsg: string) => {
-  Swal.fire({
-    icon: 'error',
-    title: 'Error al registrar la venta',
-    text: errorMsg,
-    confirmButtonText: 'Cerrar'
-  });
+export const showSaleErrorAlert = (errorMsg: string): Promise<any> => {
+  showToast(`Error: ${errorMsg}`, 'error');
+  return Promise.resolve();
 };
 
-// Alerta de producto inactivo
-export const showProductInactiveAlert = (productName: string) => {
-  Swal.fire({
-    icon: 'error',
-    title: 'Producto inactivo',
-    text: `El producto "${productName}" está inactivo`,
-    confirmButtonText: 'OK'
-  });
+export const showEmptyCartAlert = (): Promise<any> => {
+  showToast('El carrito está vacío', 'info');
+  return Promise.resolve();
 };
 
-// Alerta de stock insuficiente
-export const showInsufficientStockAlert = (productName: string, maxStock: number) => {
-  Swal.fire({
-    icon: 'warning',
-    title: 'Stock insuficiente',
-    text: `${productName} - Stock máximo disponible: ${maxStock}.`,
-    confirmButtonText: 'OK'
-  });
-};
-
-// Alerta sin stock
-export const showNoStockAlert = (productName: string) => {
-  Swal.fire({
-    icon: 'error',
-    title: 'Sin stock',
-    text: `El producto "${productName}" no tiene stock disponible`,
-    confirmButtonText: 'OK'
-  });
-};
-
-// Alerta carrito vacío
-export const showEmptyCartAlert = () => {
-  Swal.fire({
-    icon: 'info',
-    title: 'Carrito vacío',
-    text: 'No hay productos en el carrito',
-    confirmButtonText: 'OK'
-  });
-};
-
-// Alerta monto inválido
-export const showInvalidAmountAlert = () => {
-  Swal.fire({
-    icon: 'error',
-    title: 'Monto inválido',
-    text: 'Ingrese un monto válido mayor a cero',
-    confirmButtonText: 'OK'
-  });
+export const showInvalidAmountAlert = (): Promise<any> => {
+  showToast('Ingrese un monto válido mayor a cero', 'error');
+  return Promise.resolve();
 };
 
 // ==================== UTILIDADES ====================
