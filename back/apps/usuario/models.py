@@ -10,20 +10,18 @@ class UsuarioRol(models.Model):
     rol_fecha_creacion = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = "usuario_usuario_rol"
+        db_table = 'usuario_rol'
 
     def __str__(self):
         return self.usuario.username
 
-
 class UsuarioMenu(models.Model):
-
     usuario     = models.ForeignKey(User, on_delete=models.CASCADE)
     menu        = models.ForeignKey(Menu, on_delete=models.CASCADE)
     permiso_ver = models.BooleanField(default=True)
 
     class Meta:
-        db_table = "usuario_usuario_menu"
+        db_table = 'usuario_menu'
         unique_together = ('usuario', 'menu')
 
     def __str__(self):

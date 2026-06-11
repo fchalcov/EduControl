@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.db import transaction
 
 class Venta(models.Model):
     ESTADOS = [
@@ -14,50 +15,38 @@ class Venta(models.Model):
     total_venta = models.DecimalField(max_digits=10, decimal_places=2)
     estado_venta = models.IntegerField(choices=ESTADOS, default=1)
 
+    class Meta:
+        db_table = 'venta'
+
     def __str__(self):
         return f"Venta {self.correlativo_venta} - Total: {self.total_venta}"
 
     def save(self, *args, **kwargs):
-        """Sobrescribimos save para generar el correlativo automáticamente"""
-        if not self.correlativo_venta:  # Solo si no tiene correlativo
+        if not self.correlativo_venta:
             self.correlativo_venta = self.generar_correlativo()
         super().save(*args, **kwargs)
     
     @classmethod
     def generar_correlativo(cls):
-        """Genera un correlativo único con formato VENT-AÑONÚMERO
-        Ejemplo: VENT-202600001, VENT-202600002, VENT-202700001, etc.
-        """
-        from django.db import transaction
         
         anio_actual = timezone.now().year
-        
-        # Usamos select_for_update dentro de una transacción para evitar concurrencia
         with transaction.atomic():
-            # Buscar la última venta del año actual
             ultima_venta = cls.objects.select_for_update().filter(
                 correlativo_venta__startswith=f"VENT-{anio_actual}"
             ).order_by('-id_venta').first()
             
             if ultima_venta:
-                # Extraer el número: "VENT-202600123" -> 123
                 try:
-                    # Obtenemos todo el correlativo y extraemos solo la parte numérica después del año
                     correlativo_completo = ultima_venta.correlativo_venta
-                    # VENT-202600123 -> extraemos "202600123" y luego tomamos los últimos 6 dígitos
                     numero_str = correlativo_completo.replace(f"VENT-{anio_actual}", "")
                     ultimo_numero = int(numero_str)
                     nuevo_numero = ultimo_numero + 1
                 except (IndexError, ValueError):
                     nuevo_numero = 1
             else:
-                # Primera venta del año: comienza en 1
                 nuevo_numero = 1
-            
-            # Formato: 6 dígitos (máximo 999,999 ventas por año)
-            # VENT-2026 + 000001 = VENT-2026000001
             return f"VENT-{anio_actual}{nuevo_numero:06d}"
-
+        
 
 class VentaPago(models.Model):
     PAGOS =[
@@ -73,6 +62,9 @@ class VentaPago(models.Model):
     efectivo_recibido = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     efectivo_vuelto = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     fecha_pago = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'venta_tipo_pago'
 
     def __str__(self):
         return f"Pago {self.id_pago} - Venta {self.id_venta} - Forma: {self.get_forma_pago_display()}"
@@ -98,7 +90,10 @@ class DetalleVenta(models.Model):
     devolucion_monto = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     devolucion_fecha = models.DateTimeField(null=True, blank=True)
     usuario_actualizacion = models.IntegerField(null=True, blank=True)
-    fecha_actualizacion = models.DateTimeField(auto_now=True)
+    fecha_actualizacion = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        db_table = 'venta_detalle'
 
     def __str__(self): 
         return f"Detalle {self.id_detalle} - Venta {self.id_venta} - Producto: {self.descripcion_producto}"

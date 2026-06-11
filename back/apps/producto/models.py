@@ -18,6 +18,9 @@ class Producto(models.Model):
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_actualizacion = models.DateTimeField(auto_now=True)
     
+    class Meta:
+        db_table = 'producto'
+    
     def generar_codigo_interno(self):
         ahora = timezone.now()
         
@@ -36,29 +39,19 @@ class Producto(models.Model):
     # ============================================
     # MÉTODOS PARA MANEJAR STOCK
     # ============================================
-    def restar_stock(self, cantidad):
-        """Resta stock de este producto"""
-        print(f"🔄 RESTANDO STOCK - Producto: {self.nombre_producto}")
-        print(f"   Stock actual: {self.cantidad_producto}")
-        print(f"   Cantidad a restar: {cantidad}")
-        
+    def restar_stock(self, cantidad):        
         if self.cantidad_producto >= cantidad:
             self.cantidad_producto -= cantidad
             self.save(update_fields=['cantidad_producto'])
-            print(f"   ✅ Nuevo stock: {self.cantidad_producto}")
             return True
-        
-        print(f"Stock insuficiente")
         return False
     
     def aumentar_stock(self, cantidad):
-        """Aumenta stock de este producto"""
         self.cantidad_producto += cantidad
         self.save()
         return True
     
     def tiene_stock(self, cantidad):
-        """Verifica si tiene suficiente stock"""
         return self.cantidad_producto >= cantidad
     
     def save(self, *args, **kwargs):

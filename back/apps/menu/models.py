@@ -17,5 +17,8 @@ class Menu(models.Model):
     menu_activo         = models.BooleanField(default=True)
     menu_fecha_creacion = models.DateTimeField(auto_now_add=True)
     
+    class Meta:
+        db_table = 'menu'
+    
     def __str__(self):
         return self.menu_titulo

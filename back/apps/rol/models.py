@@ -8,15 +8,19 @@ class Rol(models.Model):
     rol_activo         = models.BooleanField(default=True)
     rol_fecha_creacion = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        db_table = 'rol'
+
     def __str__(self):
         return f"{self.rol_nombre} - {self.rol_descripcion}"
+
 
 class RolMenu(models.Model):
     rol = models.ForeignKey(Rol, on_delete=models.CASCADE)
     menu = models.ForeignKey(Menu, on_delete=models.CASCADE)
 
     class Meta:
-        db_table = "rol_rol_menu"
+        db_table = 'rol_menu'
         unique_together = ('rol', 'menu')
 
     def __str__(self):
