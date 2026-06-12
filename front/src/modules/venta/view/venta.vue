@@ -6,8 +6,10 @@
     class="h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col"
   >
     <!-- Header -->
-    <header class="bg-white border-b border-gray-200 px-8 py-6">
-      <div class="flex justify-between items-start">
+    <header class="bg-white border-b border-gray-200 px-4 sm:px-8 py-4 sm:py-6">
+      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 sm:gap-0">
+        
+        <!-- Logo y título -->
         <div class="flex items-center gap-3">
           <div class="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0">
             <span class="text-white text-sm font-bold">V</span>
@@ -17,9 +19,11 @@
             <p class="text-xs text-gray-500 hidden sm:block">Punto de venta</p>
           </div>
         </div>
+        
+        <!-- Botón -->
         <div class="flex gap-3">
           <button @click="openProductModal"
-            class="px-5 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2">
+            class="flex-1 sm:flex-none px-4 sm:px-5 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2">
             Buscar Producto
           </button>
         </div>

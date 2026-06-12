@@ -1,16 +1,17 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <!-- Cambiar min-h-screen por h-screen y agregar overflow-hidden -->
+  <div class="h-screen bg-gray-50 flex overflow-hidden">
     <!-- Sidebar -->
     <Sidebar :isCollapsed="isCollapsed" :isMobileMenuOpen="isMobileMenuOpen" :isMobile="isMobile"
       @closeMobile="closeMobileMenu" @toggleSidebar="toggleSidebar" />
 
-    <!-- CONTENIDO -->
+    <!-- CONTENIDO - Agregar flex flex-col para controlar alturas -->
     <div :class="[
-      'transition-all duration-300',
+      'flex flex-col flex-1 transition-all duration-300 overflow-hidden',
       isMobile ? 'ml-0' : isCollapsed ? 'ml-20' : 'ml-64',
     ]">
-      <!-- HEADER -->
-      <header class="bg-white shadow-sm sticky top-0 z-20">
+      <!-- HEADER - Quitar sticky y agregar flex-shrink-0 -->
+      <header class="bg-white shadow-sm z-20 flex-shrink-0">
         <div class="flex justify-between items-center px-4 md:px-6 h-16">
           <!-- IZQUIERDA -->
           <div class="flex items-center gap-4">
@@ -67,19 +68,16 @@
         </div>
       </header>
 
-      <!-- CONTENIDO -->
-      <main class="p-4 md:p-4 bg-gray-100 min-h-[calc(100vh-4rem)] flex flex-col">
-        <div class="flex-1 flex flex-col bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div class="flex-1 overflow-auto p-4 md:p-4">
-            <div class="flex-1 overflow-auto p-4 md:p-4">
-              <router-view />
-            </div>
-          </div>
+      <!-- CONTENIDO PRINCIPAL - Usar flex-1 y overflow-auto -->
+      <main class="flex-1 p-4 md:p-4 bg-gray-100 overflow-auto">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 min-h-full">
+          <router-view />
         </div>
       </main>
     </div>
   </div>
 </template>
+
 <script setup>
 import Sidebar from "../../modules/sidebar/view/sidebar.vue";
 import { ref, computed, onMounted, onUnmounted } from "vue";
@@ -105,7 +103,13 @@ const userInitial = computed(() =>
 );
 
 /* PAGE TITLE */
-// const pageTitle = computed(() => route.name || "Panel de Control");
+const pageTitle = computed(() => {
+  const name = route.name;
+  if (!name || route.path === "/") {
+    return "Bienvenido";
+  }
+  return name;
+});
 
 /* FUNCIONES */
 const toggleSidebar = () => {
@@ -128,7 +132,6 @@ const logout = () => {
 /* MOBILE */
 const checkMobile = () => {
   isMobile.value = window.innerWidth < 1024;
-
   if (!isMobile.value) closeMobileMenu();
 };
 

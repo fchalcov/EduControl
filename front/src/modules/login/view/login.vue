@@ -145,7 +145,7 @@ const handleLogin = async () => {
     } else {
       localStorage.removeItem("saved_user");
     }
-    router.replace('/dashboard');
+    router.replace('/');
   } catch (e: any) {
     if (e.response) {
       errorMessage.value = e.response.data.message;

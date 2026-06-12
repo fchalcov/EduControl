@@ -1,8 +1,10 @@
 <template>
   <div class="min-h-screen bg-gray-50">
     <!-- Header -->
-    <header class="bg-white border-b border-gray-200 px-8 py-6">
-      <div class="flex justify-between items-start">
+    <header class="bg-white border-b border-gray-200 px-4 sm:px-8 py-4 sm:py-6">
+      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 sm:gap-0">
+        
+        <!-- Logo y título -->
         <div class="flex items-center gap-3">
           <div class="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0">
             <span class="text-white text-sm font-bold">P</span>
@@ -12,13 +14,15 @@
             <p class="text-xs text-gray-500 hidden sm:block">Administración del inventario de productos</p>
           </div>
         </div>
+        
+        <!-- Botones -->
         <div class="flex gap-3">
           <button @click="abrirModalExcel"
-            class="px-5 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+            class="flex-1 sm:flex-none px-4 sm:px-5 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
             Subir Excel
           </button>
           <button @click="openModal(null)"
-            class="px-5 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors">
+            class="flex-1 sm:flex-none px-4 sm:px-5 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors">
             Nuevo Producto
           </button>
         </div>
