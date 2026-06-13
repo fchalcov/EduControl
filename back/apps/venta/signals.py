@@ -8,10 +8,6 @@ from apps.producto.models import Producto
 
 @receiver(post_save, sender=DetalleVenta)
 def registrar_kardex_al_vender(sender, instance, created, **kwargs):
-    """
-    Cuando se crea un DetalleVenta, registra en Kardex
-    Si falla, cancela toda la transacción
-    """
     if not created:
         return
     
@@ -36,7 +32,6 @@ def registrar_kardex_al_vender(sender, instance, created, **kwargs):
     else:
         stock_anterior = producto.cantidad_producto + int(instance.cantidad_venta)
     
-    # Crear registro en Kardex (si falla, la transacción se cancela)
     Kardex.objects.create(
         codigo_interno=producto.codigo_interno,
         codigo_barra=producto.codigo_barra,
@@ -46,7 +41,7 @@ def registrar_kardex_al_vender(sender, instance, created, **kwargs):
         stock_anterior=stock_anterior,
         stock_nuevo=producto.cantidad_producto,
         precio_compra=0, ## SOLO PARA INGRESO NUEVOS
-        precio_venta=float(instance.precio_venta), ## PARA VENTA, EL COSTO ES EL PRECIO DE VENTA
+        precio_venta=float(instance.precio_venta),
         subtotal=float(instance.sub_total_venta),
         correlativo_referencia=venta.correlativo_venta,
         id_venta=instance.id_venta,

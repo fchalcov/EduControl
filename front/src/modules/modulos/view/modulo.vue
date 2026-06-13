@@ -7,14 +7,14 @@
                     <h1 class="text-lg md:text-xl font-semibold text-gray-800">
                         Gestión de Módulos
                     </h1>
-                    <p class="text-xs md:text-sm text-gray-500 mt-0.5">
+                    <p class="text-xs md:text-xs text-gray-500 mt-0.5">
                         Administra la estructura de menús y navegación del sistema
                     </p>
                 </div>
 
                 <button @click="openModal(null)"
-                    class="w-full md:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg shadow-sm transition-all duration-200">
-                    + Nuevo Módulo
+                    class="w-full md:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 bg-gray-900 hover:bg-gray-900 text-white text-xs font-medium rounded-lg shadow-xs transition-all duration-200">
+                    Nuevo Módulo
                 </button>
             </div>
         </div>
@@ -29,7 +29,7 @@
 
         <!-- Tabla de Módulos -->
         <div v-else class="flex-1 px-4 md:px-6 py-4 md:py-6 overflow-hidden">
-            <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden h-full flex flex-col">
+            <div class="bg-white rounded-xl border border-gray-200 shadow-xs overflow-hidden h-full flex flex-col">
                 <!-- Barra de búsqueda y filtros -->
                 <div class="p-4 border-b border-gray-200 bg-gray-50 flex-shrink-0">
                     <div class="flex flex-col sm:flex-row gap-3">
@@ -38,15 +38,15 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                             <input type="text" v-model="searchTerm" placeholder="Buscar módulo por nombre..."
-                                class="w-full pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                                class="w-full pl-9 pr-4 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
                         </div>
                         <div class="flex gap-2">
                             <button @click="expandAll"
-                                class="inline-flex items-center gap-1 px-3 py-2 text-sm text-gray-600 hover:text-blue-600 border border-gray-300 rounded-lg hover:bg-white transition-colors">
+                                class="inline-flex items-center gap-1 px-3 py-2 text-xs text-gray-600 hover:text-blue-600 border border-gray-300 rounded-lg hover:bg-white transition-colors">
                                 ▼ Expandir todo
                             </button>
                             <button @click="collapseAll"
-                                class="inline-flex items-center gap-1 px-3 py-2 text-sm text-gray-600 hover:text-blue-600 border border-gray-300 rounded-lg hover:bg-white transition-colors">
+                                class="inline-flex items-center gap-1 px-3 py-2 text-xs text-gray-600 hover:text-blue-600 border border-gray-300 rounded-lg hover:bg-white transition-colors">
                                 ▲ Colapsar todo
                             </button>
                         </div>
@@ -59,26 +59,26 @@
                         <thead class="bg-gray-50 border-b border-gray-200 sticky top-0">
                             <tr>
                                 <th
-                                    class="px-4 md:px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-10">
+                                    class="px-4 md:px-6 py-4 text-left text-xs font-semibold text-gray-600  tracking-wider w-10">
                                 </th>
                                 <th
-                                    class="px-4 md:px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    class="px-4 md:px-6 py-4 text-left text-xs font-semibold text-gray-600  tracking-wider">
                                     Módulo
                                 </th>
                                 <th
-                                    class="px-4 md:px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    class="px-4 md:px-6 py-4 text-left text-xs font-semibold text-gray-600  tracking-wider">
                                     Ruta
                                 </th>
                                 <th
-                                    class="px-4 md:px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    class="px-4 md:px-6 py-4 text-left text-xs font-semibold text-gray-600  tracking-wider">
                                     Estado
                                 </th>
                                 <th
-                                    class="px-4 md:px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    class="px-4 md:px-6 py-4 text-left text-xs font-semibold text-gray-600  tracking-wider">
                                     Orden
                                 </th>
                                 <th
-                                    class="px-4 md:px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    class="px-4 md:px-6 py-4 text-center text-xs font-semibold text-gray-600  tracking-wider">
                                     Acciones
                                 </th>
                             </tr>
@@ -99,7 +99,7 @@
                                         <div class="flex items-center gap-2 md:gap-3">
                                             <component :is="getIconComponent(module.icono)"
                                                 class="w-5 h-5 text-gray-400" />
-                                            <span class="text-sm font-medium text-gray-900">
+                                            <span class="text-xs font-medium text-gray-900">
                                                 {{ module.titulo }}
                                             </span>
                                         </div>
@@ -150,7 +150,7 @@
                                             <div class="flex items-center gap-2 md:gap-3">
                                                 <component :is="getIconComponent(child.icono)"
                                                     class="w-5 h-5 text-gray-400" />
-                                                <span class="text-sm font-medium text-gray-900">
+                                                <span class="text-xs font-medium text-gray-900">
                                                     {{ child.titulo }}
                                                 </span>
                                             </div>
@@ -199,7 +199,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
                                     </svg>
                                     <p class="text-gray-500">No se encontraron módulos</p>
-                                    <p class="text-sm text-gray-400 mt-1">Prueba con otros términos de búsqueda</p>
+                                    <p class="text-xs text-gray-400 mt-1">Prueba con otros términos de búsqueda</p>
                                 </td>
                             </tr>
                         </tbody>
@@ -210,7 +210,7 @@
 
         <!-- Modal -->
         <div v-if="showModal" class="fixed inset-0 z-50 overflow-y-auto">
-            <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" @click="btnCerrarModal"></div>
+            <div class="fixed inset-0 bg-black/50 backdrop-blur-xs" @click="btnCerrarModal"></div>
 
             <div class="flex min-h-full items-center justify-center p-4">
                 <div class="relative bg-white w-full max-w-2xl rounded-xl shadow-2xl flex flex-col max-h-[90vh]">
@@ -221,7 +221,7 @@
                             <h3 class="text-lg font-semibold text-gray-800">
                                 {{ selectedModule?.id ? "Actualizar Módulo" : "Crear Nuevo Módulo" }}
                             </h3>
-                            <p class="text-sm text-gray-500">
+                            <p class="text-xs text-gray-500">
                                 {{
                                     selectedModule?.id
                                         ? "Modifica la configuración del módulo"
@@ -241,7 +241,7 @@
                         <div class="border-b border-gray-200 px-6">
                             <div class="flex gap-6 overflow-x-auto">
                                 <button v-for="tab in tabs" :key="tab.key" @click="activeTab = tab.key" :class="[
-                                    'py-3 text-sm font-medium transition-colors relative whitespace-nowrap',
+                                    'py-3 text-xs font-medium transition-colors relative whitespace-nowrap',
                                     activeTab === tab.key
                                         ? 'text-blue-600'
                                         : 'text-gray-500 hover:text-gray-700',
@@ -258,20 +258,20 @@
                             <div v-show="activeTab === 'basic'" class="space-y-5 max-w-2xl">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">
                                             Título del módulo <span class="text-red-500">*</span>
                                         </label>
                                         <input v-model="selectedModule.titulo" type="text"
-                                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                                            class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                                             placeholder="Ej: Usuarios, Cursos, Configuración" />
                                         <p v-if="errors.titulo" class="text-xs text-red-500 mt-1">{{ errors.titulo }}</p>
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">
                                             Orden <span class="text-red-500">*</span>
                                         </label>
                                         <input v-model.number="selectedModule.orden" type="number"
-                                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                            class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                             placeholder="0" min="0"/>
                                         <p v-if="errors.orden" class="text-xs text-red-500 mt-1">{{ errors.orden }}</p>
                                     </div>
@@ -279,20 +279,20 @@
 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">
                                             Ruta del módulo
                                         </label>
                                         <input v-model="selectedModule.ruta" type="text"
-                                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono"
+                                            class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 "
                                             placeholder="Ej: /usuarios/list" />
                                         <p class="text-xs text-gray-400 mt-1">Ruta de navegación</p>
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">
                                             Estado
                                         </label>
                                         <select v-model="selectedModule.activo"
-                                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
+                                            class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
                                             <option :value="true">Activo</option>
                                             <option :value="false">Inactivo</option>
                                         </select>
@@ -300,11 +300,11 @@
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    <label class="block text-xs font-medium text-gray-700 mb-1">
                                         Módulo padre
                                     </label>
                                     <select v-model="selectedModule.padre_id"
-                                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
+                                        class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
                                         <option :value="null">(Ninguno - Módulo principal)</option>
                                         <option v-for="mod in parentModules" :key="mod.id" :value="mod.id"
                                             :disabled="mod.id === selectedModule?.id">
@@ -316,15 +316,15 @@
 
                                 <!-- Vista previa -->
                                 <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                                    <p class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Vista previa</p>
+                                    <p class="text-xs font-medium text-gray-500  tracking-wider mb-2">Vista previa</p>
                                     <div class="flex items-center gap-3">
                                         <div
-                                            class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white shadow-sm">
+                                            class="w-10 h-10 rounded-lg bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center text-white shadow-xs">
                                             <component :is="getIconComponent(selectedModule?.icono)" class="w-5 h-5" />
                                         </div>
                                         <div>
-                                            <p class="text-sm font-medium text-gray-900">{{ selectedModule?.titulo }}</p>
-                                            <p class="text-xs text-gray-500 font-mono">{{ selectedModule?.ruta || 'Sin ruta' }}</p>
+                                            <p class="text-xs font-medium text-gray-900">{{ selectedModule?.titulo }}</p>
+                                            <p class="text-xs text-gray-500 ">{{ selectedModule?.ruta || 'Sin ruta' }}</p>
                                         </div>
                                         <span class="ml-auto text-xs text-gray-400">Orden: {{ selectedModule?.orden || 0 }}</span>
                                     </div>
@@ -334,9 +334,9 @@
                             <!-- Tab: Icono -->
                             <div v-show="activeTab === 'icon'" class="space-y-5 max-w-2xl">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Seleccionar Icono</label>
+                                    <label class="block text-xs font-medium text-gray-700 mb-2">Seleccionar Icono</label>
                                     <input v-model="iconSearch" placeholder="Buscar icono..."
-                                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                                        class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
                                 </div>
                                 <div
                                     class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 max-h-64 overflow-y-auto pr-2">
@@ -354,7 +354,7 @@
                                 <div v-if="selectedModule.icono"
                                     class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border">
                                     <component :is="getIconComponent(selectedModule.icono)" class="w-6 h-6 text-blue-600" />
-                                    <span class="text-sm text-gray-700">
+                                    <span class="text-xs text-gray-700">
                                         {{ selectedModule.icono }}
                                     </span>
                                 </div>
@@ -366,12 +366,12 @@
                     <div
                         class="flex flex-col sm:flex-row justify-end gap-3 px-6 py-4 border-t border-gray-200 bg-gray-50 rounded-b-xl">
                         <button @click="btnCerrarModal"
-                            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                            class="px-4 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                             Cancelar
                         </button>
                         <button @click="btnConfirmar"
                             :disabled="guardando"
-                            class="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                            class="px-6 py-2 text-xs font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-900 transition-colors shadow-xs disabled:opacity-50 disabled:cursor-not-allowed">
                             {{ guardando ? 'Guardando...' : (selectedModule?.id ? "Actualizar" : "Crear") }}
                         </button>
                     </div>
@@ -381,7 +381,7 @@
 
         <!-- Modal de confirmación de eliminación -->
         <div v-if="showDeleteModal" class="fixed inset-0 z-50 overflow-y-auto">
-            <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" @click="showDeleteModal = false"></div>
+            <div class="fixed inset-0 bg-black/50 backdrop-blur-xs" @click="showDeleteModal = false"></div>
             <div class="flex min-h-full items-center justify-center p-4">
                 <div class="relative bg-white w-full max-w-md rounded-xl shadow-2xl">
                     <div class="p-6">
@@ -395,17 +395,17 @@
                         <h3 class="text-lg font-semibold text-center text-gray-800 mb-2">
                             Confirmar eliminación
                         </h3>
-                        <p class="text-sm text-gray-600 text-center mb-6">
+                        <p class="text-xs text-gray-600 text-center mb-6">
                             ¿Estás seguro de que deseas eliminar el módulo "{{ moduleAEliminar?.titulo }}"?<br>
                             Esta acción no se puede deshacer.
                         </p>
                         <div class="flex gap-3">
                             <button @click="showDeleteModal = false"
-                                class="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                                class="flex-1 px-4 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
                                 Cancelar
                             </button>
                             <button @click="eliminarModulo"
-                                class="flex-1 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700">
+                                class="flex-1 px-4 py-2 text-xs font-medium text-white bg-red-600 rounded-lg hover:bg-red-700">
                                 Eliminar
                             </button>
                         </div>

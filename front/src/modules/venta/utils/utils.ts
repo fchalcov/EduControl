@@ -225,7 +225,9 @@ export const showSaleCompletedAlert = (correlativo: string, total: number): Prom
     text: `Correlativo: ${correlativo}\nTotal: ${formatCurrency(total)}`,
     confirmButtonText: 'Aceptar',
     timer: 3000,
-    timerProgressBar: true
+    timerProgressBar: true,
+    allowOutsideClick: false,
+    allowEscapeKey: false
   });
 };
 

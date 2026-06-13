@@ -36,14 +36,7 @@ def tipo_movimiento_list(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def kardex_list(request):
-    """
-    Lista todos los movimientos de kardex con filtros:
-    - tipo_movimiento: 1 (ingreso) o 2 (salida)
-    - origen: código del tipo de movimiento (VENTA, COMPRA, etc.)
-    - search: búsqueda por nombre_producto, codigo_interno o codigo_barra
-    - fecha_desde: fecha de inicio
-    - fecha_hasta: fecha de fin
-    """
+
     movimientos = Kardex.objects.all().order_by('fecha_movimiento')
     
     # Filtro por tipo de movimiento (Ingreso/Salida)

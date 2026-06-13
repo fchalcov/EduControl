@@ -10,6 +10,7 @@ from .serializers import ProductoSerializer
 from rest_framework.parsers import MultiPartParser
 from decimal import Decimal, InvalidOperation
 from django.db import transaction
+import openpyxl
 
 # Configuración de paginación
 class ProductoPagination(PageNumberPagination):
@@ -155,15 +156,12 @@ def producto_delete(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def importar_productos_excel(request):
+
     """
-    Importa productos desde un archivo Excel
-    Formato esperado: Nombre | Cantidad | Precio Compra | Precio Unitario | Código de barras
-    
     Reglas:
     - Si el código de barra NO existe: CREA el producto con todos los datos
     - Si el código de barra YA existe: SOLO actualiza el NOMBRE (NO modifica cantidad, precios ni estado)
     """
-    import openpyxl
     from decimal import Decimal
     
     # Verificar si el archivo está en request.FILES
@@ -318,7 +316,7 @@ def importar_productos_excel(request):
             'actualizados': len(productos_actualizados),
             'errores': len(errores),
             'detalles': errores[:20],
-            'lista_actualizados': productos_actualizados  # Para ver qué nombres cambiaron
+            'lista_actualizados': productos_actualizados
         }, status=status.HTTP_200_OK)
         
     except Exception as e:

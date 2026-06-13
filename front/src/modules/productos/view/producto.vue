@@ -7,7 +7,7 @@
         <!-- Logo y título -->
         <div class="flex items-center gap-3">
           <div class="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0">
-            <span class="text-white text-sm font-bold">P</span>
+            <span class="text-white text-xs font-bold">P</span>
           </div>
           <div>
             <h1 class="text-base sm:text-xl font-semibold text-gray-800 tracking-tight">Productos</h1>
@@ -18,11 +18,11 @@
         <!-- Botones -->
         <div class="flex gap-3">
           <button @click="abrirModalExcel"
-            class="flex-1 sm:flex-none px-4 sm:px-5 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+            class="flex-1 sm:flex-none px-4 sm:px-5 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
             Subir Excel
           </button>
           <button @click="openModal(null)"
-            class="flex-1 sm:flex-none px-4 sm:px-5 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors">
+            class="flex-1 sm:flex-none px-4 sm:px-5 py-2 text-xs font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors">
             Nuevo Producto
           </button>
         </div>
@@ -34,7 +34,7 @@
       <!-- Filters Panel -->
       <div class="bg-white rounded-lg border border-gray-200 mb-8">
         <div class="px-6 py-4 border-b border-gray-200">
-          <h2 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+          <h2 class="text-xs font-semibold text-gray-700 flex items-center gap-2">
             <span class="w-1 h-4 bg-gray-900 rounded-full"></span>
             Filtro de busqueda
           </h2>
@@ -43,12 +43,12 @@
         <div class="p-6">
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             <div class="lg:col-span-3">
-              <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Buscar
+              <label class="block text-xs font-medium text-gray-500  tracking-wide mb-1">Buscar
                 producto</label>
               <div class="relative">
                 <input v-model="filtroBusqueda" @input="onSearchInput" type="text"
                   placeholder="Buscar por nombre o código de barras..."
-                  class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none" />
+                  class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none" />
                 <div v-if="buscando" class="absolute right-3 top-1/2 transform -translate-y-1/2">
                   <svg class="animate-spin h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -61,9 +61,9 @@
             </div>
 
             <div>
-              <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Estado</label>
+              <label class="block text-xs font-medium text-gray-500  tracking-wide mb-1">Estado</label>
               <select v-model="filtroEstado" @change="onFilterChange"
-                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none bg-white">
+                class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none bg-white">
                 <option value="todos">Todos los estados</option>
                 <option value="true">Activos</option>
                 <option value="false">Inactivos</option>
@@ -72,7 +72,7 @@
 
             <div class="flex items-end">
               <button v-if="filtroBusqueda" @click="limpiarBusqueda"
-                class="w-full px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors">
+                class="w-full px-4 py-2 bg-gray-100 text-gray-700 text-xs font-medium rounded-lg hover:bg-gray-200 transition-colors">
                 Limpiar
               </button>
             </div>
@@ -89,7 +89,7 @@
       <!-- Products Table -->
       <div v-else class="bg-white rounded-lg border border-gray-200 overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-          <h2 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+          <h2 class="text-xs font-semibold text-gray-700 flex items-center gap-2">
             <span class="w-1 h-4 bg-gray-900 rounded-full"></span>
             Catálogo de productos
           </h2>
@@ -100,20 +100,20 @@
           <table class="w-full">
             <thead class="bg-gray-50 border-b border-gray-200">
               <tr>
-                <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Código
+                <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Código
                   Sistema</th>
-                <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Producto
+                <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Producto
                 </th>
-                <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Cantidad
+                <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Cantidad
                 </th>
-                <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">P.Compra
+                <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">P.Compra
                 </th>
-                <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">P.Venta
+                <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">P.Venta
                 </th>
-                <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Código de
+                <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Código de
                   Barra</th>
-                <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Estado</th>
-                <th class="text-center px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones
+                <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Estado</th>
+                <th class="text-center px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Acciones
                 </th>
               </tr>
             </thead>
@@ -121,27 +121,27 @@
               <tr v-for="producto in productos" :key="producto.id" class="hover:bg-gray-50 transition-colors">
                 <td class="px-6 py-4">
                   <code
-                    class="text-xs bg-gray-100 px-2 py-1 rounded">{{ producto.codigo_interno || "Sin código" }}</code>
+                    class="text-xs bg-gray-100 px-2 py-1 rounded text-gray-800">{{ producto.codigo_interno || "Sin código" }}</code>
                 </td>
                 <td class="px-6 py-4">
-                  <div class="text-sm font-semibold text-gray-900">{{ producto.nombre_producto }}</div>
+                  <div class="text-xs text-gray-800">{{ producto.nombre_producto }}</div>
                 </td>
                 <td class="px-6 py-4">
-                  <span class="text-sm font-medium text-gray-900">{{ producto.cantidad_producto }}</span>
+                  <span class="text-xs text-gray-800">{{ producto.cantidad_producto }}</span>
                 </td>
                 <td class="px-6 py-4">
-                  <span class="text-sm text-gray-900">S/ {{ formatNumber(producto.costo_producto) }}</span>
+                  <span class="text-xs text-gray-800">S/ {{ formatNumber(producto.costo_producto) }}</span>
                 </td>
                 <td class="px-6 py-4">
-                  <span class="text-sm font-semibold text-green-600">S/ {{ formatNumber(producto.precio_unitario)
+                  <span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded">S/ {{ formatNumber(producto.precio_unitario)
                     }}</span>
                 </td>
                 <td class="px-6 py-4">
-                  <code class="text-xs bg-gray-100 px-2 py-1 rounded">{{ producto.codigo_barra || "Sin código" }}</code>
+                  <code class="text-xs bg-gray-100 px-2 py-1 rounded font-medium">{{ producto.codigo_barra || "Sin código" }}</code>
                 </td>
                 <td class="px-6 py-4">
-                  <span :class="producto.estado ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-600'"
-                    class="inline-block px-2.5 py-1 rounded-full text-xs font-medium">
+                  <span :class="producto.estado ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'"
+                    class="inline-block px-2 py-1 rounded-full text-xs font-medium">
                     {{ producto.estado ? "Activo" : "Inactivo" }}
                   </span>
                 </td>
@@ -164,25 +164,25 @@
 
         <div v-else class="text-center py-16">
           <p class="text-gray-500">No se encontraron productos</p>
-          <p class="text-sm text-gray-400 mt-1">Modifica los filtros para ampliar la búsqueda</p>
+          <p class="text-xs text-gray-400 mt-1">Modifica los filtros para ampliar la búsqueda</p>
         </div>
 
         <!-- Paginación -->
         <div v-if="pagination && pagination.total > 0"
           class="px-6 py-4 border-t border-gray-200 flex justify-between items-center">
-          <div class="text-sm text-gray-500">
+          <div class="text-xs text-gray-500">
             Mostrando {{ pagination.from || 0 }} - {{ pagination.to || 0 }} de {{ pagination.total }} productos
           </div>
           <div class="flex gap-2">
             <button @click="cambiarPagina(pagination.previousPage)" :disabled="!pagination.previousPage"
-              class="px-3 py-1 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+              class="px-3 py-1 text-xs border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
               Anterior
             </button>
-            <span class="px-3 py-1 text-sm bg-gray-100 rounded-lg">
+            <span class="px-3 py-1 text-xs bg-gray-100 rounded-lg">
               Página {{ pagination.current_page || 1 }}
             </span>
             <button @click="cambiarPagina(pagination.nextPage)" :disabled="!pagination.nextPage"
-              class="px-3 py-1 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+              class="px-3 py-1 text-xs border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
               Siguiente
             </button>
           </div>
@@ -197,7 +197,7 @@
         <div class="border-b border-gray-200 px-6 py-5 flex justify-between items-center">
           <div>
             <h2 class="text-lg font-semibold text-gray-900">Subir Productos desde Excel</h2>
-            <p class="text-sm text-gray-500">Selecciona un archivo Excel (.xlsx, .xls) con el formato requerido</p>
+            <p class="text-xs text-gray-500">Selecciona un archivo Excel (.xlsx, .xls) con el formato requerido</p>
           </div>
           <button @click="cerrarModalExcel" class="text-gray-400 hover:text-gray-600 text-2xl leading-none">✕</button>
         </div>
@@ -213,7 +213,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
             </svg>
-            <p class="mt-2 text-sm text-gray-600">
+            <p class="mt-2 text-xs text-gray-600">
               Arrastra y suelta tu archivo aquí, o <span class="text-gray-900 font-medium">haz clic para
                 seleccionar</span>
             </p>
@@ -230,7 +230,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span class="text-sm text-gray-700">{{ archivoExcel.name }}</span>
+                <span class="text-xs text-gray-700">{{ archivoExcel.name }}</span>
               </div>
               <button @click="archivoExcel = null; $refs.fileInput.value = ''"
                 class="text-red-500 hover:text-red-700">✕</button>
@@ -239,7 +239,7 @@
 
           <!-- Barra de progreso -->
           <div v-if="subiendoExcel" class="mt-4">
-            <div class="flex justify-between text-sm text-gray-600 mb-1">
+            <div class="flex justify-between text-xs text-gray-600 mb-1">
               <span>Subiendo y procesando...</span>
               <span>{{ progresoCarga }}%</span>
             </div>
@@ -263,7 +263,7 @@
                   d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <div class="flex-1">
-                <p class="text-sm font-medium">{{ resultadoExcel.mensaje }}</p>
+                <p class="text-xs font-medium">{{ resultadoExcel.mensaje }}</p>
                 <div v-if="resultadoExcel.detalles && resultadoExcel.detalles.length" class="mt-2 text-xs">
                   <p class="font-medium">Detalles:</p>
                   <ul class="list-disc list-inside">
@@ -279,11 +279,11 @@
 
         <div class="border-t border-gray-200 px-6 py-4 bg-gray-50 flex justify-end gap-3">
           <button @click="cerrarModalExcel"
-            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+            class="px-4 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
             Cancelar
           </button>
           <button @click="subirExcel" :disabled="!archivoExcel || subiendoExcel"
-            class="px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">
+            class="px-4 py-2 text-xs font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">
             {{ subiendoExcel ? 'Procesando...' : 'Subir Productos' }}
           </button>
         </div>
@@ -299,7 +299,7 @@
             <h2 class="text-lg font-semibold text-gray-900">
               {{ selectedProducto?.id ? "Actualizar Producto" : "Crear Nuevo Producto" }}
             </h2>
-            <p class="text-sm text-gray-500">{{ selectedProducto?.id ? "Modifica los datos del producto" : "Ingresa los datos del nuevo producto" }}</p>
+            <p class="text-xs text-gray-500">{{ selectedProducto?.id ? "Modifica los datos del producto" : "Ingresa los datos del nuevo producto" }}</p>
           </div>
           <button @click="btnCerrarModal" class="text-gray-400 hover:text-gray-600 text-2xl leading-none">✕</button>
         </div>
@@ -307,23 +307,23 @@
         <div class="flex-1 overflow-y-auto p-6">
           <form @submit.prevent="btnConfirmar" class="space-y-6">
             <div class="bg-gray-50 rounded-lg p-4">
-              <h4 class="text-sm font-semibold text-gray-700 mb-4">Información del Producto</h4>
+              <h4 class="text-xs font-semibold text-gray-700 mb-4">Información del Producto</h4>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="md:col-span-2">
-                  <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Nombre del
+                  <label class="block text-xs font-medium text-gray-500  tracking-wide mb-1">Nombre del
                     Producto <span class="text-red-500">*</span></label>
                   <input v-model="selectedProducto.nombre_producto" type="text"
-                    class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none" />
+                    class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none" />
                   <p v-if="errors.nombre_producto" class="text-xs text-red-500 mt-1">{{ errors.nombre_producto }}</p>
                 </div>
 
                 <div>
-                  <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Cantidad <span
+                  <label class="block text-xs font-medium text-gray-500  tracking-wide mb-1">Cantidad <span
                       class="text-red-500">*</span></label>
                   <input v-model.number="selectedProducto.cantidad_producto" type="number" min="0"
                     :disabled="selectedProducto?.id ? true : false"
                     :class="selectedProducto?.id ? 'bg-gray-100 cursor-not-allowed' : 'bg-white'"
-                    class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none" />
+                    class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none" />
                   <p v-if="errors.cantidad_producto" class="text-xs text-red-500 mt-1">{{ errors.cantidad_producto }}
                   </p>
                   <p v-if="selectedProducto?.id" class="text-xs text-amber-600 mt-1">La cantidad no se puede modificar
@@ -331,9 +331,9 @@
                 </div>
 
                 <div>
-                  <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Estado</label>
+                  <label class="block text-xs font-medium text-gray-500  tracking-wide mb-1">Estado</label>
                   <select v-model="selectedProducto.estado"
-                    class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none bg-white">
+                    class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none bg-white">
                     <option :value="true">Activo</option>
                     <option :value="false">Inactivo</option>
                   </select>
@@ -342,26 +342,26 @@
             </div>
 
             <div class="bg-gray-50 rounded-lg p-4">
-              <h4 class="text-sm font-semibold text-gray-700 mb-4">Información de Precios</h4>
+              <h4 class="text-xs font-semibold text-gray-700 mb-4">Información de Precios</h4>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Precio Compra
+                  <label class="block text-xs font-medium text-gray-500  tracking-wide mb-1">Precio Compra
                     <span class="text-red-500">*</span></label>
                   <div class="relative">
-                    <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">S/</span>
+                    <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-xs">S/</span>
                     <input v-model.number="selectedProducto.costo_producto" type="number" step="0.01" min="0"
-                      class="w-full pl-7 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none" />
+                      class="w-full pl-7 pr-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none" />
                   </div>
                   <p v-if="errors.costo_producto" class="text-xs text-red-500 mt-1">{{ errors.costo_producto }}</p>
                 </div>
 
                 <div>
-                  <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Precio Venta <span
+                  <label class="block text-xs font-medium text-gray-500  tracking-wide mb-1">Precio Venta <span
                       class="text-red-500">*</span></label>
                   <div class="relative">
-                    <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">S/</span>
+                    <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-xs">S/</span>
                     <input v-model.number="selectedProducto.precio_unitario" type="number" step="0.01" min="0"
-                      class="w-full pl-7 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none" />
+                      class="w-full pl-7 pr-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none" />
                   </div>
                   <p v-if="errors.precio_unitario" class="text-xs text-red-500 mt-1">{{ errors.precio_unitario }}</p>
                 </div>
@@ -369,13 +369,13 @@
             </div>
 
             <div class="bg-gray-50 rounded-lg p-4">
-              <h4 class="text-sm font-semibold text-gray-700 mb-4">Información Adicional</h4>
+              <h4 class="text-xs font-semibold text-gray-700 mb-4">Información Adicional</h4>
               <div>
-                <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Código de
+                <label class="block text-xs font-medium text-gray-500  tracking-wide mb-1">Código de
                   Barra</label>
                 <input v-model="selectedProducto.codigo_barra" type="text" :disabled="esCodigoBarraNoEditable"
                   :class="esCodigoBarraNoEditable ? 'bg-gray-100 cursor-not-allowed' : 'bg-white'"
-                  class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none font-mono" />
+                  class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none " />
                 <p class="text-xs text-gray-400 mt-1">
                   Código único para identificación del producto
                   <span v-if="esCodigoBarraNoEditable" class="text-amber-600"> (No editable porque ya tiene un código
@@ -387,17 +387,17 @@
 
               <!-- Campo opcional: Código Interno (solo lectura) -->
               <div v-if="selectedProducto?.id" class="mt-4 pt-4 border-t border-gray-200">
-                <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Código Interno del
+                <label class="block text-xs font-medium text-gray-500  tracking-wide mb-1">Código Interno del
                   Sistema</label>
                 <input :value="selectedProducto.codigo_interno" type="text" disabled
-                  class="w-full px-3 py-2 text-sm bg-gray-100 border border-gray-300 rounded-lg font-mono cursor-not-allowed" />
+                  class="w-full px-3 py-2 text-xs bg-gray-100 border border-gray-300 rounded-lg  cursor-not-allowed" />
                 <p class="text-xs text-gray-400 mt-1">Código generado automáticamente por el sistema</p>
               </div>
             </div>
 
             <div v-if="selectedProducto.id" class="bg-gray-50 rounded-lg p-4">
-              <h4 class="text-sm font-semibold text-gray-700 mb-4">Auditoría</h4>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <h4 class="text-xs font-semibold text-gray-700 mb-4">Auditoría</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                 <div>
                   <span class="text-gray-500">Fecha de creación:</span>
                   <span class="ml-2 text-gray-700">{{ formatDate(selectedProducto.fecha_creacion) }}</span>
@@ -413,11 +413,11 @@
 
         <div class="border-t border-gray-200 px-6 py-4 bg-gray-50 flex justify-end gap-3">
           <button @click="btnCerrarModal"
-            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+            class="px-4 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
             Cancelar
           </button>
           <button @click="btnConfirmar" :disabled="guardando"
-            class="px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">
+            class="px-4 py-2 text-xs font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">
             {{ guardando ? 'Guardando...' : (selectedProducto?.id ? "Actualizar" : "Crear") }}
           </button>
         </div>
@@ -438,17 +438,17 @@
             </div>
           </div>
           <h3 class="text-lg font-semibold text-center text-gray-800 mb-2">Confirmar eliminación</h3>
-          <p class="text-sm text-gray-600 text-center mb-6">
+          <p class="text-xs text-gray-600 text-center mb-6">
             ¿Estás seguro de que deseas eliminar el producto "{{ productoAEliminar?.nombre_producto }}"?<br>
             Esta acción no se puede deshacer.
           </p>
           <div class="flex gap-3">
             <button @click="showDeleteModal = false"
-              class="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+              class="flex-1 px-4 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
               Cancelar
             </button>
             <button @click="eliminarProducto"
-              class="flex-1 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700">
+              class="flex-1 px-4 py-2 text-xs font-medium text-white bg-red-600 rounded-lg hover:bg-red-700">
               Eliminar
             </button>
           </div>

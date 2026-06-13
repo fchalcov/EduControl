@@ -7,14 +7,13 @@
                     <h1 class="text-lg md:text-xl font-semibold text-gray-800">
                         Gestión de Roles
                     </h1>
-                    <p class="text-xs md:text-sm text-gray-500 mt-0.5">
+                    <p class="text-xs md:text-xs text-gray-500 mt-0.5">
                         Administración de permisos y accesos al sistema
                     </p>
                 </div>
 
                 <button @click="openModal(null)"
-                    class="w-full md:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg shadow-sm transition-all duration-200">
-                    Nuevo Rol
+                    class="w-full md:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 bg-gray-900 hover:bg-gray-900 text-white text-xs font-medium rounded-lg shadow-xs transition-all duration-200">Nuevo Rol
                 </button>
             </div>
         </div>
@@ -29,25 +28,25 @@
 
         <!-- Tabla -->
         <div v-else class="flex-1 px-4 md:px-6 py-4 md:py-6">
-            <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+            <div class="bg-white rounded-xl border border-gray-200 shadow-xs overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="min-w-[700px] w-full">
                         <thead class="bg-gray-50 border-b border-gray-200">
                             <tr>
                                 <th
-                                    class="px-4 md:px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    class="px-4 md:px-6 py-4 text-left text-xs font-semibold text-gray-600  tracking-wider">
                                     Rol
                                 </th>
                                 <th
-                                    class="px-4 md:px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    class="px-4 md:px-6 py-4 text-left text-xs font-semibold text-gray-600  tracking-wider">
                                     Descripción
                                 </th>
                                 <th
-                                    class="px-4 md:px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    class="px-4 md:px-6 py-4 text-left text-xs font-semibold text-gray-600  tracking-wider">
                                     Estado
                                 </th>
                                 <th
-                                    class="px-4 md:px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    class="px-4 md:px-6 py-4 text-center text-xs font-semibold text-gray-600  tracking-wider">
                                     Acciones
                                 </th>
                             </tr>
@@ -56,13 +55,13 @@
                             <tr v-for="role in roles" :key="role.id" class="hover:bg-gray-50 transition-colors">
                                 <td class="px-4 md:px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center gap-2 md:gap-3">
-                                        <span class="text-sm font-medium text-gray-900">
+                                        <span class="text-xs font-medium text-gray-900">
                                             {{ role.rol_nombre }}
                                         </span>
                                     </div>
                                 </td>
                                 <td class="px-4 md:px-6 py-4">
-                                    <span class="text-sm text-gray-600 line-clamp-1">
+                                    <span class="text-xs text-gray-600 line-clamp-1">
                                         {{ role.rol_descripcion || "Sin descripción" }}
                                     </span>
                                 </td>
@@ -102,7 +101,7 @@
 
         <!-- Modal mejorado -->
         <div v-if="showModal" class="fixed inset-0 z-50 overflow-y-auto">
-            <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" @click="btnCerrarModal"></div>
+            <div class="fixed inset-0 bg-black/50 backdrop-blur-xs" @click="btnCerrarModal"></div>
 
             <div class="flex min-h-full items-center justify-center p-4">
                 <div class="relative bg-white w-full max-w-2xl rounded-xl shadow-2xl flex flex-col max-h-[90vh]">
@@ -113,7 +112,7 @@
                             <h3 class="text-lg font-semibold text-gray-800">
                                 {{ selectedRole?.id ? "Actualizar Rol" : "Crear Nuevo Rol" }}
                             </h3>
-                            <p class="text-sm text-gray-500">
+                            <p class="text-xs text-gray-500">
                                 {{
                                     selectedRole?.id
                                         ? "Modifica la configuración del rol"
@@ -133,7 +132,7 @@
                         <div class="border-b border-gray-200 px-6">
                             <div class="flex gap-6 overflow-x-auto">
                                 <button v-for="tab in tabs" :key="tab.key" @click="activeTab = tab.key" :class="[
-                                    'py-3 text-sm font-medium transition-colors relative whitespace-nowrap',
+                                    'py-3 text-xs font-medium transition-colors relative whitespace-nowrap',
                                     activeTab === tab.key
                                         ? 'text-blue-600'
                                         : 'text-gray-500 hover:text-gray-700',
@@ -150,31 +149,31 @@
                             <div v-show="activeTab === 'basic'" class="space-y-5 max-w-2xl">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">
                                             Nombre del rol <span class="text-red-500">*</span>
                                         </label>
                                         <input v-model="selectedRole.rol_nombre" type="text"
-                                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                                            class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                                             placeholder="Ej: Administrador" />
                                         <p v-if="errors.rol_nombre" class="text-xs text-red-500 mt-1">{{ errors.rol_nombre }}</p>
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">
                                             Estado
                                         </label>
                                         <select v-model="selectedRole.rol_activo"
-                                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
+                                            class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
                                             <option :value="true">Activo</option>
                                             <option :value="false">Inactivo</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    <label class="block text-xs font-medium text-gray-700 mb-1">
                                         Descripción
                                     </label>
                                     <textarea v-model="selectedRole.rol_descripcion" rows="3"
-                                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                                        class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
                                         placeholder="Describe las responsabilidades y alcance del rol..."></textarea>
                                 </div>
                             </div>
@@ -229,7 +228,7 @@
                                                     @change="toggleChildren(menu, $event)"
                                                     class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500" 
                                                 />
-                                                <span class="text-sm font-medium text-gray-800">
+                                                <span class="text-xs font-medium text-gray-800">
                                                     {{ menu.titulo }}
                                                 </span>
                                             </label>
@@ -253,7 +252,7 @@
                                                         @change="checkParent(menu)"
                                                         class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500" 
                                                     />
-                                                    <span class="text-sm text-gray-600">
+                                                    <span class="text-xs text-gray-600">
                                                         {{ child.titulo }}
                                                     </span>
                                                 </label>
@@ -269,12 +268,12 @@
                     <div
                         class="flex flex-col sm:flex-row justify-end gap-3 px-6 py-4 border-t border-gray-200 bg-gray-50 rounded-b-xl">
                         <button @click="btnCerrarModal"
-                            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                            class="px-4 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                             Cancelar
                         </button>
                         <button @click="btnConfirmar"
                             :disabled="guardando"
-                            class="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                            class="px-6 py-2 text-xs font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-900 transition-colors shadow-xs disabled:opacity-50 disabled:cursor-not-allowed">
                             {{ guardando ? 'Guardando...' : (selectedRole?.id ? "Actualizar" : "Crear") }}
                         </button>
                     </div>
@@ -284,7 +283,7 @@
 
         <!-- Modal de confirmación de eliminación -->
         <div v-if="showDeleteModal" class="fixed inset-0 z-50 overflow-y-auto">
-            <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" @click="showDeleteModal = false"></div>
+            <div class="fixed inset-0 bg-black/50 backdrop-blur-xs" @click="showDeleteModal = false"></div>
             <div class="flex min-h-full items-center justify-center p-4">
                 <div class="relative bg-white w-full max-w-md rounded-xl shadow-2xl">
                     <div class="p-6">
@@ -298,17 +297,17 @@
                         <h3 class="text-lg font-semibold text-center text-gray-800 mb-2">
                             Confirmar eliminación
                         </h3>
-                        <p class="text-sm text-gray-600 text-center mb-6">
+                        <p class="text-xs text-gray-600 text-center mb-6">
                             ¿Estás seguro de que deseas eliminar el rol "{{ roleAEliminar?.rol_nombre }}"?<br>
                             Esta acción no se puede deshacer.
                         </p>
                         <div class="flex gap-3">
                             <button @click="showDeleteModal = false"
-                                class="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                                class="flex-1 px-4 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
                                 Cancelar
                             </button>
                             <button @click="eliminarRol"
-                                class="flex-1 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700">
+                                class="flex-1 px-4 py-2 text-xs font-medium text-white bg-red-600 rounded-lg hover:bg-red-700">
                                 Eliminar
                             </button>
                         </div>

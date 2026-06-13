@@ -2,23 +2,17 @@ from rest_framework import serializers
 from apps.rol.models import Rol
 from apps.menu.models import Menu
 
-
-# 🔹 SERIALIZER SIMPLE (ROL)
 class RolListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rol
         fields = '__all__'
 
-
-# 🔹 SERIALIZER SOLO PARA VALIDAR INPUT
 class RolSaveSerializer(serializers.Serializer):
     id = serializers.IntegerField(required=False)
     rol_nombre = serializers.CharField()
     rol_descripcion = serializers.CharField(allow_blank=True, required=False)
     rol_activo = serializers.BooleanField()
 
-
-# 🔹 SERIALIZER PARA MENÚ
 class MenuRolListSerializer(serializers.ModelSerializer):
 
     titulo = serializers.CharField(source='menu_titulo')

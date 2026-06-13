@@ -5,7 +5,7 @@
       <div class="flex justify-between items-start">
         <div class="flex items-center gap-3">
           <div class="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0">
-            <span class="text-white text-sm font-bold">H</span>
+            <span class="text-white text-xs font-bold">H</span>
           </div>
           <div>
             <h1 class="text-base sm:text-xl font-semibold text-gray-800 tracking-tight">Historial de Ventas</h1>
@@ -13,7 +13,7 @@
           </div>
         </div>
         <!-- <div class="flex gap-3">
-          <button class="px-5 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+          <button class="px-5 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
             Exportar
           </button>
         </div> -->
@@ -27,7 +27,7 @@
         <div class="bg-white rounded-lg border border-gray-200 p-5">
           <div class="flex justify-between items-start">
             <div>
-              <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Ventas Total</p>
+              <p class="text-xs font-medium text-gray-500 tracking-wide">Ventas Total</p>
               <p class="text-2xl font-bold text-gray-900 mt-2">S/ {{ formatNumber(totalVentas) }}</p>
             </div>
           </div>
@@ -36,7 +36,7 @@
         <div class="bg-white rounded-lg border border-gray-200 p-5">
           <div class="flex justify-between items-start">
             <div>
-              <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Devoluciones</p>
+              <p class="text-xs font-medium text-gray-500 tracking-wide">Devoluciones</p>
               <p class="text-2xl font-bold text-rose-600 mt-2">S/ {{ formatNumber(totalDevuelto) }}</p>
             </div>
           </div>
@@ -44,7 +44,7 @@
         
         <div class="bg-white rounded-lg border border-gray-200 p-5">
           <div>
-            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Saldo Final</p>
+            <p class="text-xs font-medium text-gray-500 tracking-wide">Saldo Final</p>
             <p class="text-2xl font-bold text-emerald-600 mt-2">S/ {{ formatNumber(totalVentas - totalDevuelto) }}</p>
           </div>
         </div>
@@ -52,7 +52,7 @@
         <div class="bg-white rounded-lg border border-gray-200 p-5">
           <div class="flex justify-between items-start">
             <div>
-              <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Transacciones</p>
+              <p class="text-xs font-medium text-gray-500 tracking-wide">Transacciones</p>
               <p class="text-2xl font-bold text-gray-900 mt-2">{{ pagination.total }}</p>
             </div>
           </div>
@@ -62,7 +62,7 @@
       <!-- Filters Panel -->
       <div class="bg-white rounded-lg border border-gray-200 mb-8">
         <div class="px-6 py-4 border-b border-gray-200">
-          <h2 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+          <h2 class="text-xs font-semibold text-gray-700 flex items-center gap-2">
             <span class="w-1 h-4 bg-gray-900 rounded-full"></span>
             Filtros de busqueda
           </h2>
@@ -71,18 +71,18 @@
         <div class="p-6">
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             <div>
-              <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Nº de Venta</label>
+              <label class="block text-xs font-medium text-gray-500 tracking-wide mb-1">Nº de Venta</label>
               <input 
                 v-model="filters.numero_venta"
                 type="text"
                 placeholder="V-XXXXXX"
-                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none"
+                class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none"
               >
             </div>
             
             <div>
-              <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Criterio</label>
-              <select v-model="filters.tipo_filtro" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none bg-white">
+              <label class="block text-xs font-medium text-gray-500 tracking-wide mb-1">Criterio</label>
+              <select v-model="filters.tipo_filtro" class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none bg-white">
                 <option value="fecha">Fecha exacta</option>
                 <option value="mes">Periodo mensual</option>
                 <option value="rango">Intervalo personalizado</option>
@@ -91,18 +91,18 @@
             </div>
 
             <div v-if="filters.tipo_filtro === 'fecha'" class="lg:col-span-2">
-              <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Fecha específica</label>
-              <input v-model="filters.fecha" type="date" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none">
+              <label class="block text-xs font-medium text-gray-500 tracking-wide mb-1">Fecha específica</label>
+              <input v-model="filters.fecha" type="date" class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none">
             </div>
             
             <div v-else-if="filters.tipo_filtro === 'mes'" class="lg:col-span-2">
-              <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Seleccionar mes</label>
-              <input v-model="filters.mes" type="month" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none">
+              <label class="block text-xs font-medium text-gray-500 tracking-wide mb-1">Seleccionar mes</label>
+              <input v-model="filters.mes" type="month" class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none">
             </div>
             
             <div v-else-if="filters.tipo_filtro === 'estado'" class="lg:col-span-2">
-              <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Estado de venta</label>
-              <select v-model="filters.estado" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none bg-white">
+              <label class="block text-xs font-medium text-gray-500 tracking-wide mb-1">Estado de venta</label>
+              <select v-model="filters.estado" class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none bg-white">
                 <option value="">Todas</option>
                 <option value="1">Pagado</option>
                 <option value="2">Devolución Parcial</option>
@@ -113,14 +113,14 @@
             <div v-else-if="filters.tipo_filtro === 'rango'" class="lg:col-span-3">
               <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Rango de fechas</label>
               <div class="flex gap-3">
-                <input v-model="filters.fecha_desde" type="date" class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none">
+                <input v-model="filters.fecha_desde" type="date" class="flex-1 px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none">
                 <span class="text-gray-400 self-center">—</span>
-                <input v-model="filters.fecha_hasta" type="date" class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none">
+                <input v-model="filters.fecha_hasta" type="date" class="flex-1 px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none">
               </div>
             </div>
 
             <div class="flex items-end">
-              <button @click="aplicarFiltros" class="w-full px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors">
+              <button @click="aplicarFiltros" class="w-full px-4 py-2 bg-gray-900 text-white text-xs font-medium rounded-lg hover:bg-gray-800 transition-colors">
                 Aplicar filtros
               </button>
             </div>
@@ -150,7 +150,7 @@
       <!-- Transactions Table -->
       <div v-else class="bg-white rounded-lg border border-gray-200 overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-          <h2 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+          <h2 class="text-xs font-semibold text-gray-700 flex items-center gap-2">
             <span class="w-1 h-4 bg-gray-900 rounded-full"></span>
             Historial de transacciones
           </h2>
@@ -161,37 +161,40 @@
           <table class="w-full">
             <thead class="bg-gray-50 border-b border-gray-200">
               <tr>
-                <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Nº de Venta</th>
-                <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Fecha / Hora</th>
-                <th class="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Importe Total</th>
-                <th class="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Devoluciones</th>
-                <th class="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Saldo Final</th>
-                <th class="text-center px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Estado</th>
-                <th class="text-center px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Métodos de Pago</th>
-                <th class="text-center px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones</th>
+                <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Nº de Venta</th>
+                <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Fecha / Hora</th>
+                <th class="text-right px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Importe Total</th>
+                <th class="text-right px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Devoluciones</th>
+                <th class="text-right px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Saldo Final</th>
+                <th class="text-center px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Estado</th>
+                <th class="text-center px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Métodos de Pago</th>
+                <th class="text-center px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Acciones</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
               <tr v-for="venta in ventas" :key="venta.id_venta" class="hover:bg-gray-50 transition-colors">
                 <td class="px-6 py-4">
-                  <div class="text-sm font-semibold text-gray-900">{{ venta.correlativo_venta }}</div>
+                  <div class="text-xs text-gray-900">{{ venta.correlativo_venta }}</div>
                 </td>
                 <td class="px-6 py-4">
-                  <div class="text-sm text-gray-900">{{ formatFechaShort(venta.fecha_venta) }}</div>
+                  <div class="text-xs text-gray-900">{{ formatFechaShort(venta.fecha_venta) }}</div>
                   <div class="text-xs text-gray-400">{{ formatHora(venta.fecha_venta) }}</div>
                 </td>
-                <td class="px-6 py-4 text-right font-bold text-sm text-gray-900">S/ {{ formatNumber(venta.total_venta) }}</td>
+                <td class="px-6 py-4 text-right font-bold text-xs text-gray-900">S/ {{ formatNumber(venta.total_venta) }}</td>
                 <td class="px-6 py-4 text-right">
-                  <span v-if="venta.devolucion_total_monto > 0" class="text-red-600 font-bold text-sm">
+                  <span v-if="venta.devolucion_total_monto > 0" class="text-red-600 font-bold text-xs">
                     S/ {{ formatNumber(venta.devolucion_total_monto) }}
                   </span>
-                  <span v-else class="font-bold text-sm text-gray-300">S/0</span>
+                  <span v-else class="font-bold text-xs text-gray-300">S/0</span>
                 </td>
-                <td class="px-6 py-4 text-right font-bold text-sm text-gray-900">S/ {{ formatNumber(venta.total_venta - (venta.devolucion_total_monto || 0)) }}</td>
+                <td class="px-6 py-4 text-right font-bold text-xs text-gray-900">S/ {{ formatNumber(venta.total_venta - (venta.devolucion_total_monto || 0)) }}</td>
                 <td class="px-6 py-4 text-center">
                   <span :class="{
-                    'bg-green-50 text-green-700': venta.estado_venta === 1,
-                    'bg-orange-50 text-orange-700': venta.estado_venta === 2,
+                    'bg-green-100 text-green-700': venta.estado_venta === 1, 
+                    // Pagado = 1
+                    // Devolucion Parcial = 2
+                    // Devolucion Total
+                    'bg-orange-100 text-orange-700': venta.estado_venta === 2,
                     'bg-gray-100 text-gray-600': venta.estado_venta === 3
                   }" class="inline-block px-2.5 py-1 rounded-full text-xs font-medium">
                     {{ getEstadoTexto(venta.estado_venta) }}
@@ -199,8 +202,19 @@
                 </td>
                 <td class="px-6 py-4">
                   <div class="flex gap-1 justify-center flex-wrap">
+                    <!--         
+                    (1, 'Efectivo'),
+                    (2, 'Yape'),
+                    (3, 'Tarjeta'),
+                    (4, 'Transferencia'), 
+                    -->
                     <span v-for="pago in venta.pagos.slice(0, 2)" :key="pago.id_pago" 
-                          class="px-2 py-1 bg-gray-100 rounded text-xs font-medium text-gray-600">
+                      :class="{
+                        'px-2 py-1 bg-green-100 rounded text-green-700 text-xs font-medium': pago.forma_pago === 1,
+                        'px-2 py-1 bg-purple-100 rounded text-purple-700 text-xs font-medium': pago.forma_pago === 2,
+                        'px-2 py-1 bg-gray-100 rounded text-gray-700 text-xs font-medium': pago.forma_pago !== 1 && pago.id_pago !== 2
+                      }"
+                      class="px-2 py-1 rounded text-xs font-medium">
                       {{ getFormaPagoTexto(pago.forma_pago) }}
                     </span>
                     <span v-if="venta.pagos.length > 2" class="px-2 py-1 bg-gray-200 rounded text-xs font-medium text-gray-600">
@@ -217,7 +231,7 @@
                     </button>
                     <!-- 1 = Pagado : 2 = Devolucion parcial : 3 = Devolucion total -->
                     <button @click="abrirDevolucion(venta)" :disabled="venta.estado_venta === 3"
-                      class="text-xs font-medium text-gray-600 hover:text-orange-600 px-3 py-1.5 rounded-md hover:bg-orange-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                      class="text-xs font-medium text-gray-600 hover:text-red-600 px-3 py-1.5 rounded-md hover:bg-red-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                       <Icons.ArrowUturnLeftIcon class="w-4 h-4 inline mr-1" />
                       Devolver
                     </button>
@@ -230,28 +244,28 @@
         
         <div v-else class="text-center py-16">
           <p class="text-gray-500">No se encontraron transacciones</p>
-          <p class="text-sm text-gray-400 mt-1">Modifica los filtros para ampliar la búsqueda</p>
+          <p class="text-xs text-gray-400 mt-1">Modifica los filtros para ampliar la búsqueda</p>
         </div>
 
         <!-- Paginación -->
         <div class="px-6 py-4 border-t border-gray-200 flex justify-between items-center">
-          <div class="text-sm text-gray-500">
+          <div class="text-xs text-gray-500">
             Mostrando {{ pagination.from || 0 }} - {{ pagination.to || 0 }} de {{ pagination.total }} resultados
           </div>
           <div class="flex gap-2">
             <button 
               @click="cargarPagina(pagination.previous)" 
               :disabled="!pagination.previous"
-              class="px-3 py-1 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+              class="px-3 py-1 text-xs border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
               Anterior
             </button>
-            <span class="px-3 py-1 text-sm bg-gray-100 rounded-lg">
+            <span class="px-3 py-1 text-xs bg-gray-100 rounded-lg">
               Página {{ pagination.current_page }} de {{ pagination.total_pages }}
             </span>
             <button 
               @click="cargarPagina(pagination.next)" 
               :disabled="!pagination.next"
-              class="px-3 py-1 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+              class="px-3 py-1 text-xs border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
               Siguiente
             </button>
           </div>
@@ -265,7 +279,7 @@
         <div class="border-b border-gray-200 px-6 py-5 flex justify-between items-center bg-white">
           <div>
             <h2 class="text-lg font-semibold text-gray-900">Información de Transacción</h2>
-            <p class="text-sm text-gray-500 font-mono">{{ ventaDetalle?.correlativo_venta }}</p>
+            <p class="text-xs text-gray-500">{{ ventaDetalle?.correlativo_venta }}</p>
           </div>
           <button @click="cerrarModalDetalle" class="text-gray-400 hover:text-gray-600 text-2xl leading-none">✕</button>
         </div>
@@ -275,7 +289,7 @@
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
             <div class="bg-gray-50 rounded-lg p-4">
               <p class="text-xs text-gray-500 uppercase tracking-wide">Fecha de emisión</p>
-              <p class="text-sm font-medium text-gray-900 mt-1">{{ formatFechaCompleta(ventaDetalle?.fecha_venta) }}</p>
+              <p class="text-xs font-medium text-gray-900 mt-1">{{ formatFechaCompleta(ventaDetalle?.fecha_venta) }}</p>
             </div>
             <div class="bg-gray-50 rounded-lg p-4">
               <p class="text-xs text-gray-500 uppercase tracking-wide">Estado actual</p>
@@ -301,10 +315,10 @@
           
           <!-- Payment Methods -->
           <div class="mb-6">
-            <h3 class="text-sm font-semibold text-gray-900 mb-3 border-l-3 border-gray-900 pl-3">Métodos de pago utilizados</h3>
+            <h3 class="text-xs font-semibold text-gray-900 mb-3 border-l-3 border-gray-900 pl-3">Métodos de pago utilizados</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               <div v-for="pago in ventaDetalle?.pagos" :key="pago.id_pago" class="bg-gray-50 rounded-lg p-3 border border-gray-200">
-                <p class="font-medium text-gray-900 text-sm">{{ getFormaPagoTexto(pago.forma_pago) }}</p>
+                <p class="font-medium text-gray-900 text-xs">{{ getFormaPagoTexto(pago.forma_pago) }}</p>
                 <p class="text-lg font-bold text-gray-900 mt-1">S/ {{ formatNumber(pago.efectivo_recibido || pago.monto_pagar) }}</p>
                 <div v-if="pago.forma_pago === 1 && pago.efectivo_recibido" class="mt-2 pt-2 border-t border-gray-200 text-xs text-gray-500">
                   <!-- <p>Recibido: S/ {{ formatNumber(pago.efectivo_recibido) }}</p> -->
@@ -316,9 +330,9 @@
           
           <!-- Products Table -->
           <div class="mb-6">
-            <h3 class="text-sm font-semibold text-gray-900 mb-3 border-l-3 border-gray-900 pl-3">Productos</h3>
+            <h3 class="text-xs font-semibold text-gray-900 mb-3 border-l-3 border-gray-900 pl-3">Productos</h3>
             <div class="overflow-x-auto">
-              <table class="w-full text-sm">
+              <table class="w-full text-xs">
                 <thead class="bg-gray-50">
                   <tr>
                     <th class="text-left px-3 py-2 text-xs font-semibold text-gray-500">Producto</th>
@@ -354,7 +368,7 @@
                         <span class="text-gray-700">{{ detalle.devolucion_cantidad }} und.</span>
                         <div class="text-xs text-gray-400">S/ {{ formatNumber(detalle.devolucion_monto) }}</div>
                       </div>
-                      <span v-else class="font-bold text-sm text-gray-600">S/0</span>
+                      <span v-else class="font-bold text-xs text-gray-600">S/0</span>
                     </td>
                     <td class="px-3 py-3 text-right font-semibold text-gray-900">S/ {{ formatNumber(detalle.sub_total_venta - detalle.devolucion_monto) }}</td>
                   </tr>
@@ -373,11 +387,11 @@
           
           <!-- Return History -->
           <div v-if="ventaDetalle?.devolucion_historial?.length > 0">
-            <h3 class="text-sm font-semibold text-gray-900 mb-3 border-l-3 border-gray-900 pl-3">Historial de devoluciones</h3>
+            <h3 class="text-xs font-semibold text-gray-900 mb-3 border-l-3 border-gray-900 pl-3">Historial de devoluciones</h3>
             <div class="space-y-2">
               <div v-for="(historial, idx) in ventaDetalle.devolucion_historial" :key="idx" class="bg-gray-50 rounded-lg p-3 flex justify-between items-center">
                 <div>
-                  <p class="text-sm font-medium text-gray-900">{{ historial.descripcion }}</p>
+                  <p class="text-xs font-medium text-gray-900">{{ historial.descripcion }}</p>
                   <p class="text-xs text-gray-500 mt-0.5">{{ formatFechaCompleta(historial.fecha) }}</p>
                 </div>
                 <div class="text-right">
@@ -390,10 +404,10 @@
         </div>
         
         <div class="border-t border-gray-200 px-6 py-4 bg-gray-50 flex justify-end gap-3">
-          <button @click="cerrarModalDetalle" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+          <button @click="cerrarModalDetalle" class="px-4 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
             Cerrar
           </button>
-          <button @click="abrirDevolucionDesdeDetalle" :disabled="ventaDetalle?.estado_venta === 3" class="px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">
+          <button @click="abrirDevolucionDesdeDetalle" :disabled="ventaDetalle?.estado_venta === 3" class="px-4 py-2 text-xs font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">
             {{ ventaDetalle?.estado_venta === 2 ? 'Modificar devolución' : 'Registrar devolución' }}
           </button>
         </div>
@@ -406,7 +420,7 @@
         <div class="border-b border-gray-200 px-6 py-5 flex justify-between items-center bg-white">
           <div>
             <h2 class="text-lg font-semibold text-gray-900">Registro de Devolución</h2>
-            <p class="text-sm text-gray-500 font-mono">Transacción {{ ventaSeleccionada?.correlativo_venta }}</p>
+            <p class="text-xs text-gray-500">Transacción {{ ventaSeleccionada?.correlativo_venta }}</p>
           </div>
           <button @click="cerrarModal" class="text-gray-400 hover:text-gray-600 text-2xl leading-none">✕</button>
         </div>
@@ -417,7 +431,7 @@
             <div :class="{
               'bg-gray-900 text-white': wizardStep >= index + 1,
               'bg-gray-300 text-gray-500': wizardStep < index + 1
-            }" class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold">
+            }" class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold">
               {{ index + 1 }}
             </div>
             <span class="ml-2 text-xs font-medium text-gray-600">{{ step }}</span>
@@ -435,12 +449,12 @@
               <button @click="tipoDevolucion = 'parcial'" 
                       :class="['p-6 text-left border-2 rounded-xl transition-all', tipoDevolucion === 'parcial' ? 'border-gray-900 bg-gray-50' : 'border-gray-200 hover:border-gray-300']">
                 <h3 class="font-semibold text-gray-900 mb-1">Devolución parcial</h3>
-                <p class="text-sm text-gray-500">Selecciona productos específicos y define cantidades a devolver</p>
+                <p class="text-xs text-gray-500">Selecciona productos específicos y define cantidades a devolver</p>
               </button>
               <button @click="tipoDevolucion = 'total'"
                       :class="['p-6 text-left border-2 rounded-xl transition-all', tipoDevolucion === 'total' ? 'border-gray-900 bg-gray-50' : 'border-gray-200 hover:border-gray-300']">
                 <h3 class="font-semibold text-gray-900 mb-1">Devolución total</h3>
-                <p class="text-sm text-gray-500">Devuelve el saldo pendiente de toda la transacción</p>
+                <p class="text-xs text-gray-500">Devuelve el saldo pendiente de toda la transacción</p>
               </button>
             </div>
           </div>
@@ -472,7 +486,7 @@
                              type="number"
                              :max="detalle.cantidad_venta - (detalle.devolucion_cantidad || 0)"
                              min="0"
-                             class="w-20 text-center px-2 py-1.5 border border-gray-300 rounded-lg text-sm">
+                             class="w-20 text-center px-2 py-1.5 border border-gray-300 rounded-lg text-xs">
                       <button @click="incrementarCantidad(detalle.id_detalle, detalle.cantidad_venta - (detalle.devolucion_cantidad || 0))"
                               :disabled="devolucionesParciales[detalle.id_detalle]?.cantidad === (detalle.cantidad_venta - (detalle.devolucion_cantidad || 0))"
                               class="w-8 h-8 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
@@ -481,7 +495,7 @@
                     </div>
                     <div class="mt-2 text-right">
                       <span class="text-xs text-gray-500">Monto a devolver:</span>
-                      <span class="ml-2 text-sm font-semibold text-gray-900">
+                      <span class="ml-2 text-xs font-semibold text-gray-900">
                         S/ {{ formatNumber((devolucionesParciales[detalle.id_detalle]?.cantidad || 0) * detalle.precio_venta) }}
                       </span>
                     </div>
@@ -500,9 +514,9 @@
                 Se devolverá <strong>S/ {{ formatNumber((ventaSeleccionada?.total_venta || 0) - (ventaSeleccionada?.devolucion_total_monto || 0)) }}</strong>
               </p>
               <div class="bg-gray-50 rounded-lg p-4 text-left">
-                <p class="text-sm font-semibold text-gray-700 mb-2">Productos incluidos:</p>
+                <p class="text-xs font-semibold text-gray-700 mb-2">Productos incluidos:</p>
                 <ul class="space-y-1">
-                  <li v-for="detalle in ventaSeleccionada?.detalles" :key="detalle.id_detalle" class="text-sm text-gray-600">
+                  <li v-for="detalle in ventaSeleccionada?.detalles" :key="detalle.id_detalle" class="text-xs text-gray-600">
                     • {{ detalle.descripcion_producto }} - 
                     {{ (detalle.cantidad_venta || 0) - (detalle.devolucion_cantidad || 0) }} unidades pendientes
                   </li>
@@ -523,7 +537,7 @@
                 <div v-if="tipoDevolucion === 'parcial'">
                   <div v-for="detalle in ventaSeleccionada?.detalles" :key="detalle.id_detalle">
                     <div v-if="devolucionesParciales[detalle.id_detalle]?.cantidad > 0" 
-                         class="flex justify-between py-2 text-sm">
+                         class="flex justify-between py-2 text-xs">
                       <span class="text-gray-600">{{ detalle.descripcion_producto }} ({{ devolucionesParciales[detalle.id_detalle].cantidad }} und)</span>
                       <span class="font-semibold text-gray-900">S/ {{ formatNumber(devolucionesParciales[detalle.id_detalle].cantidad * detalle.precio_venta) }}</span>
                     </div>
@@ -535,11 +549,11 @@
                 </div>
                 
                 <div v-else>
-                  <div class="flex justify-between py-2 text-sm">
+                  <div class="flex justify-between py-2 text-xs">
                     <span class="text-gray-600">Total original</span>
                     <span class="font-semibold text-gray-900">S/ {{ formatNumber(ventaSeleccionada?.total_venta) }}</span>
                   </div>
-                  <div class="flex justify-between py-2 text-sm">
+                  <div class="flex justify-between py-2 text-xs">
                     <span class="text-gray-600">Ya devuelto anteriormente</span>
                     <span class="text-red-600">- S/ {{ formatNumber(ventaSeleccionada?.devolucion_total_monto || 0) }}</span>
                   </div>
@@ -558,14 +572,14 @@
         </div>
         
         <div class="border-t border-gray-200 px-6 py-4 bg-gray-50 flex justify-between">
-          <button v-if="wizardStep > 1" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50" @click="wizardStep--">
+          <button v-if="wizardStep > 1" class="px-4 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50" @click="wizardStep--">
             Anterior
           </button>
           <div class="flex-1"></div>
-          <button v-if="wizardStep < 3" class="px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed" @click="siguientePaso" :disabled="!puedeAvanzar">
+          <button v-if="wizardStep < 3" class="px-4 py-2 text-xs font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed" @click="siguientePaso" :disabled="!puedeAvanzar">
             Siguiente
           </button>
-          <button v-if="wizardStep === 3" class="px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800" @click="confirmarDevolucion">
+          <button v-if="wizardStep === 3" class="px-4 py-2 text-xs font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800" @click="confirmarDevolucion">
             Confirmar devolución
           </button>
         </div>
@@ -923,9 +937,6 @@ export default {
     },
     
     confirmarDevolucion() {
-      // Esta función ya la tienes en tu código original
-      // La mantienes igual, solo que ahora deberías persistir en API
-      // Por ahora mantiene la lógica local que ya tenías
       const ventaOriginal = this.ventas.find(v => v.id_venta === this.ventaSeleccionada.id_venta)
       const fechaActual = new Date().toISOString()
       const usuario = 'Admin'

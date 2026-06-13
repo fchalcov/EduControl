@@ -12,7 +12,7 @@
         <!-- Logo y título -->
         <div class="flex items-center gap-3">
           <div class="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0">
-            <span class="text-white text-sm font-bold">V</span>
+            <span class="text-white text-xs font-bold">V</span>
           </div>
           <div>
             <h1 class="text-base sm:text-xl font-semibold text-gray-800 tracking-tight">Venta</h1>
@@ -23,7 +23,7 @@
         <!-- Botón -->
         <div class="flex gap-3">
           <button @click="openProductModal"
-            class="flex-1 sm:flex-none px-4 sm:px-5 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2">
+            class="flex-1 sm:flex-none px-4 sm:px-5 py-2 text-xs font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2">
             Buscar Producto
           </button>
         </div>
@@ -35,16 +35,16 @@
       <div class="w-full h-full mx-auto grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         
         <!-- Columna Izquierda y Central: Carrito de compras (2/3 del espacio) -->
-        <div class="lg:col-span-2 flex flex-col bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden h-full">
+        <div class="lg:col-span-2 flex flex-col bg-white rounded-xl border border-gray-200 shadow-xs overflow-hidden h-full">
           
           <!-- Header del carrito -->
           <div class="px-4 sm:px-5 py-3 border-b border-gray-200 bg-gray-50 flex-shrink-0">
             <div class="flex justify-between items-center">
-              <h2 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+              <h2 class="text-xs font-semibold text-gray-700 flex items-center gap-2">
                 <span class="w-1 h-4 bg-gray-900 rounded-full"></span>
                 Carrito de compra
               </h2>
-              <span class="text-xs sm:text-sm text-gray-500 bg-white px-2 sm:px-3 py-1 rounded-lg border border-gray-200">
+              <span class="text-xs sm:text-xs text-gray-500 bg-white px-2 sm:px-3 py-1 rounded-lg border border-gray-200">
                 {{ cart.length }} {{ cart.length === 1 ? 'producto' : 'productos' }}
               </span>
             </div>
@@ -58,12 +58,12 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                 </svg>
               </div>
-              <p class="text-gray-500 text-sm sm:text-base">Carrito vacío</p>
+              <p class="text-gray-500 text-xs sm:text-base">Carrito vacío</p>
               <p class="text-xs text-gray-400 mt-1 sm:mt-2">Presione "Buscar producto" o use el escáner</p>
             </div>
             
             <div v-else class="overflow-x-auto">
-              <table class="min-w-full text-sm">
+              <table class="min-w-full text-xs">
                 <thead class="bg-gray-50 sticky top-0">
                   <tr>
                     <th class="px-3 py-2 text-left text-xs font-medium text-gray-500">Código Barra</th>
@@ -79,14 +79,14 @@
                   <tr 
                     v-for="(item, index) in cart" 
                     :key="item.id"
-                    class="hover:bg-gray-50 transition-colors text-sm"
+                    class="hover:bg-gray-50 transition-colors text-xs"
                   >
-                    <td class="px-3 py-2 text-xs text-gray-500">{{ item.codigo_barra || 'Sin código' }}</td>
-                    <td class="px-3 py-2 text-sm text-gray-800">{{ item.nombre_producto }}</td>
-                    <td class="px-3 py-2 text-xs text-gray-500">
+                    <td class="px-3 py-2 text-xs text-gray-800">{{ item.codigo_barra || 'Sin código' }}</td>
+                    <td class="px-3 py-2 text-xs text-gray-800">{{ item.nombre_producto }}</td>
+                    <td class="px-3 py-2 text-xs text-gray-800">
                       <span :class="[
                         'text-xs px-1.5 py-0.5 rounded-full',
-                        item.cantidad_producto <= 5 ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-600'
+                        item.cantidad_producto <= 5 ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'
                       ]">
                         {{ item.cantidad_producto }}
                       </span>
@@ -95,22 +95,22 @@
                       <div class="flex items-center justify-center gap-1">
                         <button 
                           @click="updateQuantity(index, -1)" 
-                          class="w-6 h-6 rounded border border-gray-200 bg-white text-gray-600 hover:bg-gray-100 transition-colors text-sm font-medium flex items-center justify-center"
+                          class="w-6 h-6 rounded border border-gray-200 bg-white text-gray-600 hover:bg-gray-100 transition-colors text-xs font-medium flex items-center justify-center"
                         >
                           −
                         </button>
-                        <span class="text-sm font-semibold text-gray-800 w-8 text-center">{{ item.quantity }}</span>
+                        <span class="text-xs font-semibold text-gray-800 w-8 text-center">{{ item.quantity }}</span>
                         <button 
                           @click="updateQuantity(index, 1)" 
-                          class="w-6 h-6 rounded border border-gray-200 bg-white text-gray-600 hover:bg-gray-100 transition-colors text-sm font-medium flex items-center justify-center"
+                          class="w-6 h-6 rounded border border-gray-200 bg-white text-gray-600 hover:bg-gray-100 transition-colors text-xs font-medium flex items-center justify-center"
                         >
                           +
                         </button>
                       </div>
                     </td>
-                    <td class="px-3 py-2 text-right text-sm text-gray-600">{{ formatCurrency(item.precio_unitario) }}</td>
-                    <td class="px-3 py-2 text-right text-sm font-bold text-gray-900">{{ formatCurrency(item.precio_unitario * item.quantity) }}</td>
-                    <td class="px-3 py-2 text-center text-sm font-bold text-gray-900">
+                    <td class="px-3 py-2 text-right text-xs text-gray-600">{{ formatCurrency(item.precio_unitario) }}</td>
+                    <td class="px-3 py-2 text-right text-xs font-bold text-gray-900">{{ formatCurrency(item.precio_unitario * item.quantity) }}</td>
+                    <td class="px-3 py-2 text-center text-xs font-bold text-gray-900">
                       <button 
                         @click="removeFromCart(index)" 
                         class="px-2 py-1 text-xs bg-red-500 text-white rounded-lg hover:bg-red-600 disabled:opacity-50 transition-colors"
@@ -126,11 +126,11 @@
         </div>
 
         <!-- Columna Derecha: Pago (1/3 del espacio) -->
-        <div class="lg:col-span-1 flex flex-col bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden h-full">
+        <div class="lg:col-span-1 flex flex-col bg-white rounded-xl border border-gray-200 shadow-xs overflow-hidden h-full">
           
           <!-- Header del pago - Fijo -->
           <div class="px-4 sm:px-5 py-3 border-b border-gray-200 bg-gray-50 flex-shrink-0">
-            <h2 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+            <h2 class="text-xs font-semibold text-gray-700 flex items-center gap-2">
               <span class="w-1 h-4 bg-gray-900 rounded-full"></span>
               Forma de pago
             </h2>
@@ -151,7 +151,7 @@
                       : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
                   ]"
                 >
-                  <p class="text-xs sm:text-sm font-medium mt-1">Efectivo</p>
+                  <p class="text-xs sm:text-xs font-medium mt-1">Efectivo</p>
                 </button>
                 
                 <button 
@@ -163,13 +163,13 @@
                       : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
                   ]"
                 >
-                  <p class="text-xs sm:text-sm font-medium mt-1">Yape</p>
+                  <p class="text-xs sm:text-xs font-medium mt-1">Yape</p>
                 </button>
               </div>
               
               <!-- Input de monto según método seleccionado -->
               <div v-if="selectedPaymentMethod && remainingBalance > 0">
-                <label class="block text-xs sm:text-sm font-medium text-gray-600 mb-1">
+                <label class="block text-xs sm:text-xs font-medium text-gray-600 mb-1">
                   {{ selectedPaymentMethod === PAYMENT_CODES.CASH ? 'Monto recibido' : 'Monto a pagar con Yape' }}
                 </label>
                 <input 
@@ -187,7 +187,7 @@
                 <div class="pt-2">
                   <button 
                     @click="setFullPaymentAmount"
-                    class="w-full px-5 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-400 rounded-lg hover:bg-gray-50 transition-colors flex justify-center items-center"
+                    class="w-full px-5 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-400 rounded-lg hover:bg-gray-50 transition-colors flex justify-center items-center"
                     title="Completar con el monto faltante"
                   >
                     Pagar todo
@@ -217,7 +217,7 @@
               <button 
                 v-if="selectedPaymentMethod && remainingBalance > 0 && getCurrentAmount > 0"
                 @click="addPayment"
-                class="w-full py-2 bg-gray-800 text-white rounded-lg font-semibold hover:bg-gray-800 transition-all text-sm sm:text-base"
+                class="w-full py-2 bg-gray-800 text-white rounded-lg font-semibold hover:bg-gray-800 transition-all text-xs sm:text-base"
               >
                 Registrar pago
               </button>
@@ -226,13 +226,13 @@
               <div v-if="payments.length > 0" class="border-t border-gray-200 pt-3">
                 <p class="text-xs font-semibold text-gray-500 mb-2">Pagos realizados</p>
                 <div class="space-y-1 max-h-[150px] overflow-y-auto">
-                  <div v-for="(payment, idx) in payments" :key="idx" class="flex justify-between items-center text-xs sm:text-sm p-2 bg-gray-50 rounded-lg border border-gray-300">
+                  <div v-for="(payment, idx) in payments" :key="idx" class="flex justify-between items-center text-xs sm:text-xs p-2 bg-gray-50 rounded-lg border border-gray-300">
                     <div class="flex gap-2">
                       <span class="font-semibold">{{ payment.method === PAYMENT_CODES.YAPE ? 'Yape' : 'Efectivo' }}</span>
                     </div>
                     <div class="flex items-center gap-4">
                       <span class="font-bold">{{ formatCurrency(payment.received || payment.amount) }}</span>
-                      <button @click="removePayment(idx)" class="text-red-400 hover:text-red-500 text-sm text-bold">×</button>
+                      <button @click="removePayment(idx)" class="text-red-400 hover:text-red-500 text-xs text-bold">×</button>
                     </div>
                   </div>
                 </div>
@@ -244,11 +244,11 @@
           <!-- Totales y botón finalizar - Fijo al final -->
           <div class="border-t border-gray-200 p-4 sm:p-5 bg-gray-50 flex-shrink-0">
             <div class="space-y-1 mb-4">
-              <div class="flex justify-between text-xs sm:text-sm">
+              <div class="flex justify-between text-xs sm:text-xs">
                 <span class="text-gray-600">Subtotal</span>
                 <span class="text-gray-800 font-medium">{{ formatCurrency(subtotal) }}</span>
               </div>
-              <div class="flex justify-between text-xs sm:text-sm">
+              <div class="flex justify-between text-xs sm:text-xs">
                 <span class="text-gray-600">IGV (0%)</span>
                 <span class="text-gray-800 font-medium">{{ formatCurrency(igvTotal) }}</span>
               </div>
@@ -257,8 +257,8 @@
                 <span class="text-base sm:text-lg font-bold text-gray-900">{{ formatCurrency(total) }}</span>
               </div>
               <div v-if="remainingBalance > 0" class="flex justify-between pt-1">
-                <span class="text-sm text-red-600">Saldo pendiente</span>
-                <span class="text-sm font-bold text-red-600">{{ formatCurrency(remainingBalance) }}</span>
+                <span class="text-xs text-red-600">Saldo pendiente</span>
+                <span class="text-xs font-bold text-red-600">{{ formatCurrency(remainingBalance) }}</span>
               </div>
             </div>  
             <button 
@@ -267,7 +267,7 @@
               :class="remainingBalance > 0
                 ? 'bg-red-300 hover:bg-red-400'
                 : 'bg-green-600 hover:bg-green-700'"
-              class="w-full py-2.5 sm:py-3 text-white text-sm sm:text-base font-semibold rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+              class="w-full py-2.5 sm:py-3 text-white text-xs sm:text-base font-semibold rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
             >
               {{ procesandoVenta ? 'Procesando...' : (remainingBalance > 0 ? `Faltan ${formatCurrency(remainingBalance)}` : 'Finalizar venta') }}
             </button>
@@ -277,7 +277,7 @@
     </main>
 
     <!-- MODAL DE BÚSQUEDA DE PRODUCTOS CON PAGINADOR -->
-    <div v-if="showProductModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div v-if="showProductModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
       <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full h-auto max-h-[80vh] flex flex-col animate-fadeInUp">
         
         <div class="px-5 sm:px-6 py-3 sm:py-4 border-b border-gray-200 flex justify-between items-center bg-white rounded-t-2xl">
@@ -303,7 +303,7 @@
               @input="handleModalSearch"
               type="text"
               placeholder="Buscar por nombre o código de barras..."
-              class="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-200 transition-all"
+              class="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-xs focus:outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-200 transition-all"
               autofocus
             />
           </div>
@@ -312,19 +312,19 @@
         <div class="flex-1 overflow-auto p-4 sm:p-5">
           <div v-if="modalLoading" class="text-center py-16">
             <div class="inline-block animate-spin rounded-full h-8 w-8 border-2 border-gray-300 border-t-gray-600"></div>
-            <p class="mt-3 text-sm text-gray-500">Buscando productos...</p>
+            <p class="mt-3 text-xs text-gray-500">Buscando productos...</p>
           </div>
           
           <div v-else-if="modalProducts.length === 0" class="text-center py-16">
             <svg class="w-16 h-16 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
             </svg>
-            <p class="text-gray-400 text-sm">No se encontraron productos</p>
+            <p class="text-gray-400 text-xs">No se encontraron productos</p>
           </div>
           
           <div v-else>
             <div class="overflow-x-auto">
-              <table class="min-w-full text-sm">
+              <table class="min-w-full text-xs">
                 <thead class="bg-gray-50 sticky top-0">
                   <tr>
                     <th class="px-2 py-1.5 text-left text-xs font-medium text-gray-500">Código Barra</th>
@@ -340,11 +340,11 @@
                     v-for="product in modalProducts" 
                     :key="product.id"
                     @dblclick="agregarDesdeModal(product)"
-                    class="hover:bg-gray-50 cursor-pointer transition-colors text-sm"
+                    class="hover:bg-gray-50 cursor-pointer transition-colors text-xs"
                   >
-                    <td class="px-2 py-1.5 text-xs text-gray-500">{{ product.codigo_barra || 'Sin código' }}</td>
-                    <td class="px-2 py-1.5 text-sm text-gray-800">{{ product.nombre_producto }}</td>
-                    <td class="px-2 py-1.5 text-right text-sm font-bold text-gray-900">{{ formatCurrency(product.precio_unitario) }}</td>
+                    <td class="px-2 py-1.5 text-xs text-gray-800">{{ product.codigo_barra || 'Sin código' }}</td>
+                    <td class="px-2 py-1.5 text-xs text-gray-800">{{ product.nombre_producto }}</td>
+                    <td class="px-2 py-1.5 text-right text-xs font-bold text-gray-900">{{ formatCurrency(product.precio_unitario) }}</td>
                     <td class="px-2 py-1.5 text-center">
                       <span :class="[
                         'text-xs px-1.5 py-0.5 rounded-full',
@@ -416,7 +416,7 @@
         
         <div class="px-5 sm:px-6 py-3 sm:py-4 border-t border-gray-200 bg-gray-50 flex justify-between items-center rounded-b-2xl">
           <p class="text-xs text-gray-500">Doble click en la fila o presione "Agregar"</p>
-          <button @click="closeProductModal" class="px-4 py-1.5 bg-gray-800 text-white text-sm rounded-lg hover:bg-gray-700 transition-colors">
+          <button @click="closeProductModal" class="px-4 py-1.5 bg-gray-800 text-white text-xs rounded-lg hover:bg-gray-700 transition-colors">
             Cerrar
           </button>
         </div>

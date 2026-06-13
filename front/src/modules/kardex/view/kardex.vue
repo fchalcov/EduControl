@@ -5,7 +5,7 @@
       <div class="flex justify-between items-start">
         <div class="flex items-center gap-3">
           <div class="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0">
-            <span class="text-white text-sm font-bold">K</span>
+            <span class="text-white text-xs font-bold">K</span>
           </div>
           <div>
             <h1 class="text-base sm:text-xl font-semibold text-gray-800 tracking-tight">Kardex de Inventario</h1>
@@ -13,7 +13,7 @@
           </div>
         </div>
         <!-- <div class="flex gap-3">
-          <button class="px-5 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2">
+          <button class="px-5 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
             </svg>
@@ -37,7 +37,7 @@
           <div class="bg-white rounded-lg border border-gray-200 p-5">
             <div class="flex justify-between items-start">
               <div>
-                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Total Movimientos</p>
+                <p class="text-xs font-medium text-gray-500  tracking-wide">Total Movimientos</p>
                 <p class="text-2xl font-bold text-gray-900 mt-2">{{ totalMovimientos }}</p>
               </div>
               <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
@@ -51,7 +51,7 @@
           <div class="bg-white rounded-lg border border-gray-200 p-5">
             <div class="flex justify-between items-start">
               <div>
-                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Ingresos Totales</p>
+                <p class="text-xs font-medium text-gray-500  tracking-wide">Ingresos Totales</p>
                 <p class="text-2xl font-bold text-emerald-600 mt-2">{{ totalIngresos }}</p>
               </div>
               <div class="w-10 h-10 bg-emerald-50 rounded-lg flex items-center justify-center">
@@ -65,7 +65,7 @@
           <div class="bg-white rounded-lg border border-gray-200 p-5">
             <div class="flex justify-between items-start">
               <div>
-                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Salidas Totales</p>
+                <p class="text-xs font-medium text-gray-500  tracking-wide">Salidas Totales</p>
                 <p class="text-2xl font-bold text-rose-600 mt-2">{{ totalSalidas }}</p>
               </div>
               <div class="w-10 h-10 bg-rose-50 rounded-lg flex items-center justify-center">
@@ -80,7 +80,7 @@
         <!-- Filters Panel -->
         <div class="bg-white rounded-lg border border-gray-200 mb-8">
           <div class="px-6 py-4 border-b border-gray-200">
-            <h2 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+            <h2 class="text-xs font-semibold text-gray-700 flex items-center gap-2">
               <span class="w-1 h-4 bg-gray-900 rounded-full"></span>
               Filtro de busqueda
             </h2>
@@ -89,8 +89,8 @@
           <div class="p-6">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
               <div>
-                <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Tipo de Movimiento</label>
-                <select v-model="filters.tipoMovimiento" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none bg-white">
+                <label class="block text-xs font-medium text-gray-500  tracking-wide mb-1">Tipo de Movimiento</label>
+                <select v-model="filters.tipoMovimiento" class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none bg-white">
                   <option value="">Todos</option>
                   <option value="1">Ingresos</option>
                   <option value="2">Salidas</option>
@@ -98,8 +98,8 @@
               </div>
               
               <div>
-                <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Origen del Movimiento</label>
-                <select v-model="filters.origen" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none bg-white">
+                <label class="block text-xs font-medium text-gray-500  tracking-wide mb-1">Origen del Movimiento</label>
+                <select v-model="filters.origen" class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none bg-white">
                   <option value="">Todos</option>
                   <option v-for="tipo in tiposMovimiento" :key="tipo.codigo" :value="tipo.codigo">
                     {{ tipo.nombre }}
@@ -108,32 +108,32 @@
               </div>
 
               <div>
-                <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Producto / Código</label>
+                <label class="block text-xs font-medium text-gray-500  tracking-wide mb-1">Producto / Código</label>
                 <input 
                   v-model="filters.search"
                   type="text"
                   placeholder="Buscar por nombre o código..."
-                  class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none"
+                  class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none"
                   @keyup.enter="aplicarFiltros"
                 >
               </div>
 
               <div>
-                <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Fecha desde</label>
-                <input v-model="filters.fechaInicio" type="date" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none">
+                <label class="block text-xs font-medium text-gray-500  tracking-wide mb-1">Fecha desde</label>
+                <input v-model="filters.fechaInicio" type="date" class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none">
               </div>
 
               <div>
-                <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Fecha hasta</label>
-                <input v-model="filters.fechaFin" type="date" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none">
+                <label class="block text-xs font-medium text-gray-500  tracking-wide mb-1">Fecha hasta</label>
+                <input v-model="filters.fechaFin" type="date" class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none">
               </div>
             </div>
             
             <div class="flex justify-end gap-3 mt-5 pt-2">
-              <button @click="resetFilters" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+              <button @click="resetFilters" class="px-4 py-2 text-xs font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
                 Limpiar filtros
               </button>
-              <button @click="aplicarFiltros" class="px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors">
+              <button @click="aplicarFiltros" class="px-4 py-2 text-xs font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors">
                 Aplicar filtros
               </button>
             </div>
@@ -162,7 +162,7 @@
         <!-- Transactions Table -->
         <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
           <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-            <h2 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+            <h2 class="text-xs font-semibold text-gray-700 flex items-center gap-2">
               <span class="w-1 h-4 bg-gray-900 rounded-full"></span>
               Historial de movimientos
             </h2>
@@ -173,43 +173,43 @@
             <table class="w-full">
               <thead class="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Fecha</th>
-                  <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Tipo</th>
-                  <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Origen</th>
-                  <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Producto</th>
-                  <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Código</th>
-                  <th class="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Cantidad</th>
-                  <th class="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Stock Ant.</th>
-                  <th class="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Stock Act.</th>
-                  <th class="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Precio Compra</th>
-                  <th class="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Precio Venta</th>
-                  <th class="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Subtotal</th>
-                  <th class="text-center px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Referencia</th>
+                  <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Fecha</th>
+                  <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Tipo</th>
+                  <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Origen</th>
+                  <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Producto</th>
+                  <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Código Barra</th>
+                  <th class="text-right px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Cantidad</th>
+                  <th class="text-right px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Stock Ant.</th>
+                  <th class="text-right px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Stock Act.</th>
+                  <th class="text-right px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Precio Compra</th>
+                  <th class="text-right px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Precio Venta</th>
+                  <th class="text-right px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Subtotal</th>
+                  <th class="text-center px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Referencia</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-100">
                 <tr v-for="item in kardexData" :key="item.id" class="hover:bg-gray-50 transition-colors">
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ formatDate(item.fecha_movimiento) }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-600">{{ formatDate(item.fecha_movimiento) }}</td>
                   <td class="px-6 py-4 whitespace-nowrap">
-                    <span :class="item.origen_movimiento.tipo === 1 ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'" class="px-2 py-1 text-xs font-semibold rounded-full">
-                      {{ item.origen_movimiento.tipo === 1 ? 'INGRESO' : 'SALIDA' }}
+                    <span :class="item.origen_movimiento.tipo === 1 ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'" class="px-2 py-1 text-xs rounded-full">
+                      {{ item.origen_movimiento.tipo === 1 ? 'Ingreso' : 'Salida' }}
                     </span>
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-medium">
+                  <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-700 font-medium">
                     {{ item.origen_movimiento.nombre }}
                   </td>
-                  <td class="px-6 py-4 text-sm text-gray-700 max-w-[200px] truncate" :title="item.nombre_producto">{{ item.nombre_producto }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-500">{{ item.codigo_interno }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-semibold" :class="item.origen_movimiento.tipo === 1 ? 'text-emerald-600' : 'text-rose-600'">
+                  <td class="px-6 py-4 text-xs text-gray-700 max-w-[200px] truncate" :title="item.nombre_producto">{{ item.nombre_producto }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-500">{{ item.codigo_barra || "Sin código" }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-semibold" :class="item.origen_movimiento.tipo === 1 ? 'text-emerald-600' : 'text-rose-600'">
                     {{ item.origen_movimiento.tipo === 1 ? '+' : '-' }} {{ item.cantidad }}
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-600">{{ item.stock_anterior }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium text-gray-800">{{ item.stock_nuevo }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-600">S/ {{ formatPrice(item.precio_compra) }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-600">S/ {{ formatPrice(item.precio_venta) }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium text-gray-700">S/ {{ formatPrice(item.subtotal) }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
-                    <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs font-mono">{{ item.correlativo_referencia || '-' }}</span>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-xs text-gray-600">{{ item.stock_anterior }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-medium text-gray-800">{{ item.stock_nuevo }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-xs text-gray-600">S/ {{ formatPrice(item.precio_compra) }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-xs text-gray-600">S/ {{ formatPrice(item.precio_venta) }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-medium text-gray-700">S/ {{ formatPrice(item.subtotal) }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-center text-xs">
+                    <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs">{{ item.correlativo_referencia || '-' }}</span>
                   </td>
                 </tr>
               </tbody>
@@ -218,28 +218,28 @@
           
           <div v-else class="text-center py-16">
             <p class="text-gray-500">No se encontraron movimientos</p>
-            <p class="text-sm text-gray-400 mt-1">Modifica los filtros para ampliar la búsqueda</p>
+            <p class="text-xs text-gray-400 mt-1">Modifica los filtros para ampliar la búsqueda</p>
           </div>
 
           <!-- Paginación -->
           <div v-if="pagination.total > 0" class="px-6 py-4 border-t border-gray-200 flex justify-between items-center">
-            <div class="text-sm text-gray-500">
+            <div class="text-xs text-gray-500">
               Mostrando {{ pagination.from || 0 }} - {{ pagination.to || 0 }} de {{ pagination.total || 0 }} resultados
             </div>
             <div class="flex gap-2">
               <button 
                 @click="cambiarPagina(pagination.previous)" 
                 :disabled="!pagination.previous"
-                class="px-3 py-1 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                class="px-3 py-1 text-xs border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
                 Anterior
               </button>
-              <span class="px-3 py-1 text-sm bg-gray-100 rounded-lg">
+              <span class="px-3 py-1 text-xs bg-gray-100 rounded-lg">
                 Página {{ pagination.current_page || 1 }} de {{ pagination.total_pages || 1 }}
               </span>
               <button 
                 @click="cambiarPagina(pagination.next)" 
                 :disabled="!pagination.next"
-                class="px-3 py-1 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                class="px-3 py-1 text-xs border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
                 Siguiente
               </button>
             </div>

@@ -7,7 +7,7 @@
         <!-- Logo y título -->
         <div class="flex items-center gap-3">
           <div class="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0">
-            <span class="text-white text-sm font-bold">C</span>
+            <span class="text-white text-xs font-bold">C</span>
           </div>
           <div>
             <h1 class="text-base sm:text-xl font-semibold text-gray-800 tracking-tight">Gestión de Compras</h1>
@@ -18,7 +18,7 @@
         <!-- Botón -->
         <div class="flex gap-3">
           <button @click="abrirNuevaSolicitud"
-            class="flex-1 sm:flex-none px-4 sm:px-5 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2">
+            class="flex-1 sm:flex-none px-4 sm:px-5 py-2 text-xs font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
             </svg>
@@ -34,28 +34,28 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div class="bg-white rounded-lg border border-gray-200 p-5">
           <div>
-            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Total Invertido</p>
+            <p class="text-xs font-medium text-gray-500  tracking-wide">Total Invertido</p>
             <p class="text-2xl font-bold text-gray-900 mt-2">S/ {{ formatNumber(totalInvertido) }}</p>
           </div>
         </div>
 
         <div class="bg-white rounded-lg border border-gray-200 p-5">
           <div>
-            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Órdenes Pendientes</p>
+            <p class="text-xs font-medium text-gray-500  tracking-wide">Órdenes Pendientes</p>
             <p class="text-2xl font-bold text-orange-600 mt-2">{{ totalPendientes }}</p>
           </div>
         </div>
 
         <div class="bg-white rounded-lg border border-gray-200 p-5">
           <div>
-            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Recepción Parcial</p>
+            <p class="text-xs font-medium text-gray-500  tracking-wide">Recepción Parcial</p>
             <p class="text-2xl font-bold text-blue-600 mt-2">{{ totalRecepciónParcial }}</p>
           </div>
         </div>
 
         <div class="bg-white rounded-lg border border-gray-200 p-5">
           <div>
-            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Completadas</p>
+            <p class="text-xs font-medium text-gray-500  tracking-wide">Completadas</p>
             <p class="text-2xl font-bold text-emerald-600 mt-2">{{ totalCompletadas }}</p>
           </div>
         </div>
@@ -64,7 +64,7 @@
       <!-- Filters Panel -->
       <div class="bg-white rounded-lg border border-gray-200 mb-8">
         <div class="px-6 py-4 border-b border-gray-200">
-          <h2 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+          <h2 class="text-xs font-semibold text-gray-700 flex items-center gap-2">
             <span class="w-1 h-4 bg-gray-900 rounded-full"></span>
             Filtros de búsqueda
           </h2>
@@ -73,15 +73,15 @@
         <div class="p-6">
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
             <div>
-              <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">N° Solicitud</label>
+              <label class="block text-xs font-medium text-gray-500  tracking-wide mb-1">N° Solicitud</label>
               <input v-model="filters.numero_solicitud" type="text" placeholder="PED-2026..."
-                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none">
+                class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none">
             </div>
 
             <div>
-              <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Proveedor</label>
+              <label class="block text-xs font-medium text-gray-500  tracking-wide mb-1">Proveedor</label>
               <select v-model="filters.proveedor"
-                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none bg-white">
+                class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none bg-white">
                 <option value="">Todos</option>
                 <option value="1">Distribuidora del Sur</option>
                 <option value="2">Importaciones García</option>
@@ -90,9 +90,9 @@
             </div>
 
             <div>
-              <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Estado</label>
+              <label class="block text-xs font-medium text-gray-500  tracking-wide mb-1">Estado</label>
               <select v-model="filters.estado"
-                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none bg-white">
+                class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none bg-white">
                 <option value="">Todos</option>
                 <option value="1">Pendiente</option>
                 <option value="2">Pedido enviado</option>
@@ -104,20 +104,20 @@
             </div>
 
             <div>
-              <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Fecha desde</label>
+              <label class="block text-xs font-medium text-gray-500  tracking-wide mb-1">Fecha desde</label>
               <input v-model="filters.fecha_desde" type="date"
-                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none">
+                class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none">
             </div>
 
             <div>
-              <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Fecha hasta</label>
+              <label class="block text-xs font-medium text-gray-500  tracking-wide mb-1">Fecha hasta</label>
               <input v-model="filters.fecha_hasta" type="date"
-                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none">
+                class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none">
             </div>
 
             <div class="flex items-end">
               <button @click="aplicarFiltros"
-                class="w-full px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors">
+                class="w-full px-4 py-2 bg-gray-900 text-white text-xs font-medium rounded-lg hover:bg-gray-800 transition-colors">
                 Buscar
               </button>
             </div>
@@ -153,7 +153,7 @@
       <!-- Solicitudes Table -->
       <div v-else class="bg-white rounded-lg border border-gray-200 overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-          <h2 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+          <h2 class="text-xs font-semibold text-gray-700 flex items-center gap-2">
             <span class="w-1 h-4 bg-gray-900 rounded-full"></span>
             Solicitudes de Pedido
           </h2>
@@ -164,22 +164,22 @@
           <table class="w-full">
             <thead class="bg-gray-50 border-b border-gray-200">
               <tr>
-                <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">N°
+                <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">N°
                   Solicitud</th>
-                <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Proveedor
+                <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Proveedor
                 </th>
-                <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Fecha
+                <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Fecha
                   Solicitud</th>
-                <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Fecha
+                <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Fecha
                   Requerida</th>
-                <th class="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Total</th>
-                <th class="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Recibido
+                <th class="text-right px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Total</th>
+                <th class="text-right px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Recibido
                 </th>
-                <th class="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Pendiente
+                <th class="text-right px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Pendiente
                 </th>
-                <th class="text-center px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Estado
+                <th class="text-center px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Estado
                 </th>
-                <th class="text-center px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones
+                <th class="text-center px-6 py-3 text-xs font-semibold text-gray-500  tracking-wider">Acciones
                 </th>
               </tr>
             </thead>
@@ -187,26 +187,26 @@
               <tr v-for="solicitud in solicitudesPaginadas" :key="solicitud.id_solicitud"
                 class="hover:bg-gray-50 transition-colors">
                 <td class="px-6 py-4">
-                  <div class="text-sm font-semibold text-gray-900 font-mono">{{ solicitud.correlativo }}</div>
+                  <div class="text-xs font-semibold text-gray-900 font-mono">{{ solicitud.correlativo }}</div>
                 </td>
                 <td class="px-6 py-4">
-                  <div class="text-sm text-gray-900">{{ solicitud.proveedor_nombre }}</div>
+                  <div class="text-xs text-gray-900">{{ solicitud.proveedor_nombre }}</div>
                   <div class="text-xs text-gray-400">{{ solicitud.numero_comprobante || 'Sin comprobante' }}</div>
                 </td>
                 <td class="px-6 py-4">
-                  <div class="text-sm text-gray-900">{{ formatFechaShort(solicitud.fecha_solicitud) }}</div>
+                  <div class="text-xs text-gray-900">{{ formatFechaShort(solicitud.fecha_solicitud) }}</div>
                   <div class="text-xs text-gray-400">{{ formatHora(solicitud.fecha_solicitud) }}</div>
                 </td>
                 <td class="px-6 py-4">
-                  <div class="text-sm text-gray-900">{{ formatFechaShort(solicitud.fecha_requerida) }}</div>
+                  <div class="text-xs text-gray-900">{{ formatFechaShort(solicitud.fecha_requerida) }}</div>
                 </td>
-                <td class="px-6 py-4 text-right font-bold text-sm text-gray-900">
+                <td class="px-6 py-4 text-right font-bold text-xs text-gray-900">
                   S/ {{ formatNumber(solicitud.total) }}
                 </td>
-                <td class="px-6 py-4 text-right text-sm text-emerald-600 font-semibold">
+                <td class="px-6 py-4 text-right text-xs text-emerald-600 font-semibold">
                   S/ {{ formatNumber(solicitud.total_recibido || 0) }}
                 </td>
-                <td class="px-6 py-4 text-right text-sm text-orange-600 font-semibold">
+                <td class="px-6 py-4 text-right text-xs text-orange-600 font-semibold">
                   S/ {{ formatNumber((solicitud.total || 0) - (solicitud.total_recibido || 0)) }}
                 </td>
                 <td class="px-6 py-4 text-center">
@@ -245,24 +245,24 @@
 
         <div v-else class="text-center py-16">
           <p class="text-gray-500">No se encontraron solicitudes</p>
-          <p class="text-sm text-gray-400 mt-1">Haz clic en "Nueva Solicitud" para comenzar</p>
+          <p class="text-xs text-gray-400 mt-1">Haz clic en "Nueva Solicitud" para comenzar</p>
         </div>
 
         <div class="px-6 py-4 border-t border-gray-200 flex justify-between items-center">
-          <div class="text-sm text-gray-500">
+          <div class="text-xs text-gray-500">
             Mostrando {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ Math.min(currentPage * itemsPerPage,
               solicitudesFiltradas.length) }} de {{ solicitudesFiltradas.length }} resultados
           </div>
           <div class="flex gap-2">
             <button @click="currentPage--" :disabled="currentPage === 1"
-              class="px-3 py-1 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+              class="px-3 py-1 text-xs border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
               Anterior
             </button>
-            <span class="px-3 py-1 text-sm bg-gray-100 rounded-lg">
+            <span class="px-3 py-1 text-xs bg-gray-100 rounded-lg">
               Página {{ currentPage }} de {{ totalPages }}
             </span>
             <button @click="currentPage++" :disabled="currentPage === totalPages"
-              class="px-3 py-1 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+              class="px-3 py-1 text-xs border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
               Siguiente
             </button>
           </div>
@@ -278,7 +278,7 @@
         <div class="border-b border-gray-200 px-6 py-5 flex justify-between items-center bg-white sticky top-0">
           <div>
             <h2 class="text-lg font-semibold text-gray-900">{{ solicitudEditando ? 'Editar Solicitud' : 'Nueva Solicitud' }}</h2>
-            <p class="text-sm text-gray-500">Complete los datos del pedido</p>
+            <p class="text-xs text-gray-500">Complete los datos del pedido</p>
           </div>
           <button @click="cerrarModalSolicitud"
             class="text-gray-400 hover:text-gray-600 text-2xl leading-none">✕</button>
@@ -288,13 +288,13 @@
           <form @submit.prevent="guardarSolicitud">
             <!-- Datos Generales -->
             <div class="mb-8">
-              <h3 class="text-sm font-semibold text-gray-900 mb-4 border-l-3 border-gray-900 pl-3">Datos Generales</h3>
+              <h3 class="text-xs font-semibold text-gray-900 mb-4 border-l-3 border-gray-900 pl-3">Datos Generales</h3>
               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div>
-                  <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Proveedor
+                  <label class="block text-xs font-medium text-gray-500  tracking-wide mb-1">Proveedor
                     *</label>
                   <select v-model="solicitudForm.proveedor_id" required
-                    class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none bg-white">
+                    class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none bg-white">
                     <option value="">Seleccionar proveedor</option>
                     <option value="1">Distribuidora del Sur</option>
                     <option value="2">Importaciones García</option>
@@ -302,26 +302,26 @@
                   </select>
                 </div>
                 <div>
-                  <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Fecha Requerida
+                  <label class="block text-xs font-medium text-gray-500  tracking-wide mb-1">Fecha Requerida
                     *</label>
                   <input v-model="solicitudForm.fecha_requerida" type="date" required
-                    class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none">
+                    class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none">
                 </div>
                 <div>
-                  <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Forma de
+                  <label class="block text-xs font-medium text-gray-500  tracking-wide mb-1">Forma de
                     Pago</label>
                   <select v-model="solicitudForm.forma_pago"
-                    class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none bg-white">
+                    class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none bg-white">
                     <option value="1">Contado</option>
                     <option value="2">Crédito</option>
                     <option value="3">Mixto</option>
                   </select>
                 </div>
                 <div>
-                  <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Tipo
+                  <label class="block text-xs font-medium text-gray-500  tracking-wide mb-1">Tipo
                     Comprobante</label>
                   <select v-model="solicitudForm.tipo_comprobante"
-                    class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none bg-white">
+                    class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none bg-white">
                     <option value="">Sin comprobante</option>
                     <option value="Factura">Factura</option>
                     <option value="Boleta">Boleta</option>
@@ -329,17 +329,17 @@
                   </select>
                 </div>
                 <div>
-                  <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">N°
+                  <label class="block text-xs font-medium text-gray-500  tracking-wide mb-1">N°
                     Comprobante</label>
                   <input v-model="solicitudForm.numero_comprobante" type="text"
-                    class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none"
+                    class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none"
                     placeholder="F001-00012345">
                 </div>
                 <div class="md:col-span-2 lg:col-span-4">
                   <label
-                    class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Observaciones</label>
+                    class="block text-xs font-medium text-gray-500  tracking-wide mb-1">Observaciones</label>
                   <textarea v-model="solicitudForm.observaciones" rows="2"
-                    class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none"
+                    class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none"
                     placeholder="Notas adicionales..."></textarea>
                 </div>
               </div>
@@ -348,7 +348,7 @@
             <!-- Productos -->
             <div>
               <div class="flex justify-between items-center mb-4">
-                <h3 class="text-sm font-semibold text-gray-900 border-l-3 border-gray-900 pl-3">Productos</h3>
+                <h3 class="text-xs font-semibold text-gray-900 border-l-3 border-gray-900 pl-3">Productos</h3>
                 <button type="button" @click="agregarProducto"
                   class="text-xs font-medium text-white bg-gray-900 px-3 py-1.5 rounded-lg hover:bg-gray-800">
                   + Agregar Producto
@@ -356,17 +356,17 @@
               </div>
 
               <div class="overflow-x-auto border border-gray-200 rounded-lg">
-                <table class="w-full text-sm">
+                <table class="w-full text-xs">
                   <thead class="bg-gray-50 border-b border-gray-200">
                     <tr>
-                      <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider w-8">#</th>
-                      <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider min-w-[300px]">Producto *</th>
-                      <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Cantidad *</th>
-                      <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Precio Compra</th>
-                      <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Subtotal</th>
-                      <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Costo por Unidad</th>
-                      <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Precio Venta Sugerido</th>
-                      <th class="text-center px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider w-16">Acciones</th>
+                      <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500  tracking-wider w-8">#</th>
+                      <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500  tracking-wider min-w-[300px]">Producto *</th>
+                      <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500  tracking-wider">Cantidad *</th>
+                      <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500  tracking-wider">Precio Compra</th>
+                      <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500  tracking-wider">Subtotal</th>
+                      <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500  tracking-wider">Costo por Unidad</th>
+                      <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500  tracking-wider">Precio Venta Sugerido</th>
+                      <th class="text-center px-4 py-3 text-xs font-semibold text-gray-500  tracking-wider w-16">Acciones</th>
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-gray-100">
@@ -378,14 +378,14 @@
                             @input="buscarProductos(producto, $event.target.value)" @focus="mostrarResultados(producto)"
                             @blur="ocultarResultados(producto)" placeholder="Escribe para buscar producto..."
                             autocomplete="off"
-                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none" />
+                            class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none" />
                           <div
                             v-if="producto.mostrarResultados && producto.resultados && producto.resultados.length > 0"
                             class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
                             <div v-for="prod in producto.resultados" :key="prod.id"
                               @mousedown.prevent="seleccionarProducto(producto, prod)"
                               class="px-3 py-2 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-0">
-                              <p class="text-sm font-medium text-gray-900">{{ prod.nombre }}</p>
+                              <p class="text-xs font-medium text-gray-900">{{ prod.nombre }}</p>
                               <p class="text-xs text-gray-500">Código: {{ prod.codigo }} | Stock: {{ prod.stock }}</p>
                             </div>
                           </div>
@@ -396,13 +396,13 @@
                         <div class="flex items-center gap-2">
                           <input v-model.number="producto.cantidad_paquetes" type="number" min="0" step="1"
                             :disabled="!producto.id_producto" @input="calcularProducto(producto)"
-                            class="w-24 text-right px-2 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none disabled:bg-gray-50"
+                            class="w-24 text-right px-2 py-1.5 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none disabled:bg-gray-50"
                             placeholder="0">
                           <span class="text-xs text-gray-600">Paq</span>
                           <span class="text-xs text-gray-400 mx-1">×</span>
                           <input v-model.number="producto.unidades_por_paquete" type="number" min="1" step="1"
                             :disabled="!producto.id_producto" @input="calcularProducto(producto)"
-                            class="w-20 text-right px-2 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none disabled:bg-gray-50"
+                            class="w-20 text-right px-2 py-1.5 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none disabled:bg-gray-50"
                             placeholder="1">
                           <span class="text-xs text-gray-600">Uni</span>
                         </div>
@@ -411,7 +411,7 @@
                       <td class="px-4 py-3">
                         <input v-model.number="producto.precio_paquete" type="number" min="0" step="0.01" required
                           :disabled="!producto.id_producto" @input="calcularProducto(producto)"
-                          class="w-full text-right px-2 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none disabled:bg-gray-50"
+                          class="w-full text-right px-2 py-1.5 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none disabled:bg-gray-50"
                           placeholder="0.00">
                       </td>
 
@@ -433,7 +433,7 @@
                         <input v-model.number="producto.precio_venta_editable" type="number" min="0" step="0.01"
                           :disabled="!producto.id_producto || producto.total_unidades === 0"
                           @input="calcularGanancia(producto)"
-                          class="w-full text-right px-2 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none disabled:bg-gray-50"
+                          class="w-full text-right px-2 py-1.5 text-xs border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none disabled:bg-gray-50"
                           placeholder="Precio de venta" />
                         <div class="text-xs text-gray-400 text-right">
                           Sugerido: S/ {{ formatNumber(producto.precio_sugerido || 0) }}
@@ -466,11 +466,11 @@
 
         <div class="border-t border-gray-200 px-6 py-4 bg-gray-50 flex justify-end gap-3 sticky bottom-0">
           <button @click="cerrarModalSolicitud"
-            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+            class="px-4 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
             Cancelar
           </button>
           <button @click="guardarSolicitud"
-            class="px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800">
+            class="px-4 py-2 text-xs font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800">
             {{ solicitudEditando ? 'Actualizar' : 'Crear Solicitud' }}
           </button>
         </div>
@@ -485,7 +485,7 @@
         <div class="border-b border-gray-200 px-6 py-5 flex justify-between items-center bg-white">
           <div>
             <h2 class="text-lg font-semibold text-gray-900">Recepción de Productos</h2>
-            <p class="text-sm text-gray-500 font-mono">{{ solicitudRecepcion?.correlativo }} - {{
+            <p class="text-xs text-gray-500 font-mono">{{ solicitudRecepcion?.correlativo }} - {{
               solicitudRecepcion?.proveedor_nombre }}</p>
           </div>
           <button @click="cerrarModalRecepcion"
@@ -494,9 +494,9 @@
 
         <div class="flex-1 overflow-y-auto p-6">
           <div class="mb-6">
-            <h3 class="text-sm font-semibold text-gray-900 mb-4">Productos pendientes por recibir</h3>
+            <h3 class="text-xs font-semibold text-gray-900 mb-4">Productos pendientes por recibir</h3>
             <div class="overflow-x-auto border border-gray-200 rounded-lg">
-              <table class="w-full text-sm">
+              <table class="w-full text-xs">
                 <thead class="bg-gray-50 border-b border-gray-200">
                   <tr>
                     <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500">Producto</th>
@@ -523,7 +523,7 @@
                           class="w-8 h-8 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 disabled:opacity-50">−</button>
                         <input v-model.number="recepcionCantidades[detalle.id_detalle_solicitud]" type="number"
                           :max="detalle.cantidad_pedida - (detalle.cantidad_recibida || 0)" min="0"
-                          class="w-24 text-center px-2 py-1.5 border border-gray-300 rounded-lg text-sm">
+                          class="w-24 text-center px-2 py-1.5 border border-gray-300 rounded-lg text-xs">
                         <button
                           @click="incrementarRecepcion(detalle.id_detalle_solicitud, detalle.cantidad_pedida - (detalle.cantidad_recibida || 0))"
                           :disabled="recepcionCantidades[detalle.id_detalle_solicitud] >= (detalle.cantidad_pedida - (detalle.cantidad_recibida || 0))"
@@ -543,7 +543,7 @@
                       formatNumber(totalRecepcion) }}</td>
                   </tr>
                   <tr>
-                    <td colspan="6" class="px-4 py-3 text-right text-sm text-gray-500">Total productos:</td>
+                    <td colspan="6" class="px-4 py-3 text-right text-xs text-gray-500">Total productos:</td>
                     <td class="px-4 py-3 text-right font-semibold">{{ totalProductosRecepcion }} unidades</td>
                   </tr>
                 </tfoot>
@@ -554,9 +554,9 @@
 
         <div class="border-t border-gray-200 px-6 py-4 bg-gray-50 flex justify-end gap-3">
           <button @click="cerrarModalRecepcion"
-            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">Cancelar</button>
+            class="px-4 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">Cancelar</button>
           <button @click="confirmarRecepcion" :disabled="totalRecepcion === 0"
-            class="px-4 py-2 text-sm font-medium text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 disabled:opacity-50">Confirmar
+            class="px-4 py-2 text-xs font-medium text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 disabled:opacity-50">Confirmar
             Recepción</button>
         </div>
       </div>
@@ -570,7 +570,7 @@
         <div class="border-b border-gray-200 px-6 py-5 flex justify-between items-center bg-white">
           <div>
             <h2 class="text-lg font-semibold text-gray-900">Detalle de Solicitud</h2>
-            <p class="text-sm text-gray-500 font-mono">{{ solicitudDetalle?.correlativo }}</p>
+            <p class="text-xs text-gray-500 font-mono">{{ solicitudDetalle?.correlativo }}</p>
           </div>
           <button @click="cerrarModalDetalle" class="text-gray-400 hover:text-gray-600 text-2xl leading-none">✕</button>
         </div>
@@ -579,16 +579,16 @@
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div class="bg-gray-50 rounded-lg p-3">
               <p class="text-xs text-gray-500">Proveedor</p>
-              <p class="text-sm font-medium text-gray-900">{{ solicitudDetalle?.proveedor_nombre }}</p>
+              <p class="text-xs font-medium text-gray-900">{{ solicitudDetalle?.proveedor_nombre }}</p>
             </div>
             <div class="bg-gray-50 rounded-lg p-3">
               <p class="text-xs text-gray-500">Fecha Solicitud</p>
-              <p class="text-sm font-medium text-gray-900">{{ formatFechaCompleta(solicitudDetalle?.fecha_solicitud) }}
+              <p class="text-xs font-medium text-gray-900">{{ formatFechaCompleta(solicitudDetalle?.fecha_solicitud) }}
               </p>
             </div>
             <div class="bg-gray-50 rounded-lg p-3">
               <p class="text-xs text-gray-500">Fecha Requerida</p>
-              <p class="text-sm font-medium text-gray-900">{{ formatFechaShort(solicitudDetalle?.fecha_requerida) }}</p>
+              <p class="text-xs font-medium text-gray-900">{{ formatFechaShort(solicitudDetalle?.fecha_requerida) }}</p>
             </div>
             <div class="bg-gray-50 rounded-lg p-3">
               <p class="text-xs text-gray-500">Estado</p>
@@ -598,18 +598,18 @@
             </div>
             <div class="bg-gray-50 rounded-lg p-3">
               <p class="text-xs text-gray-500">Comprobante</p>
-              <p class="text-sm font-medium text-gray-900">{{ solicitudDetalle?.tipo_comprobante || 'Sin comprobante' }}
+              <p class="text-xs font-medium text-gray-900">{{ solicitudDetalle?.tipo_comprobante || 'Sin comprobante' }}
                 {{ solicitudDetalle?.numero_comprobante }}</p>
             </div>
             <div class="bg-gray-50 rounded-lg p-3">
               <p class="text-xs text-gray-500">Forma de Pago</p>
-              <p class="text-sm font-medium text-gray-900">{{ getFormaPagoTexto(solicitudDetalle?.forma_pago) }}</p>
+              <p class="text-xs font-medium text-gray-900">{{ getFormaPagoTexto(solicitudDetalle?.forma_pago) }}</p>
             </div>
           </div>
 
-          <h3 class="text-sm font-semibold text-gray-900 mb-3">Productos</h3>
+          <h3 class="text-xs font-semibold text-gray-900 mb-3">Productos</h3>
           <div class="overflow-x-auto mb-6">
-            <table class="w-full text-sm border border-gray-200 rounded-lg">
+            <table class="w-full text-xs border border-gray-200 rounded-lg">
               <thead class="bg-gray-50">
                 <tr>
                   <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500">Producto</th>
@@ -642,17 +642,17 @@
 
           <div v-if="solicitudDetalle?.observaciones" class="mt-4 p-3 bg-gray-50 rounded-lg">
             <p class="text-xs text-gray-500 mb-1">Observaciones</p>
-            <p class="text-sm text-gray-700">{{ solicitudDetalle.observaciones }}</p>
+            <p class="text-xs text-gray-700">{{ solicitudDetalle.observaciones }}</p>
           </div>
         </div>
 
         <div class="border-t border-gray-200 px-6 py-4 bg-gray-50 flex justify-end gap-3">
           <button @click="cerrarModalDetalle"
-            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">Cerrar</button>
+            class="px-4 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">Cerrar</button>
           <button
             v-if="solicitudDetalle?.estado !== 4 && solicitudDetalle?.estado !== 5 && solicitudDetalle?.estado !== 6"
             @click="abrirRecepcionDesdeDetalle"
-            class="px-4 py-2 text-sm font-medium text-white bg-emerald-600 rounded-lg hover:bg-emerald-700">Registrar
+            class="px-4 py-2 text-xs font-medium text-white bg-emerald-600 rounded-lg hover:bg-emerald-700">Registrar
             Recepción</button>
         </div>
       </div>
