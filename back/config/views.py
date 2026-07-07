@@ -4,7 +4,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 
-@api_view(["GET"])
+@api_view(['GET', 'HEAD'])
 @permission_classes([AllowAny])
 def api_root(request):
     """Página principal de la API (Browsable API de Django REST Framework)."""
