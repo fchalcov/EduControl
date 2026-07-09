@@ -47,17 +47,11 @@ export const useMenuStore = () => {
 
       if (!backendRoutes.includes('/')) {
         allowedRoutes.value = ['/', ...backendRoutes];
-        console.log('Home agregado manualmente');
       } else {
         allowedRoutes.value = backendRoutes;
-      }
-      
-      console.log('Menús cargados:', menuItems.value);
-      console.log('Rutas permitidas:', allowedRoutes.value);
-      
+      }     
       loaded.value = true;
     } catch (error) {
-      console.error("Error cargando menú", error);
       throw error;
     }
   };
@@ -67,12 +61,10 @@ export const useMenuStore = () => {
     const normalizedPath = path.startsWith('/') ? path : '/' + path;
     
     if (normalizedPath === '/') {
-      console.log('Home siempre accesible');
       return true;
     }
     
     const hasPermission = allowedRoutes.value.some(route => normalizedPath === route);
-    console.log(`Verificando acceso a ${normalizedPath}: ${hasPermission}`);
     return hasPermission;
   };
 

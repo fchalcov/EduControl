@@ -830,13 +830,10 @@ export default {
         if (costoCambioSignificativo) {
           // Si el costo cambió mucho, actualizar el precio sugerido
           producto.precio_venta_editable = precioVentaSugerido
-          console.log('✅ Costo cambió, actualizando precio editable a:', precioVentaSugerido)
         } else if (!producto.precio_venta_editable || producto.precio_venta_editable === 0) {
           // Si nunca tuvo precio, asignarlo
           producto.precio_venta_editable = precioVentaSugerido
-          console.log('✅ Asignando precio editable inicial:', precioVentaSugerido)
         } else {
-          console.log('⚠️ Manteniendo precio editable manual:', producto.precio_venta_editable)
         }
       } else {
         producto.precio_venta_unidad = 0
@@ -849,37 +846,19 @@ export default {
     },
 
     calcularGanancia(producto) {
-      console.log('=== CALCULANDO GANANCIA ===')
-      console.log('Total unidades:', producto.total_unidades)
-      console.log('Precio venta editable:', producto.precio_venta_editable)
-      console.log('Costo por unidad:', producto.precio_venta_unidad)
-
       if (producto.total_unidades > 0 && producto.precio_venta_editable > 0) {
         const precioVenta = Number(producto.precio_venta_editable)
         const costoPorUnidad = Number(producto.precio_venta_unidad)
-
-        console.log('Precio venta (number):', precioVenta)
-        console.log('Costo unidad (number):', costoPorUnidad)
-
         if (costoPorUnidad > 0) {
           const gananciaPorUnidad = precioVenta - costoPorUnidad
-          console.log('Ganancia por unidad:', gananciaPorUnidad)
-
           producto.ganancia_total = Math.round((gananciaPorUnidad * producto.total_unidades) * 100) / 100
-          console.log('Ganancia total:', producto.ganancia_total)
-
           const porcentaje = ((precioVenta - costoPorUnidad) / costoPorUnidad) * 100
           producto.ganancia_porcentaje = Math.round(porcentaje * 100) / 100
-          console.log('Porcentaje ganancia:', producto.ganancia_porcentaje, '%')
         } else {
-          console.log('ERROR: costoPorUnidad es 0')
           producto.ganancia_total = 0
           producto.ganancia_porcentaje = 0
         }
       } else {
-        console.log('No se calcula ganancia:',
-          'total_unidades > 0?', producto.total_unidades > 0,
-          'precio_venta_editable > 0?', producto.precio_venta_editable > 0)
         producto.ganancia_total = 0
         producto.ganancia_porcentaje = 0
       }

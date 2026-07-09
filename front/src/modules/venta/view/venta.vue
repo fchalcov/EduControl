@@ -1,198 +1,109 @@
 <template>
-  <!-- ✅ SOLO AGREGUE ESTOS 2 EVENTOS -->
-  <div
-    class="h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col"
-  >
-    <!-- Header -->
-    <header class="bg-white border-b border-gray-200 px-4 sm:px-8 py-4 sm:py-6">
-      <div
-        class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 sm:gap-0"
-      >
-        <!-- Logo y título -->
-        <div class="flex items-center gap-3">
-          <div
-            class="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0"
-          >
-            <span class="text-white text-xs font-bold">V</span>
-          </div>
-          <div>
-            <h1
-              class="text-base sm:text-xl font-semibold text-gray-800 tracking-tight"
-            >
-              Venta
-            </h1>
-            <p class="text-xs text-gray-500 hidden sm:block">Punto de venta</p>
-          </div>
-        </div>
+  <div class="h-full min-h-0 overflow-hidden bg-gray-100 flex flex-col">
+    <!-- Contenido principal -->
+    <main class="h-full min-h-0 overflow-y-auto lg:overflow-hidden p-4 sm:p-6">
+      <div class="w-full min-h-0 lg:h-full grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-[1600px] mx-auto">
 
-        <!-- Botón -->
-        <div class="flex gap-3">
-          <button
-            @click="openProductModal"
-            class="flex-1 sm:flex-none px-4 sm:px-5 py-2 text-xs font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2"
-          >
-            Buscar Producto
-          </button>
-        </div>
-      </div>
-    </header>
-
-    <!-- Contenido Principal: Carrito + Pago en una sola vista -->
-    <main class="px-8 py-6 h-[calc(100vh-120px)]">
-      <div
-        class="w-full h-full mx-auto grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6"
-      >
-        <!-- Columna Izquierda y Central: Carrito de compras (2/3 del espacio) -->
-        <div
-          class="lg:col-span-2 flex flex-col bg-white rounded-xl border border-gray-200 shadow-xs overflow-hidden h-full"
-        >
+        <!-- Carrito -->
+        <section class="lg:col-span-2 min-h-[420px] lg:min-h-0 flex flex-col bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+          
           <!-- Header del carrito -->
-          <div
-            class="px-4 sm:px-5 py-3 border-b border-gray-200 bg-gray-50 flex-shrink-0"
-          >
-            <div class="flex justify-between items-center">
-              <h2
-                class="text-xs font-semibold text-gray-700 flex items-center gap-2"
-              >
-                <span class="w-1 h-4 bg-gray-900 rounded-full"></span>
-                Carrito de compra
-              </h2>
-              <span
-                class="text-xs sm:text-xs text-gray-500 bg-white px-2 sm:px-3 py-1 rounded-lg border border-gray-200"
-              >
-                {{ cart.length }}
-                {{ cart.length === 1 ? "producto" : "productos" }}
-              </span>
+          <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex-shrink-0">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div class="flex items-center gap-3">
+                <div class="w-1 h-6 bg-gray-800 rounded-full"></div>
+                <div>
+                  <h2 class="text-sm font-bold text-gray-800">Carrito</h2>
+                  <p class="text-xs text-gray-500">Productos agregados</p>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <span class="text-xs font-semibold text-gray-700 bg-gray-200 px-3 py-1.5 rounded-lg">
+                  {{ cart.length }} {{ cart.length === 1 ? "producto" : "productos" }}
+                </span>
+
+                <button @click="openProductModal" class="px-4 py-2 text-xs font-semibold text-white bg-gray-800 rounded-lg hover:bg-gray-900 transition-colors duration-200 shadow-sm hover:shadow">
+                  Buscar producto
+                </button>
+              </div>
             </div>
           </div>
 
-          <!-- Lista de productos del carrito en formato TABLA -->
-          <div class="flex-1 overflow-y-auto">
-            <div v-if="cart.length === 0" class="text-center py-12 sm:py-16">
-              <div
-                class="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4"
-              >
-                <svg
-                  class="w-8 h-8 sm:w-10 sm:h-10 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="1.5"
-                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                  />
+          <!-- Área del carrito -->
+          <div class="flex-1 min-h-0 overflow-auto">
+            <div v-if="cart.length === 0" class="h-full min-h-[330px] flex flex-col items-center justify-center text-center p-8">
+              <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mb-4">
+                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                 </svg>
               </div>
-              <p class="text-gray-500 text-xs sm:text-base">Carrito vacío</p>
-              <p class="text-xs text-gray-400 mt-1 sm:mt-2">
-                Presione "Buscar producto" o use el escáner
-              </p>
+              <p class="text-sm font-semibold text-gray-600">Carrito vacío</p>
+              <p class="text-xs text-gray-400 mt-1">Agregue productos para continuar</p>
             </div>
 
-            <div v-else class="overflow-x-auto">
-              <table class="min-w-full text-xs">
-                <thead class="bg-gray-50 sticky top-0">
+            <div v-else class="h-full overflow-auto">
+              <table class="min-w-[920px] w-full text-sm">
+                <thead class="bg-gray-100 sticky top-0 z-10 border-b border-gray-200">
                   <tr>
-                    <th
-                      class="px-3 py-2 text-left text-xs font-medium text-gray-500"
-                    >
-                      Código Barra
-                    </th>
-                    <th
-                      class="px-3 py-2 text-left text-xs font-medium text-gray-500"
-                    >
-                      Producto
-                    </th>
-                    <th
-                      class="px-3 py-2 text-left text-xs font-medium text-gray-500"
-                    >
-                      Stock
-                    </th>
-                    <th
-                      class="px-3 py-2 text-center text-xs font-medium text-gray-500"
-                    >
-                      Cantidad
-                    </th>
-                    <th
-                      class="px-3 py-2 text-right text-xs font-medium text-gray-500"
-                    >
-                      Precio Unit.
-                    </th>
-                    <th
-                      class="px-3 py-2 text-right text-xs font-medium text-gray-500"
-                    >
-                      Subtotal
-                    </th>
-                    <th
-                      class="px-3 py-2 text-center text-xs font-medium text-gray-500"
-                    >
-                      Acción
-                    </th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Código</th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Producto</th>
+                    <th class="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Stock</th>
+                    <th class="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Cantidad</th>
+                    <th class="px-4 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Precio</th>
+                    <th class="px-4 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Subtotal</th>
+                    <th class="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider"></th>
                   </tr>
                 </thead>
+
                 <tbody class="divide-y divide-gray-100">
-                  <tr
-                    v-for="(item, index) in cart"
-                    :key="item.id"
-                    class="hover:bg-gray-50 transition-colors text-xs"
-                  >
-                    <td class="px-3 py-2 text-xs text-gray-800">
-                      {{ item.codigo_barra || "Sin código" }}
+                  <tr v-for="(item, index) in cart" :key="item.id" class="hover:bg-gray-50 transition-colors duration-150">
+                    <td class="px-4 py-3.5 text-xs text-gray-600 whitespace-nowrap font-medium">
+                      {{ item.codigo_barra || "—" }}
                     </td>
-                    <td class="px-3 py-2 text-xs text-gray-800">
-                      {{ item.nombre_producto }}
+
+                    <td class="px-4 py-3.5">
+                      <p class="max-w-[360px] truncate text-sm font-semibold text-gray-800">
+                        {{ item.nombre_producto }}
+                      </p>
                     </td>
-                    <td class="px-3 py-2 text-xs text-gray-800">
-                      <span
-                        :class="[
-                          'text-xs px-1.5 py-0.5 rounded-full',
-                          item.cantidad_producto <= 5
-                            ? 'bg-yellow-100 text-yellow-800'
-                            : 'bg-gray-100 text-gray-800',
-                        ]"
-                      >
+
+                    <td class="px-4 py-3.5 text-center">
+                      <span :class="[
+                        'text-xs font-semibold px-2.5 py-0.5 rounded-full',
+                        item.cantidad_producto <= 5 ? 'bg-red-100 text-red-700' : 
+                        item.cantidad_producto <= 10 ? 'bg-amber-100 text-amber-700' : 
+                        'bg-emerald-100 text-emerald-700'
+                      ]">
                         {{ item.cantidad_producto }}
                       </span>
                     </td>
-                    <td class="px-3 py-2 text-center">
-                      <div class="flex items-center justify-center gap-1">
-                        <button
-                          @click="updateQuantity(index, -1)"
-                          class="w-6 h-6 rounded border border-gray-200 bg-white text-gray-600 hover:bg-gray-100 transition-colors text-xs font-medium flex items-center justify-center"
-                        >
+
+                    <td class="px-4 py-3.5">
+                      <div class="flex items-center justify-center gap-2">
+                        <button @click="updateQuantity(index, -1)" class="w-7 h-7 rounded-lg border border-gray-300 bg-white text-gray-600 hover:bg-gray-100 hover:border-gray-400 transition-colors duration-200 text-sm flex items-center justify-center font-bold">
                           −
                         </button>
-                        <span
-                          class="text-xs font-semibold text-gray-800 w-8 text-center"
-                          >{{ item.quantity }}</span
-                        >
-                        <button
-                          @click="updateQuantity(index, 1)"
-                          class="w-6 h-6 rounded border border-gray-200 bg-white text-gray-600 hover:bg-gray-100 transition-colors text-xs font-medium flex items-center justify-center"
-                        >
+                        <span class="text-sm font-bold text-gray-800 w-8 text-center">
+                          {{ item.quantity }}
+                        </span>
+                        <button @click="updateQuantity(index, 1)" class="w-7 h-7 rounded-lg border border-gray-300 bg-white text-gray-600 hover:bg-gray-100 hover:border-gray-400 transition-colors duration-200 text-sm flex items-center justify-center font-bold">
                           +
                         </button>
                       </div>
                     </td>
-                    <td class="px-3 py-2 text-right text-xs text-gray-600">
+
+                    <td class="px-4 py-3.5 text-right text-sm font-medium text-gray-700 whitespace-nowrap">
                       {{ formatCurrency(item.precio_unitario) }}
                     </td>
-                    <td
-                      class="px-3 py-2 text-right text-xs font-bold text-gray-900"
-                    >
+
+                    <td class="px-4 py-3.5 text-right font-bold text-gray-800 whitespace-nowrap">
                       {{ formatCurrency(item.precio_unitario * item.quantity) }}
                     </td>
-                    <td
-                      class="px-3 py-2 text-center text-xs font-bold text-gray-900"
-                    >
-                      <button
-                        @click="removeFromCart(index)"
-                        class="px-2 py-1 text-xs bg-red-500 text-white rounded-lg hover:bg-red-600 disabled:opacity-50 transition-colors"
-                      >
-                        Eliminar
+
+                    <td class="px-4 py-3.5 text-center">
+                      <button @click="removeFromCart(index)" class="text-red-500 hover:text-red-700 transition-colors duration-200 text-xl leading-none font-bold hover:scale-110 transform">
+                        ×
                       </button>
                     </td>
                   </tr>
@@ -200,409 +111,240 @@
               </table>
             </div>
           </div>
-        </div>
+        </section>
 
-        <!-- Columna Derecha: Pago (1/3 del espacio) -->
-        <div
-          class="lg:col-span-1 flex flex-col bg-white rounded-xl border border-gray-200 shadow-xs overflow-hidden h-full"
-        >
-          <!-- Header del pago - Fijo -->
-          <div
-            class="px-4 sm:px-5 py-3 border-b border-gray-200 bg-gray-50 flex-shrink-0"
-          >
-            <h2
-              class="text-xs font-semibold text-gray-700 flex items-center gap-2"
-            >
-              <span class="w-1 h-4 bg-gray-900 rounded-full"></span>
-              Forma de pago
-            </h2>
+        <!-- Pago -->
+        <section class="lg:col-span-1 min-h-[420px] lg:min-h-0 flex flex-col bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+          
+          <!-- Header -->
+          <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex-shrink-0">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-1 h-6 bg-gray-800 rounded-full"></div>
+                <div>
+                  <h2 class="text-sm font-bold text-gray-800">Pago</h2>
+                  <p class="text-xs text-gray-500">Registre los pagos</p>
+                </div>
+              </div>
+
+              <div v-if="remainingBalance > 0" class="text-right">
+                <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Pendiente</p>
+                <p class="text-sm font-bold text-amber-600">{{ formatCurrency(remainingBalance) }}</p>
+              </div>
+            </div>
           </div>
 
-          <!-- Contenido del pago -->
-          <div class="flex-1 overflow-y-auto">
-            <div class="p-4 sm:p-5 space-y-4">
+          <!-- Contenido -->
+          <div class="flex-1 min-h-0 overflow-y-auto">
+            <div class="p-5 space-y-5">
+
               <!-- Métodos de pago -->
-              <div class="grid grid-cols-2 gap-3">
-                <button
-                  @click="togglePaymentMethod(PAYMENT_CODES.CASH)"
-                  :class="[
-                    'p-1 rounded-xl border-2 transition-all text-center',
+              <div>
+                <p class="text-xs font-semibold text-gray-600 mb-2.5">Método de pago</p>
+                <div class="grid grid-cols-2 gap-2">
+                  <button @click="togglePaymentMethod(PAYMENT_CODES.CASH)" :class="[
+                    'py-2.5 px-3 rounded-lg border-2 text-sm font-semibold transition-colors duration-200',
                     selectedPaymentMethod === PAYMENT_CODES.CASH
-                      ? 'border-gray-800 bg-gray-800 text-white'
-                      : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300',
-                  ]"
-                >
-                  <p class="text-xs sm:text-xs font-medium mt-1">Efectivo</p>
-                </button>
-
-                <button
-                  @click="togglePaymentMethod(PAYMENT_CODES.YAPE)"
-                  :class="[
-                    'p-1 rounded-xl border-2 transition-all text-center',
+                      ? 'border-green-600 bg-green-600 text-white shadow-sm'
+                      : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+                  ]">
+                    Efectivo
+                  </button>
+                  <button @click="togglePaymentMethod(PAYMENT_CODES.YAPE)" :class="[
+                    'py-2.5 px-3 rounded-lg border-2 text-sm font-semibold transition-colors duration-200',
                     selectedPaymentMethod === PAYMENT_CODES.YAPE
-                      ? 'border-gray-800 bg-gray-800 text-white'
-                      : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300',
-                  ]"
-                >
-                  <p class="text-xs sm:text-xs font-medium mt-1">Yape</p>
-                </button>
-              </div>
-
-              <!-- Input de monto según método seleccionado -->
-              <div v-if="selectedPaymentMethod && remainingBalance > 0">
-                <label
-                  class="block text-xs sm:text-xs font-medium text-gray-600 mb-1"
-                >
-                  {{
-                    selectedPaymentMethod === PAYMENT_CODES.CASH
-                      ? "Monto recibido"
-                      : "Monto a pagar con Yape"
-                  }}
-                </label>
-                <input
-                  ref="cashInput"
-                  :value="
-                    selectedPaymentMethod === PAYMENT_CODES.CASH
-                      ? cashAmountText
-                      : yapeAmountText
-                  "
-                  @input="
-                    selectedPaymentMethod === PAYMENT_CODES.CASH
-                      ? updateCashAmount($event)
-                      : updateYapeAmount($event)
-                  "
-                  @focus="onPaymentInputFocus"
-                  @blur="onPaymentInputBlur"
-                  type="number"
-                  inputmode="decimal"
-                  class="w-full px-3 py-1 border-2 border-gray-200 rounded-lg text-base sm:text-lg focus:outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-200 transition-all payment-input"
-                  placeholder="0.00"
-                  :disabled="remainingBalance <= 0"
-                />
-                <div class="pt-2">
-                  <button
-                    @click="setFullPaymentAmount"
-                    class="w-full px-5 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-400 rounded-lg hover:bg-gray-50 transition-colors flex justify-center items-center"
-                    title="Completar con el monto faltante"
-                  >
-                    Pagar todo
-                    <span class="hidden sm:inline ml-1">
-                      ({{ formatCurrency(remainingBalance) }})
-                    </span>
+                      ? 'border-purple-600 bg-purple-600 text-white shadow-sm'
+                      : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+                  ]">
+                    Yape
                   </button>
                 </div>
-
-                <!-- Estado del pago actual -->
-                <div
-                  v-if="getCurrentAmount > 0"
-                  class="mt-6 p-6 rounded-lg text-center"
-                  :class="getStatusClass"
-                >
-                  <div v-if="getCurrentAmount < remainingBalance">
-                    <p class="text-xs text-gray-500">Falta por pagar</p>
-                    <p class="text-lg sm:text-xl font-bold text-red-600">
-                      {{ formatCurrency(remainingBalance - getCurrentAmount) }}
-                    </p>
-                  </div>
-                  <div v-else-if="getCurrentAmount === remainingBalance">
-                    <p class="text-xs text-green-600">Pago exacto</p>
-                  </div>
-                  <div v-else-if="selectedPaymentMethod === PAYMENT_CODES.CASH">
-                    <p class="text-xs text-gray-500">Vuelto</p>
-                    <p class="text-lg sm:text-xl font-bold text-green-600">
-                      {{ formatCurrency(getCurrentAmount - remainingBalance) }}
-                    </p>
-                  </div>
-                </div>
               </div>
 
-              <!-- Botón de registrar pago -->
-              <button
-                v-if="
-                  selectedPaymentMethod &&
-                  remainingBalance > 0 &&
-                  getCurrentAmount > 0
-                "
-                @click="addPayment"
-                class="w-full py-2 bg-gray-800 text-white rounded-lg font-semibold hover:bg-gray-800 transition-all text-xs sm:text-base"
-              >
-                Registrar pago
-              </button>
+              <!-- Área de pago -->
+              <div v-if="selectedPaymentMethod && remainingBalance > 0" class="space-y-3">
+                <div>
+                  <label class="block text-xs font-semibold text-gray-600 mb-1.5">
+                    {{ selectedPaymentMethod === PAYMENT_CODES.CASH ? "Monto recibido" : "Monto a pagar" }}
+                  </label>
+                  <div class="relative">
+                    <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 font-bold text-base">S/</span>
+                    <input ref="cashInput"
+                      :value="selectedPaymentMethod === PAYMENT_CODES.CASH ? cashAmountText : yapeAmountText"
+                      @input="selectedPaymentMethod === PAYMENT_CODES.CASH ? updateCashAmount($event) : updateYapeAmount($event)"
+                      @focus="onPaymentInputFocus" @blur="onPaymentInputBlur" type="number" inputmode="decimal"
+                      class="w-full pl-9 pr-3.5 py-2.5 border-2 border-gray-300 rounded-lg text-base font-bold focus:outline-none focus:border-gray-600 focus:ring-2 focus:ring-gray-200 transition-all duration-200 bg-white"
+                      placeholder="0.00" :disabled="remainingBalance <= 0" />
+                  </div>
+                </div>
 
-              <!-- Pagos registrados -->
-              <div
-                v-if="payments.length > 0"
-                class="border-t border-gray-200 pt-3"
-              >
-                <p class="text-xs font-semibold text-gray-500 mb-2">
-                  Pagos realizados
-                </p>
-                <div class="space-y-1 max-h-[150px] overflow-y-auto">
-                  <div
-                    v-for="(payment, idx) in payments"
-                    :key="idx"
-                    class="flex justify-between items-center text-xs sm:text-xs p-2 bg-gray-50 rounded-lg border border-gray-300"
-                  >
-                    <div class="flex gap-2">
-                      <span class="font-semibold">{{
-                        payment.method === PAYMENT_CODES.YAPE
-                          ? "Yape"
-                          : "Efectivo"
-                      }}</span>
-                    </div>
-                    <div class="flex items-center gap-4">
-                      <span class="font-bold">{{
-                        formatCurrency(payment.received || payment.amount)
-                      }}</span>
-                      <button
-                        @click="removePayment(idx)"
-                        class="text-red-400 hover:text-red-500 text-xs text-bold"
-                      >
+                <button @click="setFullPaymentAmount" class="w-full px-3 py-2.5 text-xs font-semibold text-gray-700 border-2 border-gray-300 rounded-lg hover:bg-gray-100 hover:border-gray-400 transition-colors duration-200">
+                  Pagar todo ({{ formatCurrency(remainingBalance) }})
+                </button>
+
+                <div v-if="getCurrentAmount > 0" class="py-3 px-3 rounded-lg text-center border-2" :class="getStatusClass">
+                  <div v-if="getCurrentAmount < remainingBalance">
+                    <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Saldo pendiente</p>
+                    <p class="text-base font-bold text-amber-600">{{ formatCurrency(remainingBalance - getCurrentAmount) }}</p>
+                  </div>
+                  <div v-else-if="getCurrentAmount === remainingBalance">
+                    <p class="text-sm font-bold text-emerald-600">✓ Pago exacto</p>
+                  </div>
+                  <div v-else-if="selectedPaymentMethod === PAYMENT_CODES.CASH">
+                    <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Vuelto</p>
+                    <p class="text-base font-bold text-emerald-600">{{ formatCurrency(getCurrentAmount - remainingBalance) }}</p>
+                  </div>
+                </div>
+
+                <button v-if="selectedPaymentMethod && remainingBalance > 0 && getCurrentAmount > 0" @click="addPayment"
+                  class="w-full py-2.5 bg-blue-600 text-white rounded-lg text-sm font-bold hover:bg-blue-700 transition-colors duration-200 shadow-sm hover:shadow">
+                  Registrar pago
+                </button>
+              </div>
+
+              <!-- Pagos realizados -->
+              <div v-if="payments.length > 0" class="border-t-2 border-gray-200 pt-4">
+                <div class="flex items-center justify-between mb-2.5">
+                  <p class="text-xs font-semibold text-gray-600">Pagos realizados</p>
+                </div>
+
+                <div class="space-y-2 max-h-[120px] overflow-y-auto">
+                  <div v-for="(payment, idx) in payments" :key="idx" class="flex justify-between items-center py-2.5 px-3 bg-gray-100 rounded-lg border border-gray-200">
+                    <span :class="[
+                      'text-sm font-semibold',
+                      payment.method === PAYMENT_CODES.YAPE ? 'text-purple-700' : 'text-green-700'
+                    ]">
+                      {{ payment.method === PAYMENT_CODES.YAPE ? "Yape" : "Efectivo" }}
+                    </span>
+                    <div class="flex items-center gap-3">
+                      <span class="text-sm font-bold text-gray-800">{{ formatCurrency(payment.received || payment.amount) }}</span>
+                      <button @click="removePayment(idx)" class="text-red-500 hover:text-red-700 text-xl leading-none font-bold transition-colors duration-200 hover:scale-110 transform">
                         ×
                       </button>
                     </div>
                   </div>
                 </div>
-                <p class="text-xs text-gray-600 mt-2 text-right">
-                  Total pagado: {{ formatCurrency(totalPaid) }}
-                </p>
               </div>
+
             </div>
           </div>
 
-          <!-- Totales y botón finalizar - Fijo al final -->
-          <div
-            class="border-t border-gray-200 p-4 sm:p-5 bg-gray-50 flex-shrink-0"
-          >
-            <div class="space-y-1 mb-4">
-              <div class="flex justify-between text-xs sm:text-xs">
-                <span class="text-gray-600">Subtotal</span>
-                <span class="text-gray-800 font-medium">{{
-                  formatCurrency(subtotal)
-                }}</span>
+          <!-- Totales -->
+          <div class="border-t-2 border-gray-200 p-5 bg-gray-50 flex-shrink-0">
+            <div class="space-y-2">
+              <div class="flex justify-between text-sm">
+                <span class="text-gray-500 font-medium">Subtotal</span>
+                <span class="text-gray-800 font-bold">{{ formatCurrency(subtotal) }}</span>
               </div>
-              <div class="flex justify-between text-xs sm:text-xs">
-                <span class="text-gray-600">IGV (0%)</span>
-                <span class="text-gray-800 font-medium">{{
-                  formatCurrency(igvTotal)
-                }}</span>
+              <div class="flex justify-between text-sm">
+                <span class="text-gray-500 font-medium">IGV (0%)</span>
+                <span class="text-gray-800 font-bold">{{ formatCurrency(igvTotal) }}</span>
               </div>
-              <div class="flex justify-between pt-2 border-t border-gray-200">
-                <span class="text-base sm:text-lg font-bold text-gray-900"
-                  >Total</span
-                >
-                <span class="text-base sm:text-lg font-bold text-gray-900">{{
-                  formatCurrency(total)
-                }}</span>
-              </div>
-              <div
-                v-if="remainingBalance > 0"
-                class="flex justify-between pt-1"
-              >
-                <span class="text-xs text-red-600">Saldo pendiente</span>
-                <span class="text-xs font-bold text-red-600">{{
-                  formatCurrency(remainingBalance)
-                }}</span>
+              <div class="flex justify-between pt-2.5 border-t-2 border-gray-300">
+                <span class="text-base font-bold text-gray-800">Total</span>
+                <span class="text-base font-bold text-gray-800">{{ formatCurrency(total) }}</span>
               </div>
             </div>
-            <button
-              @click="finalizeSale"
-              :disabled="
-                remainingBalance > 0 || cart.length === 0 || procesandoVenta
-              "
-              :class="
-                remainingBalance > 0
-                  ? 'bg-red-300 hover:bg-red-400'
-                  : 'bg-green-600 hover:bg-green-700'
-              "
-              class="w-full py-2.5 sm:py-3 text-white text-xs sm:text-base font-semibold rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
-            >
-              {{
-                procesandoVenta
-                  ? "Procesando..."
-                  : remainingBalance > 0
-                    ? `Faltan ${formatCurrency(remainingBalance)}`
-                    : "Finalizar venta"
-              }}
+
+            <button @click="finalizeSale" :disabled="remainingBalance > 0 || cart.length === 0 || procesandoVenta"
+              class="w-full mt-4 py-3 text-sm font-bold rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow"
+              :class="remainingBalance > 0
+                ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                : 'bg-emerald-600 text-white hover:bg-emerald-700'
+              ">
+              {{ procesandoVenta ? "Procesando..." : remainingBalance > 0 ? `Faltan ${formatCurrency(remainingBalance)}` : "Finalizar venta" }}
             </button>
           </div>
-        </div>
+        </section>
       </div>
     </main>
 
-    <!-- MODAL DE BÚSQUEDA DE PRODUCTOS CON PAGINADOR -->
-    <div
-      v-if="showProductModal"
-      class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center p-4"
-    >
-      <div
-        class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full h-auto max-h-[80vh] flex flex-col animate-fadeInUp"
-      >
-        <div
-          class="px-5 sm:px-6 py-3 sm:py-4 border-b border-gray-200 flex justify-between items-center bg-white rounded-t-2xl"
-        >
-          <div>
-            <h3 class="text-base sm:text-lg font-semibold text-gray-900">
-              Buscar productos
-            </h3>
-            <p class="text-xs text-gray-500 mt-0.5">
-              Seleccione los productos para agregar al carrito
-            </p>
+    <!-- Modal de productos -->
+    <div v-if="showProductModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" @click.self="closeProductModal">
+      <div class="bg-white rounded-xl shadow-2xl max-w-5xl w-full max-h-[90dvh] flex flex-col overflow-hidden border border-gray-200">
+        
+        <div class="px-6 py-4 border-b-2 border-gray-200 bg-gray-50 flex-shrink-0">
+          <div class="flex justify-between items-center">
+            <div>
+              <h3 class="text-base font-bold text-gray-800">Buscar productos</h3>
+              <p class="text-xs text-gray-500">Seleccione productos para agregar al carrito</p>
+            </div>
+            <button @click="closeProductModal" class="text-gray-400 hover:text-gray-600 text-2xl leading-none w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-200 transition-colors duration-200 font-light">
+              ×
+            </button>
           </div>
-          <button
-            @click="closeProductModal"
-            class="text-gray-400 hover:text-gray-600 text-2xl leading-none w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100"
-          >
-            ×
-          </button>
         </div>
 
-        <div class="p-4 sm:p-5 border-b border-gray-200 bg-gray-50">
+        <div class="p-5 border-b-2 border-gray-200 flex-shrink-0">
           <div class="relative">
-            <div
-              class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-            >
-              <svg
-                class="h-4 w-4 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+              <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
-            <input
-              ref="modalSearchInput"
-              v-model="modalSearchTerm"
-              @input="handleModalSearch"
-              type="text"
+            <input ref="modalSearchInput" v-model="modalSearchTerm" @input="handleModalSearch" type="text"
               placeholder="Buscar por nombre o código de barras..."
-              class="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-xs focus:outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-200 transition-all"
-              autofocus
-            />
+              class="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all duration-200 bg-white"
+              autofocus />
           </div>
         </div>
 
-        <div class="flex-1 overflow-auto p-4 sm:p-5">
-          <div v-if="modalLoading" class="text-center py-16">
-            <div
-              class="inline-block animate-spin rounded-full h-8 w-8 border-2 border-gray-300 border-t-gray-600"
-            ></div>
-            <p class="mt-3 text-xs text-gray-500">Buscando productos...</p>
+        <div class="flex-1 min-h-0 overflow-auto p-5">
+          <div v-if="modalLoading" class="text-center py-20">
+            <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-blue-200 border-t-blue-600"></div>
+            <p class="mt-4 text-sm font-medium text-gray-500">Cargando productos...</p>
           </div>
 
-          <div v-else-if="modalProducts.length === 0" class="text-center py-16">
-            <svg
-              class="w-16 h-16 text-gray-300 mx-auto mb-3"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1.5"
-                d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
-              />
-            </svg>
-            <p class="text-gray-400 text-xs">No se encontraron productos</p>
+          <div v-else-if="modalProducts.length === 0" class="text-center py-20">
+            <p class="text-base font-medium text-gray-500">No se encontraron productos</p>
           </div>
 
           <div v-else>
             <div class="overflow-x-auto">
-              <table class="min-w-full text-xs">
-                <thead class="bg-gray-50 sticky top-0">
+              <table class="min-w-[840px] w-full text-sm">
+                <thead class="bg-gray-100 sticky top-0 z-10 border-b-2 border-gray-200">
                   <tr>
-                    <th
-                      class="px-2 py-1.5 text-left text-xs font-medium text-gray-500"
-                    >
-                      Código Barra
-                    </th>
-                    <th
-                      class="px-2 py-1.5 text-left text-xs font-medium text-gray-500"
-                    >
-                      Producto
-                    </th>
-                    <th
-                      class="px-2 py-1.5 text-right text-xs font-medium text-gray-500"
-                    >
-                      Precio
-                    </th>
-                    <th
-                      class="px-2 py-1.5 text-center text-xs font-medium text-gray-500"
-                    >
-                      Stock
-                    </th>
-                    <th
-                      class="px-2 py-1.5 text-center text-xs font-medium text-gray-500"
-                    >
-                      Estado
-                    </th>
-                    <th
-                      class="px-2 py-1.5 text-center text-xs font-medium text-gray-500"
-                    >
-                      Acción
-                    </th>
+                    <th class="px-4 py-3.5 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Código</th>
+                    <th class="px-4 py-3.5 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Producto</th>
+                    <th class="px-4 py-3.5 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Precio</th>
+                    <th class="px-4 py-3.5 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Stock</th>
+                    <th class="px-4 py-3.5 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Estado</th>
+                    <th class="px-4 py-3.5 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider"></th>
                   </tr>
                 </thead>
+
                 <tbody class="divide-y divide-gray-100">
-                  <tr
-                    v-for="product in modalProducts"
-                    :key="product.id"
-                    @dblclick="agregarDesdeModal(product)"
-                    class="hover:bg-gray-50 cursor-pointer transition-colors text-xs"
-                  >
-                    <td class="px-2 py-1.5 text-xs text-gray-800">
-                      {{ product.codigo_barra || "Sin código" }}
+                  <tr v-for="product in modalProducts" :key="product.id" @dblclick="agregarDesdeModal(product)" class="hover:bg-gray-50 transition-colors duration-150 cursor-pointer">
+                    <td class="px-4 py-3.5 text-xs text-gray-600 whitespace-nowrap font-medium">{{ product.codigo_barra || "—" }}</td>
+                    <td class="px-4 py-3.5">
+                      <p class="max-w-[380px] truncate text-sm font-semibold text-gray-800">{{ product.nombre_producto }}</p>
                     </td>
-                    <td class="px-2 py-1.5 text-xs text-gray-800">
-                      {{ product.nombre_producto }}
-                    </td>
-                    <td
-                      class="px-2 py-1.5 text-right text-xs font-bold text-gray-900"
-                    >
-                      {{ formatCurrency(product.precio_unitario) }}
-                    </td>
-                    <td class="px-2 py-1.5 text-center">
-                      <span
-                        :class="[
-                          'text-xs px-1.5 py-0.5 rounded-full',
-                          product.cantidad_producto <= 5
-                            ? 'bg-yellow-100 text-yellow-700'
-                            : 'bg-gray-100 text-gray-600',
-                        ]"
-                      >
+                    <td class="px-4 py-3.5 text-right font-bold text-gray-800 whitespace-nowrap">{{ formatCurrency(product.precio_unitario) }}</td>
+                    <td class="px-4 py-3.5 text-center">
+                      <span :class="[
+                        'text-xs font-semibold px-2.5 py-0.5 rounded-full',
+                        product.cantidad_producto <= 5 ? 'bg-red-100 text-red-700' : 
+                        product.cantidad_producto <= 10 ? 'bg-amber-100 text-amber-700' : 
+                        'bg-emerald-100 text-emerald-700'
+                      ]">
                         {{ product.cantidad_producto }}
                       </span>
                     </td>
-                    <td class="px-2 py-1.5 text-center">
-                      <span
-                        :class="
-                          product.estado
-                            ? 'bg-green-50 text-green-700'
-                            : 'bg-red-100 text-red-600'
-                        "
-                        class="inline-block px-2 py-0.5 rounded-full text-xs font-medium"
-                      >
+                    <td class="px-4 py-3.5 text-center">
+                      <span :class="[
+                        'inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold',
+                        product.estado ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
+                      ]">
                         {{ product.estado ? "Activo" : "Inactivo" }}
                       </span>
                     </td>
-                    <td class="px-2 py-1.5 text-center">
-                      <button
-                        @click.stop="agregarDesdeModal(product)"
-                        :disabled="
-                          product.estado === false ||
-                          product.estado === 'false' ||
-                          product.cantidad_producto <= 0
-                        "
-                        class="px-2 py-1 text-xs bg-gray-800 text-white rounded-lg hover:bg-gray-700 disabled:opacity-50 transition-colors"
-                      >
-                        Agregar
+                    <td class="px-4 py-3.5 text-center">
+                      <button @click.stop="agregarDesdeModal(product)" :disabled="!product.estado || product.cantidad_producto <= 0" :class="[
+                        'px-3.5 py-1.5 text-xs font-bold text-white rounded-lg transition-colors duration-200 shadow-sm hover:shadow',
+                        product.cantidad_producto == 0 ? 'bg-red-500 cursor-not-allowed hover:bg-red-600' : 'bg-emerald-600 hover:bg-emerald-700',
+                        !product.estado ? 'bg-gray-400 cursor-not-allowed' : ''
+                      ]">
+                        {{ product.cantidad_producto == 0 ? "Agotado" : "Agregar" }}
                       </button>
                     </td>
                   </tr>
@@ -610,73 +352,18 @@
               </table>
             </div>
 
-            <!-- PAGINADOR DEL MODAL -->
-            <div
-              v-if="
-                modalPagination && modalPagination.total > 0 && !modalLoading
-              "
-              class="mt-4 pt-4 border-t border-gray-200"
-            >
-              <div class="flex items-center justify-between flex-wrap gap-2">
-                <div class="text-xs text-gray-500">
-                  Mostrando
-                  {{ (modalPagination.currentPage - 1) * modalPageSize + 1 }} -
-                  {{
-                    Math.min(
-                      modalPagination.currentPage * modalPageSize,
-                      modalPagination.total,
-                    )
-                  }}
-                  de {{ modalPagination.total }} productos
+            <div v-if="modalPagination && modalPagination.total > 0 && !modalLoading" class="mt-5 pt-4 border-t-2 border-gray-200">
+              <div class="flex items-center justify-between flex-wrap gap-3">
+                <div class="text-xs font-medium text-gray-500">
+                  Mostrando {{ (modalPagination.currentPage - 1) * modalPageSize + 1 }} - {{ Math.min(modalPagination.currentPage * modalPageSize, modalPagination.total) }} de {{ modalPagination.total }} productos
                 </div>
                 <div class="flex gap-2">
-                  <button
-                    @click="cambiarPaginaModal(modalPagination.currentPage - 1)"
-                    :disabled="modalPagination.currentPage === 1"
-                    class="px-3 py-1.5 text-xs border border-gray-200 rounded-lg hover:bg-white hover:border-gray-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
-                  >
-                    <svg
-                      class="w-3 h-3"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M15 19l-7-7 7-7"
-                      />
-                    </svg>
+                  <button @click="cambiarPaginaModal(modalPagination.currentPage - 1)" :disabled="modalPagination.currentPage === 1" class="px-3.5 py-1.5 text-xs font-semibold border-2 border-gray-300 rounded-lg hover:bg-gray-100 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
                     Anterior
                   </button>
-
-                  <span class="px-3 py-1.5 text-xs text-gray-600">
-                    Página {{ modalPagination.currentPage }} de
-                    {{ modalPagination.totalPages }}
-                  </span>
-
-                  <button
-                    @click="cambiarPaginaModal(modalPagination.currentPage + 1)"
-                    :disabled="
-                      modalPagination.currentPage === modalPagination.totalPages
-                    "
-                    class="px-3 py-1.5 text-xs border border-gray-200 rounded-lg hover:bg-white hover:border-gray-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
-                  >
+                  <span class="px-3 py-1.5 text-xs font-semibold text-gray-600">Página {{ modalPagination.currentPage }} de {{ modalPagination.totalPages }}</span>
+                  <button @click="cambiarPaginaModal(modalPagination.currentPage + 1)" :disabled="modalPagination.currentPage === modalPagination.totalPages" class="px-3.5 py-1.5 text-xs font-semibold border-2 border-gray-300 rounded-lg hover:bg-gray-100 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
                     Siguiente
-                    <svg
-                      class="w-3 h-3"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
                   </button>
                 </div>
               </div>
@@ -684,16 +371,9 @@
           </div>
         </div>
 
-        <div
-          class="px-5 sm:px-6 py-3 sm:py-4 border-t border-gray-200 bg-gray-50 flex justify-between items-center rounded-b-2xl"
-        >
-          <p class="text-xs text-gray-500">
-            Doble click en la fila o presione "Agregar"
-          </p>
-          <button
-            @click="closeProductModal"
-            class="px-4 py-1.5 bg-gray-800 text-white text-xs rounded-lg hover:bg-gray-700 transition-colors"
-          >
+        <div class="px-6 py-4 border-t-2 border-gray-200 bg-gray-50 flex justify-between items-center flex-shrink-0">
+          <p class="text-xs font-medium text-gray-500">Doble click para agregar</p>
+          <button @click="closeProductModal" class="px-5 py-2 text-xs font-bold text-white bg-gray-800 rounded-lg hover:bg-gray-900 transition-colors duration-200 shadow-sm hover:shadow">
             Cerrar
           </button>
         </div>
@@ -736,10 +416,8 @@ export default {
     return {
       PAYMENT_CODES,
 
-      // Carrito
       cart: [],
 
-      // Modal de búsqueda
       showProductModal: false,
       modalSearchTerm: "",
       modalProducts: [],
@@ -749,7 +427,6 @@ export default {
       modalCurrentPage: 1,
       modalPageSize: 10,
 
-      // Pago
       selectedPaymentMethod: null,
       payments: [],
       cashAmount: null,
@@ -768,7 +445,6 @@ export default {
         totalVuelto: 0,
       },
 
-      // Escáner
       codigoEscaneado: "",
       escaneoTimeout: null,
       lastKeyTime: null,
@@ -784,10 +460,12 @@ export default {
     nombreUsuario() {
       try {
         const auth = localStorage.getItem("auth");
+
         if (auth) {
           const data = JSON.parse(auth);
           return data.user?.nombre || "Administrador";
         }
+
         return "Administrador";
       } catch (error) {
         return "Administrador";
@@ -821,7 +499,7 @@ export default {
     totalRecibido() {
       return this.payments.reduce(
         (sum, p) => sum + (p.received || p.amount),
-        0,
+        0
       );
     },
 
@@ -841,23 +519,31 @@ export default {
       const amount = this.getCurrentAmount;
 
       if (!amount || amount <= 0) return "";
-      if (amount < this.remainingBalance)
-        return "bg-red-50 border border-red-200";
-      if (amount === this.remainingBalance)
-        return "bg-green-50 border border-green-200";
-      if (this.selectedPaymentMethod === PAYMENT_CODES.CASH)
-        return "bg-green-50 border border-green-200";
 
-      return "bg-red-50 border border-red-200";
+      if (amount < this.remainingBalance) {
+        return "bg-red-50/60 border-red-200/60";
+      }
+
+      if (amount === this.remainingBalance) {
+        return "bg-emerald-50/60 border-emerald-200/60";
+      }
+
+      if (this.selectedPaymentMethod === PAYMENT_CODES.CASH) {
+        return "bg-emerald-50/60 border-emerald-200/60";
+      }
+
+      return "bg-red-50/60 border-red-200/60";
     },
 
     idUsuarioVenta() {
       try {
         const auth = localStorage.getItem("auth");
+
         if (auth) {
           const data = JSON.parse(auth);
           return data.user?.id || 1;
         }
+
         return 1;
       } catch (error) {
         return 1;
@@ -883,20 +569,10 @@ export default {
 
   mounted() {
     this.updateTotals();
-
-    // Escucha global solo mientras este componente está abierto
     window.addEventListener("keydown", this.handleKeydown);
     window.addEventListener("paste", this.handlePaste);
-
-    console.log("Escáner activado en módulo Ventas");
   },
 
-  // Vue 2
-  beforeDestroy() {
-    this.limpiarEscaner();
-  },
-
-  // Vue 3
   beforeUnmount() {
     this.limpiarEscaner();
   },
@@ -921,8 +597,6 @@ export default {
       this.codigoEscaneado = "";
       this.lastKeyTime = null;
       this.escaneando = false;
-
-      console.log("Escáner desactivado al salir de Ventas");
     },
 
     isProductActive(product) {
@@ -935,15 +609,11 @@ export default {
 
     onPaymentInputFocus() {
       this.isPaymentInputFocused = true;
-      console.log("Input de pago enfocado - escáner desactivado");
     },
 
     onPaymentInputBlur() {
       this.isPaymentInputFocused = false;
-      console.log("Input de pago perdió foco - escáner reactivado");
     },
-
-    // ==================== ESCÁNER ====================
 
     handlePaste(event) {
       const target = event.target;
@@ -987,7 +657,6 @@ export default {
     handleKeydown(event) {
       const target = event.target;
 
-      // Si el modal está abierto, no escanear directo al carrito
       if (this.showProductModal) {
         const isModalSearchInput =
           this.$refs.modalSearchInput && target === this.$refs.modalSearchInput;
@@ -999,7 +668,6 @@ export default {
         return;
       }
 
-      // Si estás escribiendo monto de pago, no capturar escáner
       if (this.isPaymentInputFocused) {
         return;
       }
@@ -1014,21 +682,18 @@ export default {
         return;
       }
 
-      // Permitir Ctrl + V
       if (event.ctrlKey && event.key === "v") {
         return;
       }
 
       const now = Date.now();
 
-      // Si pasó mucho tiempo entre teclas, se considera nuevo escaneo
       if (this.lastKeyTime && now - this.lastKeyTime > 300) {
         this.codigoEscaneado = "";
       }
 
       this.lastKeyTime = now;
 
-      // Captura caracteres normales: números, letras, etc.
       if (
         event.key.length === 1 &&
         !event.ctrlKey &&
@@ -1041,7 +706,6 @@ export default {
           clearTimeout(this.escaneoTimeout);
         }
 
-        // Algunas pistolas no envían Enter, por eso procesamos por tiempo
         this.escaneoTimeout = setTimeout(() => {
           if (this.codigoEscaneado.trim()) {
             this.procesarEscaneo();
@@ -1049,7 +713,6 @@ export default {
         }, 150);
       }
 
-      // Muchas pistolas envían Enter o Tab al final
       if (
         (event.key === "Enter" || event.key === "Tab") &&
         this.codigoEscaneado.trim()
@@ -1079,26 +742,18 @@ export default {
 
       this.escaneando = true;
 
-      console.log("Escaneando código:", codigo);
-
       const codigoProcesar = codigo;
-
       this.codigoEscaneado = "";
 
       try {
         await this.buscarProductoPorCodigo(codigoProcesar);
-      } catch (error) {
-        console.error("Error en escaneo:", error);
       } finally {
         this.escaneando = false;
       }
     },
 
     async buscarProductoPorCodigo(codigoBarra) {
-      console.log("Buscando producto con código:", codigoBarra);
-
       if (!codigoBarra || codigoBarra.trim() === "") {
-        console.log("Código vacío");
         return false;
       }
 
@@ -1107,13 +762,10 @@ export default {
         const producto = response.data;
 
         if (!producto || !producto.id) {
-          console.log("Producto no encontrado:", codigoBarra);
           showErrorAlert(`Producto no encontrado: ${codigoBarra}`);
           playBeep();
           return false;
         }
-
-        console.log("Producto encontrado:", producto.nombre_producto);
 
         if (!this.isProductActive(producto)) {
           showProductInactiveAlert(producto.nombre_producto);
@@ -1132,24 +784,29 @@ export default {
         if (existingItem) {
           if (existingItem.quantity < producto.cantidad_producto) {
             existingItem.quantity++;
+
             showToast(
               `"${producto.nombre_producto}" cantidad aumentada a ${existingItem.quantity}`,
-              "success",
+              "success"
             );
+
             playBeep();
           } else {
             showInsufficientStockAlert(
               producto.nombre_producto,
-              producto.cantidad_producto,
+              producto.cantidad_producto
             );
+
             playBeep();
           }
         } else {
           this.agregarProductoAlCarrito(producto);
+
           showToast(
             `"${producto.nombre_producto}" agregado al carrito`,
-            "success",
+            "success"
           );
+
           playBeep();
         }
 
@@ -1168,27 +825,19 @@ export default {
     },
 
     agregarProductoAlCarrito(producto) {
-      console.log("Agregando al carrito:", producto.nombre_producto);
-
       const existing = this.cart.find((item) => item.id === producto.id);
 
       if (existing) {
         if (existing.quantity < producto.cantidad_producto) {
           existing.quantity++;
-          console.log("Cantidad actualizada:", existing.quantity);
         } else {
           showInsufficientStockAlert(
             producto.nombre_producto,
-            producto.cantidad_producto,
+            producto.cantidad_producto
           );
         }
       } else {
         this.cart.push({ ...producto, quantity: 1 });
-        console.log(
-          "Producto nuevo agregado, carrito tiene:",
-          this.cart.length,
-          "productos",
-        );
       }
     },
 
@@ -1204,8 +853,6 @@ export default {
       }
     },
 
-    // ==================== CARRITO ====================
-
     updateQuantity(index, delta) {
       const item = this.cart[index];
       const newQty = item.quantity + delta;
@@ -1217,7 +864,7 @@ export default {
       } else {
         showInsufficientStockAlert(
           item.nombre_producto,
-          item.cantidad_producto,
+          item.cantidad_producto
         );
       }
     },
@@ -1230,8 +877,6 @@ export default {
       const baseTotals = calculateTotals(this.cart);
       this.totals = updatePaymentCalculations(baseTotals, this.payments);
     },
-
-    // ==================== PAGO ====================
 
     togglePaymentMethod(method) {
       if (this.selectedPaymentMethod === method) {
@@ -1257,12 +902,14 @@ export default {
         this.remainingBalance > 0
       ) {
         const amount = this.remainingBalance;
+
         this.yapeAmount = amount;
         this.yapeAmountText = amount.toString();
         this.addPaymentYape();
+
         showToast(
           `Pago Yape automático de ${formatCurrency(amount)} registrado`,
-          "success",
+          "success"
         );
       }
     },
@@ -1333,7 +980,7 @@ export default {
 
       if (amount > this.remainingBalance) {
         showErrorAlert(
-          `El monto no puede exceder el saldo pendiente (${formatCurrency(this.remainingBalance)})`,
+          `El monto no puede exceder el saldo pendiente (${formatCurrency(this.remainingBalance)})`
         );
         return;
       }
@@ -1374,7 +1021,7 @@ export default {
       const payment = {
         method: PAYMENT_CODES.CASH,
         amount: paymentAmount,
-        changeAmount: changeAmount,
+        changeAmount,
         received: amount,
         date: new Date().toLocaleTimeString(),
       };
@@ -1397,8 +1044,6 @@ export default {
       }
     },
 
-    // ==================== MODAL DE BÚSQUEDA ====================
-
     openProductModal() {
       this.showProductModal = true;
       this.modalSearchTerm = "";
@@ -1413,8 +1058,6 @@ export default {
           this.$refs.modalSearchInput.focus();
         }
       });
-
-      console.log("Modal abierto");
     },
 
     closeProductModal() {
@@ -1426,8 +1069,6 @@ export default {
       if (this.modalSearchTimeout) {
         clearTimeout(this.modalSearchTimeout);
       }
-
-      console.log("Modal cerrado");
     },
 
     handleModalSearch() {
@@ -1446,7 +1087,7 @@ export default {
 
       try {
         const params = {
-          page: page,
+          page,
           page_size: this.modalPageSize,
         };
 
@@ -1466,7 +1107,7 @@ export default {
             total: response.data.count || 0,
             currentPage: page,
             totalPages: Math.ceil(
-              (response.data.count || 0) / this.modalPageSize,
+              (response.data.count || 0) / this.modalPageSize
             ),
           };
         } else {
@@ -1504,28 +1145,24 @@ export default {
       if (existing) {
         if (existing.quantity < product.cantidad_producto) {
           existing.quantity++;
-          showToast(
-            `Cantidad aumentada: ${product.nombre_producto}`,
-            "success",
-          );
+          showToast(`Cantidad aumentada: ${product.nombre_producto}`, "success");
         } else {
           showInsufficientStockAlert(
             product.nombre_producto,
-            product.cantidad_producto,
+            product.cantidad_producto
           );
         }
       } else {
         this.cart.push({ ...product, quantity: 1 });
+
         showToast(
           `"${product.nombre_producto}" agregado al carrito`,
-          "success",
+          "success"
         );
       }
 
       playBeep();
     },
-
-    // ==================== FINALIZAR VENTA ====================
 
     async finalizeSale() {
       if (this.cart.length === 0) {
@@ -1555,7 +1192,7 @@ export default {
           producto_id: item.id,
           precio_venta: parseFloat(item.precio_unitario),
           sub_total_venta: parseFloat(
-            (item.precio_unitario * item.quantity).toFixed(2),
+            (item.precio_unitario * item.quantity).toFixed(2)
           ),
         }));
 
@@ -1575,8 +1212,8 @@ export default {
 
         const response = await create_venta({
           id_usuario_venta: this.idUsuarioVenta,
-          detalles: detalles,
-          pagos: pagos,
+          detalles,
+          pagos,
         });
 
         if (response.data.success) {
@@ -1602,20 +1239,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fadeInUp {
-  animation: fadeInUp 0.3s ease-out;
-}
-</style>

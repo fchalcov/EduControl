@@ -57,6 +57,34 @@ def producto_list(request):
         elif estado.lower() == 'false':
             productos = productos.filter(estado=False)
     
+    # Filtros de precio de compra
+    costo_min = request.GET.get('costo_min')
+    costo_max = request.GET.get('costo_max')
+    if costo_min is not None and costo_min != '':
+        try:
+            productos = productos.filter(costo_producto__gte=float(costo_min))
+        except ValueError:
+            pass
+    if costo_max is not None and costo_max != '':
+        try:
+            productos = productos.filter(costo_producto__lte=float(costo_max))
+        except ValueError:
+            pass
+    
+    # Filtros de precio de venta
+    precio_min = request.GET.get('precio_min')
+    precio_max = request.GET.get('precio_max')
+    if precio_min is not None and precio_min != '':
+        try:
+            productos = productos.filter(precio_unitario__gte=float(precio_min))
+        except ValueError:
+            pass
+    if precio_max is not None and precio_max != '':
+        try:
+            productos = productos.filter(precio_unitario__lte=float(precio_max))
+        except ValueError:
+            pass
+
     # Paginación
     paginator = ProductoPagination()
     paginated_productos = paginator.paginate_queryset(productos, request)
